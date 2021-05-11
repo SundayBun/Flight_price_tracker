@@ -24,6 +24,7 @@ public class TelegramFacade {
     private String text;
 
     public SendMessage handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
+
         chatId = update.getMessage().getChatId();
 
         if (update.hasCallbackQuery()) {
@@ -38,24 +39,30 @@ public class TelegramFacade {
         if (userData==null) {
             state = BotState.getInitialState();
             userData = new UserData(chatId, state.ordinal());
-            repository.saveUserData(userData);
+
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
-            //sendMessage = state.enter(context);
+            sendMessage = state.enter(context);
+
+            state.handleInput(context);
+            state = state.nextState();
+
+            userData.setStateID(state.ordinal());
+            repository.saveUserData(userData);
+
+            return sendMessage;
         } else {
 
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
             state = BotState.byId(userData.getStateID());
-            state = state.nextState();
+            //state = state.nextState();
 
         }
 
         sendMessage = state.enter(context);
-
         state.handleInput(context);
-
         state = state.nextState();
-
         userData.setStateID(state.ordinal());
+        repository.saveUserData(userData);
 
 //        if (userData == null) {
 //            newUser(userData,bot,null);
