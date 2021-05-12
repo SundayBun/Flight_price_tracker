@@ -20,7 +20,6 @@ public class ResponseMessage {
             message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(state));
         }
 
-
         return message;
 
     }

@@ -39,15 +39,16 @@ public class TelegramFacade {
         if (userData==null) {
             state = BotState.getInitialState();
             userData = new UserData(chatId, state.ordinal());
-
+            userFlightData = new UserFlightData(chatId);
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
             sendMessage = state.enter(context);
 
-            state.handleInput(context);
-            state = state.nextState();
+            //state.handleInput(context);
+          //  state = state.nextState();
 
-            userData.setStateID(state.ordinal());
+           // userData.setStateID(state.ordinal());
             repository.saveUserData(userData);
+            repository.saveUserFlightData(userFlightData);
 
             return sendMessage;
         } else {
@@ -58,9 +59,11 @@ public class TelegramFacade {
 
         }
 
-        sendMessage = state.enter(context);
+       // sendMessage = state.enter(context);
+
         state.handleInput(context);
         state = state.nextState();
+        sendMessage = state.enter(context);
         userData.setStateID(state.ordinal());
         repository.saveUserData(userData);
 

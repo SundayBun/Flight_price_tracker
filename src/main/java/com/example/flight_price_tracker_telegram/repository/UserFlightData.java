@@ -7,10 +7,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
-@Component
+
 @Data
 @Document(collection = "UserSubscriptionFlightData")
 public class UserFlightData {
+
+    public UserFlightData(Long chatId) {
+        this.chatId = chatId;
+    }
 
     @Id
     private Long chatId; //задать там, где будет update

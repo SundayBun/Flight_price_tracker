@@ -1,30 +1,36 @@
 package com.example.flight_price_tracker_telegram.bot;
 
+import com.example.flight_price_tracker_telegram.bot.service.ButtonHandler;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.service.FlightPriceClientImpl;
 import com.example.flight_price_tracker_telegram.model.service.IFlightPriceClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 /**
  * Возможные состояния бота
- *
  */
 
 @Slf4j
 public enum BotState {
-    START(false, false) {
+    START(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getUserData());
 
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Hello. This is flight price tracker");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
-            context.getUserData().setStateID(this.ordinal());
+//            if(context.getCallbackQuery().getData()
+//                    .equals("Button \""+ ButtonHandler.listOfRequests.get(0) +"\" has been pressed")){
+//
+//               // вызвать англ/руск вопросы
+//            }
         }
 
         @Override
@@ -133,7 +139,7 @@ public enum BotState {
 
         @Override
         public BotState nextState() {
-            return OUTBOUND_PARTIAL_DATE;
+            return INBOUND_PARTIAL_DATE;
         }
     },
     INBOUND_PARTIAL_DATE(true, false) {
@@ -150,7 +156,7 @@ public enum BotState {
 
         @Override
         public BotState nextState() {
-            return OUTBOUND_PARTIAL_DATE;
+            return DATA_FILLED;
         }
     },
     DATA_FILLED(true, true) {
@@ -167,7 +173,7 @@ public enum BotState {
             if (context.getCallbackQuery().getData().equals("Button \"Find price\" has been pressed")) {
                 sendQueryToSkyScanner(context);
                 //вызвать страницу скайсканера и сохранить мин цену в UserData
-                next = START;
+                next =  DATA_TRANSFERRED;
             } else {
                 next = ASK_TO_TAP;
             }
@@ -240,7 +246,7 @@ public enum BotState {
         return queryResponse;
     }
 
-    public FlightPricesDTO pricesDTO(){
+    public FlightPricesDTO pricesDTO() {
         return pricesDTO;
     }
 
