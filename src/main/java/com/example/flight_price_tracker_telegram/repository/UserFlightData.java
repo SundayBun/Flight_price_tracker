@@ -23,4 +23,6 @@ public class UserFlightData {
     private String inboundPartialDate; //LocalDate
     private String originPlace;
     private FlightPricesDTO skyScannerResponse;
+
+
 }

@@ -40,12 +40,12 @@ public class ButtonHandler {
 
     public static void getRequiredList(BotState botState){
         listOfRequests=new ArrayList<>();
-        switch (botState){
-            case START:
+        switch (botState.ordinal()){
+            case 0:
                 listOfRequests.add("ENG");
                 listOfRequests.add("RUS");
-//            case DATA_FILLED:
-//                listOfRequests.add("Find price");
+            case 8:
+                listOfRequests.add("Find price");
             default: break;
         }
     }
