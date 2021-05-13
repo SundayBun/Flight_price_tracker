@@ -43,7 +43,7 @@ public class TelegramFacade {
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
             sendMessage = state.enter(context);
 
-            //state.handleInput(context);
+           // state.handleInput(context);
           //  state = state.nextState();
 
            // userData.setStateID(state.ordinal());

@@ -21,9 +21,6 @@ public class ButtonHandler {
 
         getRequiredList(botState);
 
-//if (botState.ordinal()==0) потом по state можно вызывать разные клавиатуры
-//creating the buttons
-
         for (String question:listOfRequests){
             InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
             inlineKeyboardButton.setText(question);

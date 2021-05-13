@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Slf4j
 public enum BotState {
     START(true, true) {
+        BotState next;
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getUserData());
@@ -26,16 +28,15 @@ public enum BotState {
 
         @Override
         public void handleInput(BotStateContextRepo context) {
-//            if(context.getCallbackQuery().getData()
-//                    .equals("Button \""+ ButtonHandler.listOfRequests.get(0) +"\" has been pressed")){
-//
-//               // вызвать англ/руск вопросы
-//            }
-        }
+            if (context.getCallbackQuery().getData()
+                    .equals("Button \"ENG\" has been pressed")) {
 
+              next=COUNTRY;
+            } else next=START;
+        }
         @Override
         public BotState nextState() {
-            return COUNTRY;
+            return next;
         }
     },
     COUNTRY(true, false) {

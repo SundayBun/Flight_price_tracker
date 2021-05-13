@@ -17,7 +17,7 @@ public class ResponseMessage {
             message.setText(text);
         } else{
             message.setText(text);
-            message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(state));
+            message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboard(state));
         }
 
         return message;
