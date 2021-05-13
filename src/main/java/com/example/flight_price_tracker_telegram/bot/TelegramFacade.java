@@ -25,11 +25,12 @@ public class TelegramFacade {
 
     public SendMessage handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
 
-        chatId = update.getMessage().getChatId();
+
 
         if (update.hasCallbackQuery()) {
             callbackQuery = update.getCallbackQuery();
         } else {
+            chatId = update.getMessage().getChatId();
             text = update.getMessage().getText();
         }
 
@@ -85,9 +86,9 @@ public class TelegramFacade {
 
        // userData.setStateID(state.ordinal());
 
-        if (state==BotState.DATA_TRANSFERRED){
+
             repository.saveUserFlightData(repository.findBySkyScannerResponse(state.pricesDTO(), context.getUserFlightData()));
-        }
+
 
         return sendMessage;
     }
