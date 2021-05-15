@@ -10,6 +10,7 @@ import java.util.List;
 public interface ISubscriptionRepositoryUserData extends MongoRepository<UserData,Long> {
 
     UserData findByChatId(Long chatID);
+    UserData findById (String id);
 
     void deleteByChatId(Long chatId);
 

@@ -25,22 +25,23 @@ public class TelegramFacade {
 
     public SendMessage handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
 
-
+     //   chatId = update.getMessage().getChatId();
 
         if (update.hasCallbackQuery()) {
             callbackQuery = update.getCallbackQuery();
+            chatId =callbackQuery.getMessage().getChatId();
         } else {
             chatId = update.getMessage().getChatId();
             text = update.getMessage().getText();
         }
 
         UserData userData = repository.findByChatId(chatId);
-        UserFlightData userFlightData=repository.findByChatID(chatId);
+        UserFlightData userFlightData=repository.findByChatID(chatId);;
 
         if (userData==null) {
             state = BotState.getInitialState();
-            userData = new UserData(chatId, state.ordinal());
-            userFlightData = new UserFlightData(chatId);
+         //   userData = new UserData(chatId, state.ordinal());
+          //  userFlightData = new UserFlightData(chatId);
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
             sendMessage = state.enter(context);
 
@@ -49,7 +50,7 @@ public class TelegramFacade {
 
            // userData.setStateID(state.ordinal());
             repository.saveUserData(userData);
-            repository.saveUserFlightData(userFlightData);
+          //  repository.saveUserFlightData(userFlightData);
 
             return sendMessage;
         } else {
@@ -87,7 +88,7 @@ public class TelegramFacade {
        // userData.setStateID(state.ordinal());
 
 
-            repository.saveUserFlightData(repository.findBySkyScannerResponse(state.pricesDTO(), context.getUserFlightData()));
+           // repository.saveUserFlightData(context.getUserFlightData());
 
 
         return sendMessage;
@@ -95,7 +96,7 @@ public class TelegramFacade {
 
     public void newUser(UserData userData, FlightPriceTrackerTelegramBot bot,UserFlightData userFlightData) {
         state = BotState.getInitialState();
-        userData = new UserData(chatId, state.ordinal());
+       // userData = new UserData(chatId, state.ordinal());
         repository.saveUserData(userData);
         context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
         sendMessage = state.enter(context);

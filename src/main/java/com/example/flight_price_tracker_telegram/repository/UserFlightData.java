@@ -12,12 +12,15 @@ import org.springframework.stereotype.Component;
 @Document(collection = "UserSubscriptionFlightData")
 public class UserFlightData {
 
-    public UserFlightData(Long chatId) {
+    public UserFlightData(Long chatId, String id) {
         this.chatId = chatId;
+        this.id=id;
     }
+    public UserFlightData(){}
 
     @Id
     private Long chatId; //задать там, где будет update
+    private String id;
     private String destinationPlace;
     private String outboundPartialDate; //LocalDate
     private String inboundPartialDate; //LocalDate

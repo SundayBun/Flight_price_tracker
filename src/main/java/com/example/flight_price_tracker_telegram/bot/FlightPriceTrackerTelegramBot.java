@@ -27,7 +27,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     private String botToken;
 
     @Autowired
-    private TelegramFacade telegramFacade;
+    private TelegramFacadeV2 telegramFacadeV2;
     private BotState botState;
 
     @Override
@@ -49,7 +49,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return telegramFacade.handleUpdate(update,this);
+           return telegramFacadeV2.handleUpdate(update,this);
         }
         return null;
     }

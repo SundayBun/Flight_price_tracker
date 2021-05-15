@@ -13,16 +13,18 @@ import java.time.LocalDate;
 @Document(collection = "UserSubscriptionData")
 public class UserData implements Serializable {
 
-    @Id
+@Id
     private Long chatId; //задать там, где будет update
     private Integer stateID;
+    private String id;
 
     private String country;
     private String currency;
     private String locale;
 
-    public UserData(Long chatId, Integer stateID) {
+    public UserData(Long chatId, Integer stateID,String id) {
         this.chatId = chatId;
         this.stateID = stateID;
+        this.id=id;
     }
 }

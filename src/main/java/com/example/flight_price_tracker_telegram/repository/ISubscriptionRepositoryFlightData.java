@@ -12,6 +12,7 @@ public interface ISubscriptionRepositoryFlightData extends MongoRepository<UserF
 
     List<UserFlightData> findByChatId(Long chatID);
 
+    List<UserFlightData> findById(String id);
 
     //поиск по запросу к SkyScanner, сохраненному в бд
    // List<UserFlightData> findBySkyScannerResponse (FlightPricesDTO response);
