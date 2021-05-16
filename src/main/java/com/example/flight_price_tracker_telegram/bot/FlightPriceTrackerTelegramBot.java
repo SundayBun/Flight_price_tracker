@@ -30,6 +30,9 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     private TelegramFacadeV2 telegramFacadeV2;
     private BotState botState;
 
+//    @Autowired
+//    private TFV3 tfv3;
+
     @Override
     public String getBotUsername() {
         return botUserName;

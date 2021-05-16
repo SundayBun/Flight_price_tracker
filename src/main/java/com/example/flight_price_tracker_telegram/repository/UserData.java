@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Document(collection = "UserSubscriptionData")
 public class UserData implements Serializable {
 
-@Id
+    @Id
     private Long chatId; //задать там, где будет update
     private Integer stateID;
     private String id;

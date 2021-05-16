@@ -188,8 +188,20 @@ public enum BotState {
     },
     DATA_TRANSFERRED(false, false) {
         @Override
+        public SendMessage enter(BotStateContextRepo context) {
+            return ResponseMessage.sendSearchResult(context);
+        }
+
+        @Override
+        public BotState nextState() {
+            return ASK_TO_TRACK;
+        }
+    },
+
+    ASK_TO_TRACK(true, true){
+        @Override
         public SendMessage enter(BotStateContextRepo context, FlightPricesDTO flightPricesDTO) {
-            return ResponseMessage.sendSearchResult(context, flightPricesDTO);
+            return null;
         }
 
         @Override
@@ -213,7 +225,7 @@ public enum BotState {
     private static BotState[] states;
     private final boolean inputNeeded;
     private final boolean queryResponse;
-    private FlightPricesDTO pricesDTO;
+   // private FlightPricesDTO pricesDTO;
 
     BotState() {
         this.inputNeeded = true; // по умолчанию- ждем действия
@@ -247,9 +259,9 @@ public enum BotState {
         return queryResponse;
     }
 
-    public FlightPricesDTO pricesDTO() {
-        return pricesDTO;
-    }
+//    public FlightPricesDTO pricesDTO() {
+//        return pricesDTO;
+//    }
 
     // обрабатывает ввод пользователя в текущем состоянии
     //когда пользователь что-то посылает срабатывает метод handleInput
@@ -268,14 +280,8 @@ public enum BotState {
     public void sendQueryToSkyScanner(BotStateContextRepo context) {
         IFlightPriceClient priceClient = new FlightPriceClientImpl();
 
-        pricesDTO = priceClient.browseQuotes(
-                context.getUserData().getCountry(),
-                context.getUserData().getCurrency(),
-                context.getUserData().getLocale(),
-                context.getUserFlightData().getOriginPlace(),
-                context.getUserFlightData().getDestinationPlace(),
-                context.getUserFlightData().getOutboundPartialDate(),
-                context.getUserFlightData().getInboundPartialDate());
+        context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
+                , context.getUserFlightData()));
     }
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно

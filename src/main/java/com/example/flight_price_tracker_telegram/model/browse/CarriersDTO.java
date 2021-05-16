@@ -15,5 +15,5 @@ public class CarriersDTO {
     private Integer carrierId;
 
     @JsonProperty("Name")
-    private Integer name;
+    private String name;
 }
