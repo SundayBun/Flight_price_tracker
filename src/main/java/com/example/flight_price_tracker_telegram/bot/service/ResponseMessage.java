@@ -10,13 +10,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Slf4j
 public class ResponseMessage {
 
-    public static SendMessage sendMessage(BotStateContextRepo context, BotState state, boolean queryResponse , String text) {
-        SendMessage message=new SendMessage();
+    public static SendMessage sendMessage(BotStateContextRepo context, BotState state, boolean queryResponse, String text) {
+        SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
 
-        if(!queryResponse) {
+        if (!queryResponse) {
             message.setText(text);
-        } else{
+        } else {
             message.setText(text);
             message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboard(state));
         }
@@ -25,13 +25,20 @@ public class ResponseMessage {
 
     }
 
-    public static SendMessage sendSearchResult(BotStateContextRepo context){
-        SendMessage message=new SendMessage();
+    public static SendMessage sendSearchResult(BotStateContextRepo context) {
+        SendMessage message = new SendMessage();
         message.setChatId(context.getUserFlightData().getChatId().toString());
 
-        message.setText(context.getUserFlightData().getSkyScannerResponse().toString());
+       // message.setText(context.getUserFlightData().getSkyScannerResponse().toString());
 
-        log.info("sendSearchResult setText={}",message.getText());
+        message.setText(context.getUserFlightData().getSkyScannerResponse().getPlaces()
+               +"\n " + context.getUserFlightData().getOutboundPartialDate()
+                +"\n " + context.getUserFlightData().getInboundPartialDate()
+                +"\n "  + context.getUserFlightData().getSkyScannerResponse().getCarriers()
+                +"\n "   + context.getUserFlightData().getSkyScannerResponse().getQuotes()
+                + context.getUserFlightData().getSkyScannerResponse().getCurrencies());
+
+        log.info("sendSearchResult setText={}", message.getText());
         return message;
     }
 }
