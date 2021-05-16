@@ -30,7 +30,7 @@ public class ButtonHandlerV2 {
 
             inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
             return inlineKeyboardMarkup;
-        } else {
+        } else if (state == BotState.DATA_FILLED) {
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
 
@@ -49,7 +49,10 @@ public class ButtonHandlerV2 {
 
             inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
             return inlineKeyboardMarkup;
+        }else if(state == BotState.COUNTRY_BUTTONS){
+
         }
+        return null;
     }
 
 }

@@ -10,22 +10,10 @@ import lombok.Data;
 @Data
 public class CountryDTO {
 
-    @JsonProperty("PlaceId")
-    private String placeId;
+    @JsonProperty("Code")
+    private String code;
 
-    @JsonProperty("PlaceName")
-    private String placeName;
-
-    @JsonProperty("CountryId")
-    private String countryId;
-
-    @JsonProperty("RegionId")
-    private String regionId;
-
-    @JsonProperty("CityId")
-    private String cityId;
-
-    @JsonProperty("CountryName")
-    private String countryName;
+    @JsonProperty("Name")
+    private String name;
 
 }

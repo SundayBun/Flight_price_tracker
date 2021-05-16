@@ -1,14 +1,17 @@
 package com.example.flight_price_tracker_telegram.bot;
 
-import com.example.flight_price_tracker_telegram.bot.service.ButtonHandler;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
+import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.FlightPriceClientImpl;
 import com.example.flight_price_tracker_telegram.model.service.IFlightPriceClient;
+import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
+import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Возможные состояния бота
@@ -17,8 +20,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 @Slf4j
 public enum BotState {
     START(true, true) {
-        BotState next;
-
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getUserData());
@@ -28,35 +29,50 @@ public enum BotState {
 
         @Override
         public void handleInput(BotStateContextRepo context) {
-            if (context.getCallbackQuery().getData()
-                    .equals("Button \"ENG\" has been pressed")) {
-
-              next=COUNTRY;
-            } else next=START;
+            if (context.getCallbackQuery().getData().equals("Button \"ENG\" has been pressed")) {
+                context.getUserData().setLocale("en-US");
+            } else {
+                context.getUserData().setLocale("ru-RU");
+            }
         }
+
         @Override
         public BotState nextState() {
-            return next;
+            return COUNTRY_TEXT;
         }
     },
-    COUNTRY(true, false) {
+    COUNTRY_TEXT(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            log.info("!!! MESSAGE: state:{}, message: {}", this, context.getUserData());
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the country you’re in");
+
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the country. " +
+                            "\n (enter at least one letter and send it to see available countries");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
+
+
             context.getUserData().setCountry(context.getInput());
         }
 
         @Override
         public BotState nextState() {
-            return CURRENCY;
+            return COUNTRY_BUTTONS;
         }
     },
+    COUNTRY_BUTTONS(true, true) {
+        @Override
+        public SendMessage enter(BotStateContextRepo context) {
+
+            return ResponseMessage.sendMessage(context, this, isQueryResponse()
+                    , "Select the country you are in)");
+
+        }
+
+    },
+
     CURRENCY(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
@@ -172,9 +188,9 @@ public enum BotState {
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
             if (context.getCallbackQuery().getData().equals("Button \"Find price\" has been pressed")) {
-                sendQueryToSkyScanner(context);
+                sendQueryForPrice(context);
                 //вызвать страницу скайсканера и сохранить мин цену в UserData
-                next =  DATA_TRANSFERRED;
+                next = DATA_TRANSFERRED;
             } else {
                 next = ASK_TO_TAP;
             }
@@ -198,7 +214,7 @@ public enum BotState {
         }
     },
 
-    ASK_TO_TRACK(true, true){
+    ASK_TO_TRACK(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context, FlightPricesDTO flightPricesDTO) {
             return null;
@@ -225,7 +241,7 @@ public enum BotState {
     private static BotState[] states;
     private final boolean inputNeeded;
     private final boolean queryResponse;
-   // private FlightPricesDTO pricesDTO;
+    // private FlightPricesDTO pricesDTO;
 
     BotState() {
         this.inputNeeded = true; // по умолчанию- ждем действия
@@ -277,12 +293,25 @@ public enum BotState {
         return null;
     }
 
-    public void sendQueryToSkyScanner(BotStateContextRepo context) {
+    public void sendQueryForPrice(BotStateContextRepo context) {
         IFlightPriceClient priceClient = new FlightPriceClientImpl();
 
         context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
                 , context.getUserFlightData()));
     }
+
+    public void sendQueryForCountry(BotStateContextRepo context) {
+        ILocalisationClient localisationClient = new LocalisationClientImpl();
+
+        List<CountryDTO> countriesList = localisationClient.retrieveCountries(context.getUserData().getLocale());
+
+        if (countriesList != null) {
+            countriesList.stream().filter(x -> x.getName().toLowerCase().startsWith(context.getInput().toLowerCase()))
+            .findFirst().orElse(null);
+        }
+
+    }
+
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно
 

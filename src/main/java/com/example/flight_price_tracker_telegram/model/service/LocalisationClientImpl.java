@@ -17,12 +17,14 @@ import java.util.List;
 @Component
 public class LocalisationClientImpl implements ILocalisationClient{
 
-    @Autowired
-    private IUniRestService uniRestService;
+//    @Autowired
+//    private IUniRestService uniRestService;
 
 
     @Override
     public List<CountryDTO> retrieveCountries(String locale) {
+
+        IUniRestService uniRestService=new UniRestServiceImpl();
 
         HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.COUNTRIES_FORMAT,locale));
 
@@ -37,6 +39,7 @@ public class LocalisationClientImpl implements ILocalisationClient{
     @Override
     public List<CurrencyDTO> retrieveCurrencies() {
 
+        IUniRestService uniRestService=new UniRestServiceImpl();
         HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.CURRENCIES_FORMAT));
 
         if(response.getStatus()!= HttpStatus.SC_OK) {

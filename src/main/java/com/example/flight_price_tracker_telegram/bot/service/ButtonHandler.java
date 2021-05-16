@@ -1,8 +1,6 @@
 package com.example.flight_price_tracker_telegram.bot.service;
 
 import com.example.flight_price_tracker_telegram.bot.BotState;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -37,11 +35,13 @@ public class ButtonHandler {
 
     public static void getRequiredList(BotState botState){
         listOfRequests=new ArrayList<>();
-        switch (botState.ordinal()){
-            case 0:
+        switch (botState){
+            case START:
                 listOfRequests.add("ENG");
                 listOfRequests.add("RUS");
-            case 8:
+            case COUNTRY_BUTTONS:
+                listOfRequests.add("Find country");
+            case DATA_FILLED:
                 listOfRequests.add("Find price");
             default: break;
         }
