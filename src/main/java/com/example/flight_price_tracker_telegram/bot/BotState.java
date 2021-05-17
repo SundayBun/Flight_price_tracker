@@ -1,5 +1,6 @@
 package com.example.flight_price_tracker_telegram.bot;
 
+import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
@@ -42,47 +43,63 @@ public enum BotState {
         }
     },
     COUNTRY_TEXT(true, false) {
+
+        BotState next=null;
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the country. " +
-                            "\n (enter at least one letter and send it to see available countries");
+                    "\n (enter at least one letter and send it to see available countries");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
 
-
-            context.getUserData().setCountry(context.getInput());
+            if(HandleInput.country(context)!=null){
+                next=COUNTRY_BUTTONS;
+            } else {
+                next=COUNTRY_TEXT;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return COUNTRY_BUTTONS;
+            return next;
         }
     },
     COUNTRY_BUTTONS(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-
-            return ResponseMessage.sendMessage(context, this, isQueryResponse()
-                    , "Select the country you are in)");
-
-        }
-
-    },
-
-    CURRENCY(true, false) {
-        @Override
-        public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the currency");
+                return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
+                        , "Select the country you are in)");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
-            context.getUserData().setCurrency(context.getInput());
+            context.getUserData().setCountry(context.getCallbackQuery().getData());
+        }
+
+        @Override
+        public BotState nextState() {
+            return CURRENCY;
+        }
+
+    },
+
+    CURRENCY(true, true) {
+        @Override
+        public SendMessage enter(BotStateContextRepo context) {
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(),
+                    "Select the currency");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+            context.getUserData().setStateID(this.ordinal());
+            context.getUserData().setCurrency(context.getCallbackQuery().getData());
         }
 
         @Override
@@ -110,7 +127,8 @@ public enum BotState {
     ORIGIN_PLACE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place " +
+                    "\n (enter at least one letter and send it to see available places)");
         }
 
         @Override
@@ -299,19 +317,6 @@ public enum BotState {
         context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
                 , context.getUserFlightData()));
     }
-
-    public void sendQueryForCountry(BotStateContextRepo context) {
-        ILocalisationClient localisationClient = new LocalisationClientImpl();
-
-        List<CountryDTO> countriesList = localisationClient.retrieveCountries(context.getUserData().getLocale());
-
-        if (countriesList != null) {
-            countriesList.stream().filter(x -> x.getName().toLowerCase().startsWith(context.getInput().toLowerCase()))
-            .findFirst().orElse(null);
-        }
-
-    }
-
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно
 

@@ -4,8 +4,13 @@ import com.example.flight_price_tracker_telegram.bot.BotState;
 
 import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
+import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
+import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
+import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
+import java.util.List;
 
 @Slf4j
 public class ResponseMessage {
@@ -41,4 +46,13 @@ public class ResponseMessage {
         log.info("sendSearchResult setText={}", message.getText());
         return message;
     }
+
+    public static SendMessage sendSearchCountry(BotStateContextRepo context,List<CountryDTO> countryDTOList, String text){
+        SendMessage message = new SendMessage();
+        message.setChatId(context.getUserData().getChatId().toString());
+        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardCountry(countryDTOList));
+
+        return message;
+    }
+
 }
