@@ -15,12 +15,14 @@ import java.util.List;
 @Component
 public class PlacesClientImpl implements IPlacesClient {
 
-    @Autowired
-    private IUniRestService uniRestService;
+//    @Autowired
+//    private IUniRestService uniRestService;
 
 
     @Override
     public List<PlacesDTO> retrievePlaces(String query, String country, String currency, String locale) {
+        IUniRestService uniRestService=new UniRestServiceImpl();
+
         HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.PLACES_FORMAT,country,currency,locale,query));
 
         if(response.getStatus()!= HttpStatus.SC_OK) {

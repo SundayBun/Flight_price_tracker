@@ -3,6 +3,7 @@ package com.example.flight_price_tracker_telegram.bot.service;
 import com.example.flight_price_tracker_telegram.bot.BotState;
 import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
+import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import org.springframework.stereotype.Service;
@@ -102,6 +103,24 @@ public class ButtonHandlerV2 {
             return inlineKeyboardMarkup;
     }
 
+    public static InlineKeyboardMarkup getMessageFromKeyboardPlaces(List<PlacesDTO> placesDTOList) {
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+
+        for (PlacesDTO places:placesDTOList){
+            InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
+            inlineKeyboardButton.setText(places.getPlaceName());
+            inlineKeyboardButton.setCallbackData(places.getCityId());
+            keyboardButtonsRow.add(inlineKeyboardButton);
+        }
+
+        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        keyboardButtonsRows.add(keyboardButtonsRow);
+
+        inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+        return inlineKeyboardMarkup;
+    }
 
 }
 

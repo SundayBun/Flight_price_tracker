@@ -104,27 +104,31 @@ public enum BotState {
 
         @Override
         public BotState nextState() {
-            return LOCALE;
+            return ORIGIN_PLACE_TEXT;
         }
     },
-    LOCALE(true, false) {
-        @Override
-        public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the locale");
-        }
+//    LOCALE(true, false) {
+//        @Override
+//        public SendMessage enter(BotStateContextRepo context) {
+//            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the locale");
+//        }
+//
+//        @Override
+//        public void handleInput(BotStateContextRepo context) {
+//            context.getUserData().setStateID(this.ordinal());
+//            context.getUserData().setLocale(context.getInput());
+//        }
+//
+//        @Override
+//        public BotState nextState() {
+//            return ORIGIN_PLACE;
+//        }
+//    },
 
-        @Override
-        public void handleInput(BotStateContextRepo context) {
-            context.getUserData().setStateID(this.ordinal());
-            context.getUserData().setLocale(context.getInput());
-        }
+    ORIGIN_PLACE_TEXT(true, false) {
 
-        @Override
-        public BotState nextState() {
-            return ORIGIN_PLACE;
-        }
-    },
-    ORIGIN_PLACE(true, false) {
+        BotState next=null;
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place " +
@@ -133,26 +137,82 @@ public enum BotState {
 
         @Override
         public void handleInput(BotStateContextRepo context) {
+
             context.getUserFlightData().setChatId(context.getUserData().getChatId());
             context.getUserData().setStateID(this.ordinal());
-            context.getUserFlightData().setOriginPlace(context.getInput());
+
+            if(HandleInput.places(context)!=null){
+                next=ORIGIN_PLACE_BUTTONS;
+            } else {
+                next=ORIGIN_PLACE_TEXT;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return DESTINATION_PLACE;
+            return next;
         }
     },
-    DESTINATION_PLACE(true, false) {
+    ORIGIN_PLACE_BUTTONS(true, true) {
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the destination place");
+            return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
+                    , "Select the departure place)");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
-            context.getUserFlightData().setDestinationPlace(context.getInput());
+            context.getUserFlightData().setOriginPlace(context.getCallbackQuery().getData());
+        }
+
+        @Override
+        public BotState nextState() {
+            return DESTINATION_PLACE_TEXT;
+        }
+
+    },
+
+    DESTINATION_PLACE_TEXT(true, false) {
+        BotState next;
+        @Override
+        public SendMessage enter(BotStateContextRepo context) {
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(),
+                    "Enter the destination place " +
+                            "\n (enter at least one letter and send it to see available places)");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+            context.getUserData().setStateID(this.ordinal());
+
+            context.getUserData().setStateID(this.ordinal());
+
+            if(HandleInput.places(context)!=null){
+                next=DESTINATION_PLACE_BUTTONS;
+            } else {
+                next=DESTINATION_PLACE_TEXT;
+            }
+        }
+
+        @Override
+        public BotState nextState() {
+            return next;
+        }
+    },
+    DESTINATION_PLACE_BUTTONS(true, true) {
+
+        @Override
+        public SendMessage enter(BotStateContextRepo context) {
+            return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
+                    , "Select the arrival place)");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+            context.getUserData().setStateID(this.ordinal());
+            context.getUserFlightData().setDestinationPlace(context.getCallbackQuery().getData());
         }
 
         @Override
@@ -160,10 +220,11 @@ public enum BotState {
             return OUTBOUND_PARTIAL_DATE;
         }
     },
+
     OUTBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the outbound partial date");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the outbound partial date (yyyy-mm-dd)");
         }
 
         @Override
@@ -180,7 +241,7 @@ public enum BotState {
     INBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the inbound partial date");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the inbound partial date (yyyy-mm-dd)");
         }
 
         @Override
