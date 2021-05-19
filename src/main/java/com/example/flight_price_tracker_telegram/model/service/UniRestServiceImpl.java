@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-@PropertySource("classpath:/static/x-rapidAPI-key.properties")
+//@PropertySource("classpath:/static/x-rapidAPI-key.properties")
 public class UniRestServiceImpl implements IUniRestService {
 
     public static final String HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
@@ -34,11 +34,12 @@ public class UniRestServiceImpl implements IUniRestService {
     public static final String PLACES_KEY = "Places";
     public static final String CURRENCIES_KEY = "Currencies";
     public static final String COUNTRIES_KEY = "Countries";
+    public static final String DATES_KEY = "DATES";
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${X-RapidAPI-Key}")
-    private String xRapidApiKey;
+//    @Value("${X-RapidAPI-Key}")
+//    private String xRapidApiKey;
 
     @Override
     public HttpResponse<JsonNode> get(String path) {

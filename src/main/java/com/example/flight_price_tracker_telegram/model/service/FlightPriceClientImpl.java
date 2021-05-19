@@ -32,8 +32,8 @@ public class FlightPriceClientImpl implements IFlightPriceClient {
     public static final String CARRIERS_KEY = "Carriers";
     public static final String VALIDATIONS_KEY = "ValidationErrors";
 
-    @Autowired
-    private IUniRestService uniRestService;
+//    @Autowired
+//    private IUniRestService uniRestService;
 
 //    @Override
 //    public FlightPricesDTO browseQuotes(String country, String currency, String locale, String originPlace, String destinationPlace, String outboundPartialDate) {

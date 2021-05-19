@@ -35,14 +35,7 @@ public class ResponseMessage {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserFlightData().getChatId().toString());
 
-       // message.setText(context.getUserFlightData().getSkyScannerResponse().toString());
-
-        message.setText(context.getUserFlightData().getSkyScannerResponse().getPlaces()
-               +"\n " + context.getUserFlightData().getOutboundPartialDate()
-                +"\n " + context.getUserFlightData().getInboundPartialDate()
-                +"\n "  + context.getUserFlightData().getSkyScannerResponse().getCarriers()
-                +"\n "   + context.getUserFlightData().getSkyScannerResponse().getQuotes()
-                + context.getUserFlightData().getSkyScannerResponse().getCurrencies());
+        message.setText(context.getUserFlightData().getSkyScannerResponseDates().toString());
 
         log.info("sendSearchResult setText={}", message.getText());
         return message;

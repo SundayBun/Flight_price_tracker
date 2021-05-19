@@ -4,10 +4,7 @@ import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
-import com.example.flight_price_tracker_telegram.model.service.FlightPriceClientImpl;
-import com.example.flight_price_tracker_telegram.model.service.IFlightPriceClient;
-import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
-import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
+import com.example.flight_price_tracker_telegram.model.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -358,9 +355,6 @@ public enum BotState {
 //        return pricesDTO;
 //    }
 
-    // обрабатывает ввод пользователя в текущем состоянии
-    //когда пользователь что-то посылает срабатывает метод handleInput
-    // do nothing by default
     public void handleInput(BotStateContextRepo context) {
     }
 
@@ -373,10 +367,15 @@ public enum BotState {
     }
 
     public void sendQueryForPrice(BotStateContextRepo context) {
-        IFlightPriceClient priceClient = new FlightPriceClientImpl();
+//        IFlightPriceClient priceClient = new FlightPriceClientImpl();
+//
+//        context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
+//                , context.getUserFlightData()));
 
-        context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
-                , context.getUserFlightData()));
+        IFlightPriceDateClient priceDateClient=new FlightPriceDateClientImpl();
+        context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
+               , context.getUserFlightData()));
+
     }
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно
