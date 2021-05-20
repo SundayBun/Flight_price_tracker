@@ -166,6 +166,6 @@ public class CurrencyDTO {
 //                + ", roundingCoefficient=" + this.getRoundingCoefficient()
 //                + ", decimalDigits=" + this.getDecimalDigits() + ")";
 
-        return "Currency: " +this.getSymbol()+" ("+this.getCode()+")";
+        return " " +this.getSymbol()+" ("+this.getCode()+")";
     }
 }

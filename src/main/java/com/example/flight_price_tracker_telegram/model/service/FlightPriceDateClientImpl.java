@@ -54,7 +54,7 @@ public class FlightPriceDateClientImpl implements IFlightPriceDateClient {
                     new TypeReference<List<CurrencyDTO>>() {
                     }));
             flightDatesDTO.setDates(UniRestServiceImpl.readValue(response.getBody().getObject().get(DATES_KEY).toString(),
-                    new TypeReference<List<DatesDTO>>() {
+                    new TypeReference<DatesDTO>() {
                     }));
 
             return flightDatesDTO;

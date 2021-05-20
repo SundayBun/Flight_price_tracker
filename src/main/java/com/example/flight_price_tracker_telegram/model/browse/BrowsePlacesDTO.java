@@ -174,7 +174,7 @@ public class BrowsePlacesDTO {
 //                + this.getIataCode() + ", name=" + this.getName() + ", type=" + this.getType() +
 //                ", skyscannerCode=" + this.getSkyscannerCode() + ", cityName=" + this.getCityName()
 //                + ", cityId=" + this.getCityId() + ", countryName=" + this.getCountryName() + ")";
-         return " "+this.getName();
+         return "\n"+ this.getName();
 
     }
 }

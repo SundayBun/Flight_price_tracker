@@ -68,6 +68,6 @@ public class CarriersDTO {
 //        return "CarriersDTO(carrierId=" + this.getCarrierId()
 //                + ", name=" + this.getName() + ")";
 
-        return "Carrier: "+this.getName();
+        return " "+this.getName();
     }
 }

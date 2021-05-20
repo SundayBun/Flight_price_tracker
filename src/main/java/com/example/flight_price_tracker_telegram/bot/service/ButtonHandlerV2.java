@@ -87,17 +87,19 @@ public class ButtonHandlerV2 {
     public static InlineKeyboardMarkup getMessageFromKeyboardCountry(List<CountryDTO> countryDTOList) {
 
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+
 
             for (CountryDTO country:countryDTOList){
+                List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
                 InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
+
                 inlineKeyboardButton.setText(country.getName());
                 inlineKeyboardButton.setCallbackData(country.getCode());
-                keyboardButtonsRow.add(inlineKeyboardButton);
-            }
 
-            List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
+                keyboardButtonsRow.add(inlineKeyboardButton);
+                keyboardButtonsRows.add(keyboardButtonsRow);
+            }
 
             inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
             return inlineKeyboardMarkup;
@@ -106,17 +108,18 @@ public class ButtonHandlerV2 {
     public static InlineKeyboardMarkup getMessageFromKeyboardPlaces(List<PlacesDTO> placesDTOList) {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
 
         for (PlacesDTO places:placesDTOList){
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
-            inlineKeyboardButton.setText(places.getPlaceName());
-            inlineKeyboardButton.setCallbackData(places.getCityId());
-            keyboardButtonsRow.add(inlineKeyboardButton);
-        }
 
-        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
-        keyboardButtonsRows.add(keyboardButtonsRow);
+            inlineKeyboardButton.setText(places.getPlaceName());
+            inlineKeyboardButton.setCallbackData(places.getPlaceId());
+
+            keyboardButtonsRow.add(inlineKeyboardButton);
+            keyboardButtonsRows.add(keyboardButtonsRow);
+        }
 
         inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
         return inlineKeyboardMarkup;

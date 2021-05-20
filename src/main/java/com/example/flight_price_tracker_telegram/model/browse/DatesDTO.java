@@ -10,31 +10,37 @@ import java.util.List;
  */
 
 public class DatesDTO {
-    @JsonProperty("OutboundDates")
-    private List<OutboundDatesDTO> outboundDates;
 
     @JsonProperty("InboundDates")
-    private List<InboundDatesDTO> inboundDates;
+    private List<OutInboundDatesDTO> inboundDates;
+
+    @JsonProperty("OutboundDates")
+    private List<OutInboundDatesDTO> outboundDates;
+
 
     public DatesDTO() {
     }
 
-    public List<OutboundDatesDTO> getOutboundDates() {
-        return this.outboundDates;
+    protected boolean canEqual(final Object other) {
+        return other instanceof DatesDTO;
     }
 
-    public List<InboundDatesDTO> getInboundDates() {
+    public List<OutInboundDatesDTO> getInboundDates() {
         return this.inboundDates;
     }
 
-    @JsonProperty("OutboundDates")
-    public void setOutboundDates(List<OutboundDatesDTO> outboundDates) {
-        this.outboundDates = outboundDates;
+    public List<OutInboundDatesDTO> getOutboundDates() {
+        return this.outboundDates;
     }
 
     @JsonProperty("InboundDates")
-    public void setInboundDates(List<InboundDatesDTO> inboundDates) {
+    public void setInboundDates(List<OutInboundDatesDTO> inboundDates) {
         this.inboundDates = inboundDates;
+    }
+
+    @JsonProperty("OutboundDates")
+    public void setOutboundDates(List<OutInboundDatesDTO> outboundDates) {
+        this.outboundDates = outboundDates;
     }
 
     public boolean equals(final Object o) {
@@ -42,32 +48,30 @@ public class DatesDTO {
         if (!(o instanceof DatesDTO)) return false;
         final DatesDTO other = (DatesDTO) o;
         if (!other.canEqual((Object) this)) return false;
-        final Object this$outboundDates = this.getOutboundDates();
-        final Object other$outboundDates = other.getOutboundDates();
-        if (this$outboundDates == null ? other$outboundDates != null : !this$outboundDates.equals(other$outboundDates))
-            return false;
         final Object this$inboundDates = this.getInboundDates();
         final Object other$inboundDates = other.getInboundDates();
         if (this$inboundDates == null ? other$inboundDates != null : !this$inboundDates.equals(other$inboundDates))
             return false;
+        final Object this$outboundDates = this.getOutboundDates();
+        final Object other$outboundDates = other.getOutboundDates();
+        if (this$outboundDates == null ? other$outboundDates != null : !this$outboundDates.equals(other$outboundDates))
+            return false;
         return true;
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof DatesDTO;
     }
 
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
-        final Object $outboundDates = this.getOutboundDates();
-        result = result * PRIME + ($outboundDates == null ? 43 : $outboundDates.hashCode());
         final Object $inboundDates = this.getInboundDates();
         result = result * PRIME + ($inboundDates == null ? 43 : $inboundDates.hashCode());
+        final Object $outboundDates = this.getOutboundDates();
+        result = result * PRIME + ($outboundDates == null ? 43 : $outboundDates.hashCode());
         return result;
     }
 
     public String toString() {
-        return "" + this.getOutboundDates() + "\n " + this.getInboundDates() ;
+        return "Outbound date: " + this.getOutboundDates()
+                + "\n" + "Inbound date: " + this.getInboundDates()  ;
     }
+
 }

@@ -1,3 +1,4 @@
+
 package com.example.flight_price_tracker_telegram.model.browse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,23 +7,29 @@ import java.util.List;
 
 /**
  * Data transfer object for Outbound Dates.
- *
  */
-public class OutboundDatesDTO {
+public class OutInboundDatesDTO {
 
     @JsonProperty("PartialDate")
     private String partialDate;
 
+
     @JsonProperty("QuoteDateTime")
     private String quoteDateTime;
 
+
     @JsonProperty("Price")
-    private String price;
+    private Integer price;
+
 
     @JsonProperty("QuoteIds")
     private List<Integer> quoteIds;
 
-    public OutboundDatesDTO() {
+    public OutInboundDatesDTO() {
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof OutInboundDatesDTO;
     }
 
     public String getPartialDate() {
@@ -33,7 +40,7 @@ public class OutboundDatesDTO {
         return this.quoteDateTime;
     }
 
-    public String getPrice() {
+    public Integer getPrice() {
         return this.price;
     }
 
@@ -52,7 +59,7 @@ public class OutboundDatesDTO {
     }
 
     @JsonProperty("Price")
-    public void setPrice(String price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -63,8 +70,8 @@ public class OutboundDatesDTO {
 
     public boolean equals(final Object o) {
         if (o == this) return true;
-        if (!(o instanceof OutboundDatesDTO)) return false;
-        final OutboundDatesDTO other = (OutboundDatesDTO) o;
+        if (!(o instanceof OutInboundDatesDTO)) return false;
+        final OutInboundDatesDTO other = (OutInboundDatesDTO) o;
         if (!other.canEqual((Object) this)) return false;
         final Object this$partialDate = this.getPartialDate();
         final Object other$partialDate = other.getPartialDate();
@@ -83,10 +90,6 @@ public class OutboundDatesDTO {
         return true;
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof OutboundDatesDTO;
-    }
-
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -102,6 +105,8 @@ public class OutboundDatesDTO {
     }
 
     public String toString() {
-        return "Outbound Dates: "+ this.getPartialDate()+"\n Price: "+ this.getPrice();
+      //  return "OutInboundDatesDTO(partialDate=" + this.getPartialDate() + ", quoteDateTime=" + this.getQuoteDateTime() + ", price=" + this.getPrice() + ", quoteIds=" + this.getQuoteIds() + ")";
+    return " " + this.getPartialDate()+ "\n One way price: "+ this.getPrice()+"\n";
     }
 }
+

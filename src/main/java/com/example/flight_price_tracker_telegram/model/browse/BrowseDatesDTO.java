@@ -24,7 +24,7 @@ public class BrowseDatesDTO {
     private List<CurrencyDTO> currencies;
 
     @JsonProperty("Dates")
-    private List<DatesDTO> dates;
+    private DatesDTO dates;
 
     public BrowseDatesDTO() {
     }
@@ -45,7 +45,7 @@ public class BrowseDatesDTO {
         return this.currencies;
     }
 
-    public List<DatesDTO> getDates() {
+    public DatesDTO getDates() {
         return this.dates;
     }
 
@@ -70,7 +70,7 @@ public class BrowseDatesDTO {
     }
 
     @JsonProperty("Dates")
-    public void setDates(List<DatesDTO> dates) {
+    public void setDates(DatesDTO dates) {
         this.dates = dates;
     }
 
@@ -123,7 +123,10 @@ public class BrowseDatesDTO {
 //        + this.getPlaces() + ", carriers=" + this.getCarriers() +
 //         ", currencies=" + this.getCurrencies() + ", dates=" + this.getDates() + ")";
 
-        return this.getPlaces()+"\n"+this.getDates()+"\n"+this.getCurrencies()+"\n"+getCarriers();
+        return "Places: " + this.getPlaces()+
+                "\n"+this.getDates()+
+                "\n"+"Currency: "+this.getCurrencies()+
+                "\n"+"Carrier: "+getCarriers();
 
 
     }

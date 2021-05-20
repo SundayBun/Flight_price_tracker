@@ -221,7 +221,7 @@ public enum BotState {
     OUTBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the outbound partial date (yyyy-mm-dd)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the outbound partial date (yyyy-mm-dd / yyyy-mm)");
         }
 
         @Override
@@ -238,7 +238,7 @@ public enum BotState {
     INBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the inbound partial date (yyyy-mm-dd)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the inbound partial date (yyyy-mm-dd / yyyy-mm)");
         }
 
         @Override
@@ -298,7 +298,7 @@ public enum BotState {
 
         @Override
         public BotState nextState() {
-            return null;
+            return START;
         }
     },
 
