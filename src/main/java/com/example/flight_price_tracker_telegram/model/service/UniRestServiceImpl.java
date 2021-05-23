@@ -48,7 +48,7 @@ public class UniRestServiceImpl implements IUniRestService {
 
         try {
             response = Unirest.get("https://"+HOST + path)
-                    .header("x-rapidapi-key", "b37de29cabmshc625f87b4381cb6p1a3873jsndc36ffc88738")//""+ xRapidApiKey)
+                    .header("x-rapidapi-key", ""+ "b37de29cabmshc625f87b4381cb6p1a3873jsndc36ffc88738")
                     .header("x-rapidapi-host", "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com")
                     .asJson();
         } catch (UnirestException e) {

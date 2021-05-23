@@ -11,6 +11,7 @@ public class UserSubscriptionDataService {
 
     ISubscriptionRepositoryUserData userDataRepository;
     ISubscriptionRepositoryFlightData userFlightDataIml;
+    ISubscriptionRepository subscriptionRepository;
 
     public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData) {
         this.userDataRepository = userDataRepository;
@@ -66,8 +67,15 @@ public class UserSubscriptionDataService {
                 .orElse(null);
     }
 
-//    public UserFlightData findBySkyScannerResponse (FlightPricesDTO response,UserFlightData userFlightData){
-//     return  userFlightDataIml.findByChatId(userFlightData.getChatId()).stream()
-//             .filter(x->x.getSkyScannerResponse().equals(response)).findFirst().get();
-//    }
+    public List<UserSubscription> findSubByChatId (Long chatID) {
+        return subscriptionRepository.findByChatId(chatID);
+    }
+
+    public void saveSubscription(UserSubscription userSubscription){
+        subscriptionRepository.save(userSubscription);
+    }
+
+    public void deleteSubscription(Long id){
+        subscriptionRepository.deleteById(id);
+    }
 }

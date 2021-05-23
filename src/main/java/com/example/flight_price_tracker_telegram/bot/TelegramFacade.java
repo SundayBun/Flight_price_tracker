@@ -4,8 +4,10 @@ import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
@@ -14,7 +16,7 @@ public class TelegramFacade {
     private BotState state;
     private BotStateContextRepo context;
 
-    private SendMessage sendMessage;
+    private BotApiMethod sendMessage;
 
     @Autowired
     private UserSubscriptionDataService repository;
@@ -23,7 +25,7 @@ public class TelegramFacade {
     private long chatId;
     private String text;
 
-    public SendMessage handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
+    public BotApiMethod<Message> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
 
      //   chatId = update.getMessage().getChatId();
 

@@ -6,7 +6,7 @@ import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
+import javax.persistence.GeneratedValue;
 
 
 @Data
@@ -20,8 +20,9 @@ public class UserFlightData {
     public UserFlightData(){}
 
     @Id
-    private Long chatId; //задать там, где будет update
+    private Long chatId;
     private String id;
+
     private String destinationPlace;
     private String outboundPartialDate; //LocalDate
     private String inboundPartialDate; //LocalDate

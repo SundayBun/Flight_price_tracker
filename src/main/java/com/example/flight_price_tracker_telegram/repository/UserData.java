@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Document(collection = "UserSubscriptionData")
@@ -21,6 +22,7 @@ public class UserData implements Serializable {
     private String country;
     private String currency;
     private String locale;
+
 
     public UserData(Long chatId, Integer stateID,String id) {
         this.chatId = chatId;

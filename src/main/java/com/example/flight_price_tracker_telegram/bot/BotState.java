@@ -5,7 +5,10 @@ import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
+import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
@@ -20,7 +23,7 @@ public enum BotState {
     START(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            log.info("!!! MESSAGE: state:{}, message: {}", this, context.getUserData());
+            log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
         }
@@ -41,7 +44,7 @@ public enum BotState {
     },
     COUNTRY_TEXT(true, false) {
 
-        BotState next=null;
+        BotState next = null;
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
@@ -54,10 +57,10 @@ public enum BotState {
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
 
-            if(HandleInput.country(context)!=null){
-                next=COUNTRY_BUTTONS;
+            if (HandleInput.country(context) != null) {
+                next = COUNTRY_BUTTONS;
             } else {
-                next=COUNTRY_TEXT;
+                next = COUNTRY_TEXT;
             }
         }
 
@@ -69,8 +72,8 @@ public enum BotState {
     COUNTRY_BUTTONS(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-                return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
-                        , "Select the country you are in)");
+            return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
+                    , "Select the country you are in)");
         }
 
         @Override
@@ -124,7 +127,7 @@ public enum BotState {
 
     ORIGIN_PLACE_TEXT(true, false) {
 
-        BotState next=null;
+        BotState next = null;
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
@@ -138,10 +141,10 @@ public enum BotState {
             context.getUserFlightData().setChatId(context.getUserData().getChatId());
             context.getUserData().setStateID(this.ordinal());
 
-            if(HandleInput.places(context)!=null){
-                next=ORIGIN_PLACE_BUTTONS;
+            if (HandleInput.places(context) != null) {
+                next = ORIGIN_PLACE_BUTTONS;
             } else {
-                next=ORIGIN_PLACE_TEXT;
+                next = ORIGIN_PLACE_TEXT;
             }
         }
 
@@ -151,7 +154,6 @@ public enum BotState {
         }
     },
     ORIGIN_PLACE_BUTTONS(true, true) {
-
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
@@ -173,6 +175,7 @@ public enum BotState {
 
     DESTINATION_PLACE_TEXT(true, false) {
         BotState next;
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
@@ -186,10 +189,10 @@ public enum BotState {
 
             context.getUserData().setStateID(this.ordinal());
 
-            if(HandleInput.places(context)!=null){
-                next=DESTINATION_PLACE_BUTTONS;
+            if (HandleInput.places(context) != null) {
+                next = DESTINATION_PLACE_BUTTONS;
             } else {
-                next=DESTINATION_PLACE_TEXT;
+                next = DESTINATION_PLACE_TEXT;
             }
         }
 
@@ -199,7 +202,6 @@ public enum BotState {
         }
     },
     DESTINATION_PLACE_BUTTONS(true, true) {
-
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
@@ -268,10 +270,10 @@ public enum BotState {
                 //вызвать страницу скайсканера и сохранить мин цену в UserData
                 next = DATA_TRANSFERRED;
             } else {
-                next = ASK_TO_TAP;
+                next = DATA_FILLED;
             }
-
         }
+
 
         @Override
         public BotState nextState() {
@@ -279,38 +281,72 @@ public enum BotState {
         }
     },
     DATA_TRANSFERRED(false, false) {
+        BotState next;
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendSearchResult(context);
+            return ResponseMessage.sendSearchResult(context, this);
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+
+            if (context.getCallbackQuery().getData().equals("Button \"Track it\" has been pressed")) {
+
+                next = SUBSCRIPT;
+            } else {
+                next = MAIN_MENU;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return ASK_TO_TRACK;
+            return next;
         }
     },
-
-    ASK_TO_TRACK(true, true) {
+    SUBSCRIPT(false, false) {
         @Override
-        public SendMessage enter(BotStateContextRepo context, FlightPricesDTO flightPricesDTO) {
-            return null;
+        public AnswerCallbackQuery enter(BotStateContextRepo context) {
+            return ResponseMessage.sendSubConfirmation(context, "Search result was added to track list");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context, UserSubscription userSubscription) {
+            userSubscription.setChatId(context.getUserData().getChatId());
+            userSubscription.setUserData(context.getUserData());
+            userSubscription.setUserFlightData(context.getUserFlightData());
+
         }
 
         @Override
         public BotState nextState() {
-            return START;
+            return MAIN_MENU;
         }
     },
+    MAIN_MENU(true, false) {
+        BotState next;
 
-    ASK_TO_TAP(false, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on the button below");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Change localisation info");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+            log.info("input: {}", context.getInput());
+
+            if (context.getInput().equals("Change localisation info")) {
+                next = START;
+            } else if (context.getInput().equals("New search")) {
+                next = ORIGIN_PLACE_TEXT;
+            } else {
+                next = ORIGIN_PLACE_TEXT;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return DATA_FILLED; // поменять на вызов по context.getStateID
+            return next;
         }
     };
 
@@ -358,13 +394,14 @@ public enum BotState {
     public void handleInput(BotStateContextRepo context) {
     }
 
-    public SendMessage enter(BotStateContextRepo context) {
+    public void handleInput(BotStateContextRepo context, UserSubscription userSubscription) {
+    }
+
+
+    public BotApiMethod<?> enter(BotStateContextRepo context) {
         return null;
     } //войти в состояние
 
-    public SendMessage enter(BotStateContextRepo context, FlightPricesDTO flightPricesDTO) {
-        return null;
-    }
 
     public void sendQueryForPrice(BotStateContextRepo context) {
 //        IFlightPriceClient priceClient = new FlightPriceClientImpl();
@@ -372,9 +409,9 @@ public enum BotState {
 //        context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
 //                , context.getUserFlightData()));
 
-        IFlightPriceDateClient priceDateClient=new FlightPriceDateClientImpl();
+        IFlightPriceDateClient priceDateClient = new FlightPriceDateClientImpl();
         context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
-               , context.getUserFlightData()));
+                , context.getUserFlightData()));
 
     }
 
