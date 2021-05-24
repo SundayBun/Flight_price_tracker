@@ -326,7 +326,8 @@ public enum BotState {
     },
     SUBSCR_LIST(true,true){
         public SendMessage enter(BotStateContextRepo context){
-            return ResponseMessage.sendSubscripList(context,HandleInput.subscriptions(context),"Subscription list");
+            HandleInput handleInput=new HandleInput();
+            return ResponseMessage.sendSubscripList(context,handleInput.subscriptions(context),"Subscription list");
 
         }
 
