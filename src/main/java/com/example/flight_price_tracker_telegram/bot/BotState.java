@@ -293,6 +293,10 @@ public enum BotState {
 
             if (context.getCallbackQuery().getData().equals("Button \"Track it\" has been pressed")) {
 
+                context.getUserSubscription().setChatId(context.getUserData().getChatId());
+                context.getUserSubscription().setUserData(context.getUserData());
+                context.getUserSubscription().setUserFlightData(context.getUserFlightData());
+
                 next = SUBSCRIPT;
             } else {
                 next = MAIN_MENU;
@@ -311,10 +315,18 @@ public enum BotState {
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context, UserSubscription userSubscription) {
-            userSubscription.setChatId(context.getUserData().getChatId());
-            userSubscription.setUserData(context.getUserData());
-            userSubscription.setUserFlightData(context.getUserFlightData());
+        public void handleInput(BotStateContextRepo context) {
+
+        }
+
+        @Override
+        public BotState nextState() {
+            return SUBSCR_LIST;
+        }
+    },
+    SUBSCR_LIST(true,true){
+        public SendMessage enter(BotStateContextRepo context){
+            return ResponseMessage.sendSubscripList(context,HandleInput.subscriptions(context),"Subscription list");
 
         }
 
@@ -328,7 +340,7 @@ public enum BotState {
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Change localisation info");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Main menu");
         }
 
         @Override
@@ -340,7 +352,7 @@ public enum BotState {
             } else if (context.getInput().equals("New search")) {
                 next = ORIGIN_PLACE_TEXT;
             } else {
-                next = ORIGIN_PLACE_TEXT;
+                next = SUBSCR_LIST;
             }
         }
 
@@ -392,9 +404,6 @@ public enum BotState {
 //    }
 
     public void handleInput(BotStateContextRepo context) {
-    }
-
-    public void handleInput(BotStateContextRepo context, UserSubscription userSubscription) {
     }
 
 

@@ -13,9 +13,10 @@ public class UserSubscriptionDataService {
     ISubscriptionRepositoryFlightData userFlightDataIml;
     ISubscriptionRepository subscriptionRepository;
 
-    public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData) {
+    public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData,  ISubscriptionRepository subscriptionRepository) {
         this.userDataRepository = userDataRepository;
         this.userFlightDataIml = userFlightData;
+        this.subscriptionRepository=subscriptionRepository;
     }
 
     public UserData findByChatId(long chatId) {

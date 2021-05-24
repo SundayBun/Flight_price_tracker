@@ -6,6 +6,7 @@ import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
+import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -162,6 +163,30 @@ public class ButtonHandlerV2 {
         keyboard.add(row3);
         replyKeyboardMarkup.setKeyboard(keyboard);
         return replyKeyboardMarkup;
+    }
+
+    public static InlineKeyboardMarkup getMessageFromKeyboardSubList(List<UserSubscription> subscriptionList) {
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+
+        for (UserSubscription subscription:subscriptionList){
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+            InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
+
+            inlineKeyboardButton.setText(String.format("From: %s \n To: %s \n Date: %s, \n %s ",
+                    subscription.getUserFlightData().getOriginPlace(),
+                    subscription.getUserFlightData().getDestinationPlace(),
+                    subscription.getUserFlightData().getOutboundPartialDate(),
+                    subscription.getUserFlightData().getInboundPartialDate()));
+            inlineKeyboardButton.setCallbackData(subscription.getId().toString());
+
+            keyboardButtonsRow.add(inlineKeyboardButton);
+            keyboardButtonsRows.add(keyboardButtonsRow);
+        }
+
+        inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+        return inlineKeyboardMarkup;
     }
 
 }

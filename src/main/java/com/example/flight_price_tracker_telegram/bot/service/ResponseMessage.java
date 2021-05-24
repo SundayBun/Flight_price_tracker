@@ -8,6 +8,7 @@ import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
+import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -67,6 +68,14 @@ public class ResponseMessage {
         answerCallbackQuery.setShowAlert(true);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
+    }
+
+    public static SendMessage sendSubscripList(BotStateContextRepo context, List<UserSubscription> userSubscriptionList, String text){
+        SendMessage message = new SendMessage();
+        message.setChatId(context.getUserData().getChatId().toString());
+        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
+        message.setText(text);
+        return message;
     }
 
 }

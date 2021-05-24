@@ -8,11 +8,19 @@ import com.example.flight_price_tracker_telegram.model.service.ILocalisationClie
 import com.example.flight_price_tracker_telegram.model.service.IPlacesClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import com.example.flight_price_tracker_telegram.model.service.PlacesClientImpl;
+import com.example.flight_price_tracker_telegram.repository.UserSubscription;
+import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class HandleInput {
+
+    @Autowired
+    private static UserSubscriptionDataService repository;
 
     public static List<CountryDTO> country(BotStateContextRepo context){
 
@@ -33,4 +41,10 @@ public class HandleInput {
 
         return placesList;
     }
+    public static List<UserSubscription> subscriptions(BotStateContextRepo context){
+
+        return repository.findSubByChatId(context.getUserData().getChatId());
+    }
+
 }
+

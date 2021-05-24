@@ -7,11 +7,12 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.GeneratedValue;
+import java.io.Serializable;
 
 
 @Data
 @Document(collection = "UserSubscriptionFlightData")
-public class UserFlightData {
+public class UserFlightData implements Serializable {
 
     public UserFlightData(Long chatId, String id) {
         this.chatId = chatId;

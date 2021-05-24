@@ -7,14 +7,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
+import java.io.Serializable;
 
 @Data
 @Document(collection = "UserSubscription")
-public class UserSubscription {
+public class UserSubscription implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private String id;
 
     private Long chatId;
     private UserFlightData userFlightData;
@@ -22,4 +23,8 @@ public class UserSubscription {
 
     private FlightPricesDTO skyScannerResponseQuotes;
     private BrowseDatesDTO skyScannerResponseDates;
+
+    public UserSubscription (Long chatId){
+        this.chatId=chatId;
+    }
 }

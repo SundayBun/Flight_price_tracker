@@ -44,9 +44,12 @@ public class TelegramFacadeV2 {
 
         if (userData == null) {
             state = BotState.getInitialState();
+
             userData = new UserData(chatId, state.ordinal(), id);
             userFlightData = new UserFlightData(chatId, id);
-            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
+
+
+            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData,userSubscription);
             sendMessage = state.enter(context);
 
             repository.saveUserData(userData);
@@ -56,15 +59,24 @@ public class TelegramFacadeV2 {
         } else {
             state = BotState.byId(userData.getStateID());
             mainMenuCommand(update);// checking if query has main menu command
-            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData);
+
+            if(state==BotState.DATA_TRANSFERRED) {
+                userSubscription=new UserSubscription(chatId);
+            }
+
+            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData,userSubscription);
         }
-        handleInputOption(state,context);
+
+
+        state.handleInput(context);
 
         state = state.nextState();
         sendMessage = state.enter(context);
         userData.setStateID(state.ordinal());
+
         repository.saveUserData(userData);
         repository.saveUserFlightData(userFlightData);
+        saveSubscrip(state);
 
         return sendMessage;
     }
@@ -82,12 +94,10 @@ public class TelegramFacadeV2 {
         }
     }
 
-    public void handleInputOption(BotState state, BotStateContextRepo context){
+    public void saveSubscrip(BotState state){
         if (state==BotState.SUBSCRIPT) {
-            userSubscription=new UserSubscription();
-            state.handleInput(context,userSubscription);
             repository.saveSubscription(userSubscription);
         }
-        else state.handleInput(context);
     }
+
 }
