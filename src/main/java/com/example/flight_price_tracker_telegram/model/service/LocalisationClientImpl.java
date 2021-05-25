@@ -17,8 +17,7 @@ import java.util.List;
 @Component
 public class LocalisationClientImpl implements ILocalisationClient{
 
-//    @Autowired
-//    private IUniRestService uniRestService;
+   // @Autowired private IUniRestService uniRestService;
 
 
     @Override

@@ -2,6 +2,7 @@ package com.example.flight_price_tracker_telegram.repository;
 
 
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

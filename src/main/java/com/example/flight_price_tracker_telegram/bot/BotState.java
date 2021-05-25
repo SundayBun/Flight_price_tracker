@@ -2,6 +2,7 @@ package com.example.flight_price_tracker_telegram.bot;
 
 import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
+import com.example.flight_price_tracker_telegram.bot.service.Subscription;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
@@ -325,9 +326,8 @@ public enum BotState {
         }
     },
     SUBSCR_LIST(true,true){
-        public SendMessage enter(BotStateContextRepo context){
-            HandleInput handleInput=new HandleInput();
-            return ResponseMessage.sendSubscripList(context,handleInput.subscriptions(context),"Subscription list");
+        @Override
+        public void handleInput(BotStateContextRepo context) {
 
         }
 

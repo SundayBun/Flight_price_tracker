@@ -30,8 +30,8 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     private TelegramFacadeV2 telegramFacadeV2;
     private BotState botState;
 
-//    @Autowired
-//    private TFV3 tfv3;
+    @Autowired
+    private TFV3 tfv3;
 
     @Override
     public String getBotUsername() {
@@ -52,7 +52,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return telegramFacadeV2.handleUpdate(update,this);
+           return tfv3.handleUpdate(update,this);
         }
         return null;
     }

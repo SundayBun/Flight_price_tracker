@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 @Component
 public class HandleInput {
 
-    @Autowired
-    private UserSubscriptionDataService repository;
+
 
     public static List<CountryDTO> country(BotStateContextRepo context){
 
@@ -41,11 +40,7 @@ public class HandleInput {
 
         return placesList;
     }
-    public  List<UserSubscription> subscriptions(BotStateContextRepo context){
 
-        return repository.findSubByChatId(context.getUserData().getChatId());
-
-    }
 
 }
 

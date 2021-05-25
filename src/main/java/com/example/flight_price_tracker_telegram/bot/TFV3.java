@@ -8,6 +8,7 @@ import com.example.flight_price_tracker_telegram.model.exception.FlightClientExc
 import com.example.flight_price_tracker_telegram.model.localisation.CurrencyDTO;
 import com.example.flight_price_tracker_telegram.model.service.UniRestServiceImpl;
 import com.example.flight_price_tracker_telegram.model.validations.ValidationErrorDTO;
+import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
@@ -17,10 +18,16 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
@@ -37,47 +44,54 @@ public class TFV3 {
     private static String chatId;
     private static String text;
 
-    public static SendMessage handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
-        SendMessage sendMessage = new SendMessage();
 
+    public static BotApiMethod<?> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
+        SendMessage sendMessage = new SendMessage();
+        List<String> list=new ArrayList<>();
+        for(int i=0;i<20;i++) {
+            list.add("Page "+i+" text");
+        }
+
+        EditMessageText editMessageText=new EditMessageText();
 
         if (!update.hasCallbackQuery()) {
-            chatId = update.getMessage().getChatId().toString();
-            text = update.getMessage().getText();
+            chatId=update.getMessage().getChatId().toString();
             sendMessage.setChatId(chatId);
-            sendMessage.setReplyMarkup(getMainMenuKeyboard());
-            sendMessage.setText(text);
-            log.info(update.getMessage().getText());
+            sendMessage.setReplyMarkup(getMainMenuKeyboard(list));
+            sendMessage.setText(list.get(0));
+            return sendMessage;
+        }else {
+            //Integer messageID=update.getCallbackQuery().getInlineMessageId();
+            Integer messageID = update.getCallbackQuery().getMessage().getMessageId();
+            editMessageText.setChatId(chatId);
+            editMessageText.setMessageId(messageID);
+            editMessageText.setText(list.get(Integer.parseInt(update.getCallbackQuery().getData())-1));
+            editMessageText.setReplyMarkup(getMainMenuKeyboard(list));
 
-        } else {
-            callbackQuery = update.getCallbackQuery();
-            sendMessage.enableMarkdown(true);
-            sendMessage.setText("callbackQuery.getData()");
             log.info(update.getCallbackQuery().getData());
+            return editMessageText;
         }
-return sendMessage;
 
     }
 
-    public static ReplyKeyboardMarkup getMainMenuKeyboard() {
+    public static InlineKeyboardMarkup getMainMenuKeyboard(List<String> subscriptionList) {
 
-        final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(false);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        int n=1;
 
-        List<KeyboardRow> keyboard = new ArrayList<>();
+        for (String subscription:subscriptionList){
+            InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
 
-        KeyboardRow row1 = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
-        KeyboardRow row3 = new KeyboardRow();
-        row1.add(new KeyboardButton("Change localisation info"));
-        row2.add(new KeyboardButton("New search"));
-        row3.add(new KeyboardButton("See your track list"));
-        keyboard.add(row1);
-        keyboard.add(row2);
-        keyboard.add(row3);
-        replyKeyboardMarkup.setKeyboard(keyboard);
-        return replyKeyboardMarkup;
+            inlineKeyboardButton.setText(""+n);
+            inlineKeyboardButton.setCallbackData(""+n);
+            n++;
+
+            keyboardButtonsRow.add(inlineKeyboardButton);
+        }
+        keyboardButtonsRows.add(keyboardButtonsRow);
+        inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+        return inlineKeyboardMarkup;
     }
 }

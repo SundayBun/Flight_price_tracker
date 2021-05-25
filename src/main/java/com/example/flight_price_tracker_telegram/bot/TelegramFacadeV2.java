@@ -1,5 +1,6 @@
 package com.example.flight_price_tracker_telegram.bot;
 
+import com.example.flight_price_tracker_telegram.bot.service.ButtonHandlerV2;
 import com.example.flight_price_tracker_telegram.repository.UserData;
 import com.example.flight_price_tracker_telegram.repository.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
@@ -7,6 +8,7 @@ import com.example.flight_price_tracker_telegram.repository.UserSubscriptionData
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -71,7 +73,13 @@ public class TelegramFacadeV2 {
         state.handleInput(context);
 
         state = state.nextState();
-        sendMessage = state.enter(context);
+
+        if(state==BotState.SUBSCR_LIST){
+            sendMessage=enterSubscrip(context);
+        }else
+        {sendMessage = state.enter(context);}
+
+
         userData.setStateID(state.ordinal());
 
         repository.saveUserData(userData);
@@ -99,5 +107,15 @@ public class TelegramFacadeV2 {
             repository.saveSubscription(userSubscription);
         }
     }
+
+    public SendMessage enterSubscrip(BotStateContextRepo context){
+        List<UserSubscription> subscription=repository.findSubByChatId(chatId);
+        SendMessage message = new SendMessage();
+        message.setChatId(context.getUserData().getChatId().toString());
+        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(subscription));
+        message.setText("Flight list");
+        return message;
+    }
+
 
 }
