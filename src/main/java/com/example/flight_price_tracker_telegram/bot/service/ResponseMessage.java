@@ -9,9 +9,11 @@ import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
+import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
 import java.util.List;
 
@@ -70,12 +72,35 @@ public class ResponseMessage {
         return answerCallbackQuery;
     }
 
-    public static SendMessage sendSubscripList(BotStateContextRepo context, List<UserSubscription> userSubscriptionList, String text){
+    public static SendMessage sendSubscripList(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+
         SendMessage message = new SendMessage();
-        message.setChatId(context.getUserData().getChatId().toString());
+        message.setChatId(context.getUserSubscription().getChatId().toString());
         message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
-        message.setText(text);
+        message.setText(userSubscriptionList.get(0).getSkyScannerResponseDates().toString());
+
         return message;
+    }
+
+    public static EditMessageText sendSubscripListEdited(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+        EditMessageText editMessageText=new EditMessageText();
+        Integer messageID = context.getCallbackQuery().getMessage().getMessageId();
+
+        editMessageText.setChatId(context.getUserSubscription().getChatId().toString());
+        editMessageText.setMessageId(messageID);
+        editMessageText.setText(userSubscriptionList.get(Integer.parseInt(context.getCallbackQuery().getData()))
+                .getSkyScannerResponseDates().toString());
+        editMessageText.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
+
+        return editMessageText;
+
+    }
+    public static AnswerCallbackQuery sendSubDeleting(BotStateContextRepo context,String text){
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
+        answerCallbackQuery.setShowAlert(true);
+        answerCallbackQuery.setText(text);
+        return answerCallbackQuery;
     }
 
 }

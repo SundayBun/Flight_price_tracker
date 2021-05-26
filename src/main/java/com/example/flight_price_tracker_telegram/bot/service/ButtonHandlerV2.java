@@ -169,22 +169,25 @@ public class ButtonHandlerV2 {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        int n=1;
 
         for (UserSubscription subscription:subscriptionList){
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+
             InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
-
-            inlineKeyboardButton.setText(String.format("From: %s \n To: %s \n Date: %s, \n %s ",
-                    subscription.getUserFlightData().getOriginPlace(),
-                    subscription.getUserFlightData().getDestinationPlace(),
-                    subscription.getUserFlightData().getOutboundPartialDate(),
-                    subscription.getUserFlightData().getInboundPartialDate()));
-            inlineKeyboardButton.setCallbackData(subscription.getId().toString());
-
+            inlineKeyboardButton.setText(""+n);
+           // inlineKeyboardButton.setCallbackData(subscription.getId());
+            inlineKeyboardButton.setCallbackData(""+subscriptionList.indexOf(subscription));
+            n++;
             keyboardButtonsRow.add(inlineKeyboardButton);
-            keyboardButtonsRows.add(keyboardButtonsRow);
-        }
 
+        }
+        InlineKeyboardButton inlineKeyboardButtonDelete=new InlineKeyboardButton();
+        inlineKeyboardButtonDelete.setText("Delete");
+        inlineKeyboardButtonDelete.setCallbackData("Delete");
+        keyboardButtonsRow.add(inlineKeyboardButtonDelete);
+
+        keyboardButtonsRows.add(keyboardButtonsRow);
         inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
         return inlineKeyboardMarkup;
     }

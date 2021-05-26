@@ -17,6 +17,8 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,6 +26,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -37,7 +40,9 @@ import java.util.List;
 
 @Slf4j
 @Component
+@PropertySource("classpath:/static/flights.html")
 public class TFV3 {
+
 
 
     private static CallbackQuery callbackQuery;
@@ -46,7 +51,16 @@ public class TFV3 {
 
 
     public static BotApiMethod<?> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
+
         SendMessage sendMessage = new SendMessage();
+
+        MessageEntity messageEntity=new MessageEntity();
+        messageEntity.setUrl("Delete");
+
+
+//        List <MessageEntity> entities=new ArrayList<>();
+//        entities.add(messageEntity);
+
         List<String> list=new ArrayList<>();
         for(int i=0;i<20;i++) {
             list.add("Page "+i+" text");
@@ -55,10 +69,18 @@ public class TFV3 {
         EditMessageText editMessageText=new EditMessageText();
 
         if (!update.hasCallbackQuery()) {
+
             chatId=update.getMessage().getChatId().toString();
             sendMessage.setChatId(chatId);
             sendMessage.setReplyMarkup(getMainMenuKeyboard(list));
-            sendMessage.setText(list.get(0));
+           // sendMessage.setText(list.get(0));
+            //sendMessage.setEntities(entities);
+            sendMessage.setParseMode("HTML");
+            //sendMessage.enableHtml(true);
+           // sendMessage.setText("<a href=\"https://core.telegram.org/bots/api#formatting-options/\">inline URL</a>");
+            sendMessage.setText("static/flights.html");
+            log.info(update.getMessage().getText());
+
             return sendMessage;
         }else {
             //Integer messageID=update.getCallbackQuery().getInlineMessageId();

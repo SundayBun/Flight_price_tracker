@@ -7,6 +7,7 @@ import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
+import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -108,23 +109,6 @@ public enum BotState {
             return ORIGIN_PLACE_TEXT;
         }
     },
-//    LOCALE(true, false) {
-//        @Override
-//        public SendMessage enter(BotStateContextRepo context) {
-//            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the locale");
-//        }
-//
-//        @Override
-//        public void handleInput(BotStateContextRepo context) {
-//            context.getUserData().setStateID(this.ordinal());
-//            context.getUserData().setLocale(context.getInput());
-//        }
-//
-//        @Override
-//        public BotState nextState() {
-//            return ORIGIN_PLACE;
-//        }
-//    },
 
     ORIGIN_PLACE_TEXT(true, false) {
 
@@ -293,7 +277,6 @@ public enum BotState {
         public void handleInput(BotStateContextRepo context) {
 
             if (context.getCallbackQuery().getData().equals("Button \"Track it\" has been pressed")) {
-
                 context.getUserSubscription().setChatId(context.getUserData().getChatId());
                 context.getUserSubscription().setUserData(context.getUserData());
                 context.getUserSubscription().setUserFlightData(context.getUserFlightData());
@@ -326,16 +309,68 @@ public enum BotState {
         }
     },
     SUBSCR_LIST(true,true){
+
+        BotState next;
+
+        @Override
+        public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+            return ResponseMessage.sendSubscripList(context,userSubscriptionList);
+        }
+
         @Override
         public void handleInput(BotStateContextRepo context) {
-
+            if(context.getCallbackQuery().getData().equals("Delete")){
+                next=DELETE_SUBSCR;
+            } else{
+                next=SUBSCR_LIST_EDIT;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return MAIN_MENU;
+            return next;
         }
     },
+    SUBSCR_LIST_EDIT(true,true){
+
+        BotState next;
+
+        @Override
+        public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+            return ResponseMessage.sendSubscripListEdited(context,userSubscriptionList);
+        }
+
+        //@Override
+        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository, List<UserSubscription> userSubscriptionList) {
+            if(context.getCallbackQuery().getData().equals("Delete")){
+             //   repository.deleteSubscription();
+                next=DELETE_SUBSCR;
+            } else{
+                next=SUBSCR_LIST_EDIT;
+            }
+        }
+
+        @Override
+        public BotState nextState() {
+            return next;
+        }
+    },
+    DELETE_SUBSCR(true,true){
+        @Override
+        public AnswerCallbackQuery enter(BotStateContextRepo context) {
+            return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");
+        }
+
+        @Override
+        public void handleInput(BotStateContextRepo context) {
+
+        }
+        @Override
+        public BotState nextState() {
+            return SUBSCR_LIST;
+        }
+    },
+
     MAIN_MENU(true, false) {
         BotState next;
 
@@ -410,7 +445,11 @@ public enum BotState {
 
     public BotApiMethod<?> enter(BotStateContextRepo context) {
         return null;
-    } //войти в состояние
+    }
+
+    public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+        return null;
+    }
 
 
     public void sendQueryForPrice(BotStateContextRepo context) {
