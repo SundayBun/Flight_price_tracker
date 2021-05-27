@@ -109,7 +109,7 @@ public class TelegramFacadeV2 {
     }
 
     public void saveSubscrip(BotState state){
-        if (state==BotState.SUBSCRIPT ||state==BotState.DELETE_SUBSCR) {
+        if (state==BotState.SUBSCRIPT) {
             repository.saveSubscription(userSubscription);
         }
     }

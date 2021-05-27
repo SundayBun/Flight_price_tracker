@@ -39,10 +39,24 @@ public class ResponseMessage {
     }
 
     public static SendMessage sendSearchResult(BotStateContextRepo context, BotState state) {
+
+        String text = "-------------FLIGHT INFO-------------" + "\n" +
+                "\n   Origin place: " + context.getUserFlightData().getSkyScannerResponseDates().getPlaces().get(0).getCityName() +
+                "\n   Destination place: " + context.getUserFlightData().getSkyScannerResponseDates().getPlaces().get(1).getCityName() + "\n" +
+                "\n   Outbound partial date: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate() +
+//                "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPrice() +
+//                context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Inbound partial date: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate() +
+//                "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()+
+                context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Carrier: " + context.getUserFlightData().getSkyScannerResponseDates().getCarriers();
+
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserFlightData().getChatId().toString());
 
-        message.setText(context.getUserFlightData().getSkyScannerResponseDates().toString());
+        message.setText(text);
         message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboard(state));
 
         log.info("sendSearchResult setText={}", message.getText());
@@ -75,20 +89,22 @@ public class ResponseMessage {
 
     public static SendMessage sendSubscripList(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
 
-        String text = "-------------Flight info-------------" +
-                        "\n Origin place: " + userSubscriptionList.get(0).getUserFlightData().getOriginPlace() +
-                        "\n Destination place: " + userSubscriptionList.get(0).getUserFlightData().getDestinationPlace() +
-                        "\n Outbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getOutboundPartialDate() +
-                        "\n Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-                        userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                        "\n Inbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getInboundPartialDate() +
-                        "\n Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-                        userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                        "\n Carrier: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getCarriers()+"\n"+
-                        "\n /Delete_"+context.getCallbackQuery().getData();
+        String text = "-------------FLIGHT INFO-------------" + "\n" +
+                "\n   Origin place: " + userSubscriptionList.get(0).getUserFlightData().getOriginPlace() +
+                "\n   Destination place: " + userSubscriptionList.get(0).getUserFlightData().getDestinationPlace() + "\n" +
+                "\n   Outbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getOutboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Inbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getInboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()+
+                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Carrier: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getCarriers() + "\n" +
+                "\n /Delete_0";
 
 
-                SendMessage message = new SendMessage();
+        SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
         message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
         message.setText(text);
@@ -97,19 +113,21 @@ public class ResponseMessage {
     }
 
     public static EditMessageText sendSubscripListEdited(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
-       int index=Integer.parseInt(context.getCallbackQuery().getData());
+        int index = Integer.parseInt(context.getCallbackQuery().getData());
 
-        String text = "-------------Flight info-------------" +
-                "\n Origin place: " + userSubscriptionList.get(index).getUserFlightData().getOriginPlace() +
-                "\n Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
-                "\n Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
-                "\n Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                "\n Inbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getInboundPartialDate() +
-                "\n Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-                userSubscriptionList.get(index).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                "\n Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getCarriers()+"\n"+
-                "\n /Delete_"+context.getCallbackQuery().getData();
+        String text = "-------------FLIGHT INFO-------------" + "\n" +
+                "\n   Origin place: " + userSubscriptionList.get(index).getUserFlightData().getOriginPlace() +
+                "\n   Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
+                "\n   Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
+                "\n   Inbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getInboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(index).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
+                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()+
+                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                "\n   Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getCarriers() + "\n" +
+                "\n /Delete_" + context.getCallbackQuery().getData();
 
 
         EditMessageText editMessageText = new EditMessageText();

@@ -9,6 +9,8 @@ import com.example.flight_price_tracker_telegram.model.service.*;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -21,11 +23,13 @@ import java.util.Locale;
  */
 
 @Slf4j
+@Component
 public enum BotState {
     START(true, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
+          //  log.info("Repository: {}",getRepository1().toString());
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
         }
@@ -309,13 +313,20 @@ public enum BotState {
             return SUBSCR_LIST;
         }
     },
-    SUBSCR_LIST(true,true){
+    SUBSCR_LIST(true,false){
 
         BotState next;
 
         @Override
         public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
-            return ResponseMessage.sendSubscripList(context,userSubscriptionList);
+            if(userSubscriptionList.size()>0) {
+                return ResponseMessage.sendSubscripList(context, userSubscriptionList);
+            }
+//            SendMessage sendMessage=new SendMessage();
+//            sendMessage.setChatId(context.getUserData().getChatId().toString());
+//            sendMessage.setText("No subscriptions");
+
+            return ResponseMessage.sendMessage(context,this,isQueryResponse(),"No subscriptions");
         }
 
         @Override
@@ -333,13 +344,16 @@ public enum BotState {
             return next;
         }
     },
-    SUBSCR_LIST_EDIT(true,true){
+    SUBSCR_LIST_EDIT(true,false){
 
         BotState next;
 
         @Override
         public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
-            return ResponseMessage.sendSubscripListEdited(context,userSubscriptionList);
+            if(userSubscriptionList.size()>0) {
+                return ResponseMessage.sendSubscripListEdited(context, userSubscriptionList);
+            }
+            return ResponseMessage.sendMessage(context,this,isQueryResponse(),"No subscriptions");
         }
 
         @Override
@@ -403,7 +417,7 @@ public enum BotState {
     private static BotState[] states;
     private final boolean inputNeeded;
     private final boolean queryResponse;
-    // private FlightPricesDTO pricesDTO;
+
 
     BotState() {
         this.inputNeeded = true; // по умолчанию- ждем действия

@@ -44,14 +44,9 @@ public class ButtonHandlerV2 {
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
 
             InlineKeyboardButton inlineKeyboardButtonFind = new InlineKeyboardButton();
-            InlineKeyboardButton inlineKeyboardButtonReturn = new InlineKeyboardButton();
             inlineKeyboardButtonFind.setText("Find price");
             inlineKeyboardButtonFind.setCallbackData("Button \"Find price\" has been pressed");
             keyboardButtonsRow.add(inlineKeyboardButtonFind);
-
-            inlineKeyboardButtonReturn.setText("Change data");
-            inlineKeyboardButtonReturn.setCallbackData("Button \"Change data\" has been pressed");
-            keyboardButtonsRow.add(inlineKeyboardButtonReturn);
 
             List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
             keyboardButtonsRows.add(keyboardButtonsRow);
