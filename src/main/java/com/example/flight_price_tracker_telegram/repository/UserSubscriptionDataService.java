@@ -77,7 +77,7 @@ public class UserSubscriptionDataService {
         subscriptionRepository.save(userSubscription);
     }
 
-    public void deleteSubscription(Long id){
+    public void deleteSubscription(String id){
         subscriptionRepository.deleteById(id);
     }
 }

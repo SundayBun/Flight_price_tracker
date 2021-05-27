@@ -162,12 +162,15 @@ public class ButtonHandlerV2 {
         keyboard.add(row2);
         keyboard.add(row3);
         replyKeyboardMarkup.setKeyboard(keyboard);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+
         return replyKeyboardMarkup;
     }
 
     public static InlineKeyboardMarkup getMessageFromKeyboardSubList(List<UserSubscription> subscriptionList) {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
         List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
         int n=1;
@@ -182,10 +185,6 @@ public class ButtonHandlerV2 {
             keyboardButtonsRow.add(inlineKeyboardButton);
 
         }
-        InlineKeyboardButton inlineKeyboardButtonDelete=new InlineKeyboardButton();
-        inlineKeyboardButtonDelete.setText("Delete");
-        inlineKeyboardButtonDelete.setCallbackData("Delete");
-        keyboardButtonsRow.add(inlineKeyboardButtonDelete);
 
         keyboardButtonsRows.add(keyboardButtonsRow);
         inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);

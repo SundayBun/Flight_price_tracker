@@ -52,7 +52,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return tfv3.handleUpdate(update,this);
+           return telegramFacadeV2.handleUpdate(update,this);
         }
         return null;
     }

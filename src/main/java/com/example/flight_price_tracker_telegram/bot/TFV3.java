@@ -69,16 +69,17 @@ public class TFV3 {
         EditMessageText editMessageText=new EditMessageText();
 
         if (!update.hasCallbackQuery()) {
+String text="/delete";
 
             chatId=update.getMessage().getChatId().toString();
             sendMessage.setChatId(chatId);
             sendMessage.setReplyMarkup(getMainMenuKeyboard(list));
            // sendMessage.setText(list.get(0));
             //sendMessage.setEntities(entities);
-            sendMessage.setParseMode("HTML");
+         //   sendMessage.setParseMode("HTML");
             //sendMessage.enableHtml(true);
            // sendMessage.setText("<a href=\"https://core.telegram.org/bots/api#formatting-options/\">inline URL</a>");
-            sendMessage.setText("static/flights.html");
+            sendMessage.setText("/flights");
             log.info(update.getMessage().getText());
 
             return sendMessage;

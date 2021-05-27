@@ -69,13 +69,16 @@ public class TelegramFacadeV2 {
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData,userSubscription);
         }
 
-
-        state.handleInput(context);
+        if(state==BotState.SUBSCR_LIST || state==BotState.SUBSCR_LIST_EDIT){
+            state.handleInput(context,repository);
+        }else {
+            state.handleInput(context);
+        }
 
         state = state.nextState();
 
-        if(state==BotState.SUBSCR_LIST){
-            sendMessage=enterSubscrip(context);
+        if(state==BotState.SUBSCR_LIST || state==BotState.SUBSCR_LIST_EDIT){
+            sendMessage=state.enter(context,repository.findSubByChatId(chatId));
         }else
         {sendMessage = state.enter(context);}
 
@@ -98,24 +101,27 @@ public class TelegramFacadeV2 {
 
         if (update.hasMessage() && mainMenu.contains(update.getMessage().getText())) {
             state = BotState.MAIN_MENU;
+        }
 
+        if (update.hasMessage() && update.getMessage().getText().equals("Delete")) {
+            state = BotState.SUBSCR_LIST_EDIT;
         }
     }
 
     public void saveSubscrip(BotState state){
-        if (state==BotState.SUBSCRIPT) {
+        if (state==BotState.SUBSCRIPT ||state==BotState.DELETE_SUBSCR) {
             repository.saveSubscription(userSubscription);
         }
     }
 
-    public SendMessage enterSubscrip(BotStateContextRepo context){
-        List<UserSubscription> subscription=repository.findSubByChatId(chatId);
-        SendMessage message = new SendMessage();
-        message.setChatId(context.getUserData().getChatId().toString());
-        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(subscription));
-        message.setText("Flight list");
-        return message;
-    }
+//    public SendMessage enterSubscrip(BotStateContextRepo context){
+//        List<UserSubscription> subscription=repository.findSubByChatId(chatId);
+//        SendMessage message = new SendMessage();
+//        message.setChatId(context.getUserData().getChatId().toString());
+//        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(subscription));
+//        message.setText("Flight list");
+//        return message;
+//    }
 
 
 }

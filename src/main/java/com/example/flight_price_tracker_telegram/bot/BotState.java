@@ -280,6 +280,7 @@ public enum BotState {
                 context.getUserSubscription().setChatId(context.getUserData().getChatId());
                 context.getUserSubscription().setUserData(context.getUserData());
                 context.getUserSubscription().setUserFlightData(context.getUserFlightData());
+                context.getUserSubscription().setSkyScannerResponseDates(context.getUserFlightData().getSkyScannerResponseDates());
 
                 next = SUBSCRIPT;
             } else {
@@ -318,8 +319,9 @@ public enum BotState {
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
-            if(context.getCallbackQuery().getData().equals("Delete")){
+        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
+            if(context.getInput().startsWith("/Delete_")){
+                repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
                 next=DELETE_SUBSCR;
             } else{
                 next=SUBSCR_LIST_EDIT;
@@ -340,10 +342,10 @@ public enum BotState {
             return ResponseMessage.sendSubscripListEdited(context,userSubscriptionList);
         }
 
-        //@Override
-        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository, List<UserSubscription> userSubscriptionList) {
-            if(context.getCallbackQuery().getData().equals("Delete")){
-             //   repository.deleteSubscription();
+        @Override
+        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
+            if(context.getInput().startsWith("/Delete_")){
+                repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
                 next=DELETE_SUBSCR;
             } else{
                 next=SUBSCR_LIST_EDIT;
@@ -440,6 +442,9 @@ public enum BotState {
 //    }
 
     public void handleInput(BotStateContextRepo context) {
+    }
+
+    public void handleInput(BotStateContextRepo context,UserSubscriptionDataService repository) {
     }
 
 
