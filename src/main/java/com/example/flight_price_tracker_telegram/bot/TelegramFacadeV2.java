@@ -114,7 +114,7 @@ public class TelegramFacadeV2 {
         }
     }
 
-//    public SendMessage enterSubscrip(BotStateContextRepo context){
+//    public BotApiMethod<?> recount(BotStateContextRepo context){
 //        List<UserSubscription> subscription=repository.findSubByChatId(chatId);
 //        SendMessage message = new SendMessage();
 //        message.setChatId(context.getUserData().getChatId().toString());
