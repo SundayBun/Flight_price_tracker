@@ -2,6 +2,7 @@ package com.example.flight_price_tracker_telegram.bot.service;
 
 import com.example.flight_price_tracker_telegram.bot.BotState;
 import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
+import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
@@ -27,9 +28,9 @@ public class ButtonHandlerV2 {
 
             InlineKeyboardButton inlineKeyboardButtonEng = new InlineKeyboardButton();
             InlineKeyboardButton inlineKeyboardButtonRus = new InlineKeyboardButton();
-            inlineKeyboardButtonEng.setText("ENG");
+            inlineKeyboardButtonEng.setText(Emojis.GB_FLAG.toString());
             inlineKeyboardButtonEng.setCallbackData("Button \"ENG\" has been pressed");
-            inlineKeyboardButtonRus.setText("RUS");
+            inlineKeyboardButtonRus.setText(Emojis.RUS_FLAG.toString());
             inlineKeyboardButtonRus.setCallbackData("Button \"RUS\" has been pressed");
             keyboardButtonsRow.add(inlineKeyboardButtonEng);
             keyboardButtonsRow.add(inlineKeyboardButtonRus);
@@ -44,7 +45,7 @@ public class ButtonHandlerV2 {
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
 
             InlineKeyboardButton inlineKeyboardButtonFind = new InlineKeyboardButton();
-            inlineKeyboardButtonFind.setText("Find price");
+            inlineKeyboardButtonFind.setText(Emojis.PLANE.toString());
             inlineKeyboardButtonFind.setCallbackData("Button \"Find price\" has been pressed");
             keyboardButtonsRow.add(inlineKeyboardButtonFind);
 

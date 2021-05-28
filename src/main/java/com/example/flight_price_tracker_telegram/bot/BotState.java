@@ -3,6 +3,7 @@ package com.example.flight_price_tracker_telegram.bot;
 import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.service.Subscription;
+import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
@@ -55,8 +56,8 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
 
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the country. " +
-                    "\n (enter at least one letter and send it to see available countries");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.EARTH +" Enter the country. "+Emojis.EARTH +
+                    "\n (enter at least one letter and send it to see available countries)");
         }
 
         @Override
@@ -79,7 +80,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
-                    , "Select the country you are in)");
+                    , "Select the country you are in");
         }
 
         @Override
@@ -99,7 +100,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
-                    "Select the currency");
+                    Emojis.MONEYBAG+" Select the currency"+Emojis.MONEYBAG);
         }
 
         @Override
@@ -120,7 +121,7 @@ public enum BotState {
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place " +
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place "+Emojis.MAG_RIGHT +
                     "\n (enter at least one letter and send it to see available places)");
         }
 
@@ -146,7 +147,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
-                    , "Select the departure place)");
+                    , "Select the departure place");
         }
 
         @Override
@@ -168,7 +169,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
-                    "Enter the destination place " +
+                    "Enter the destination place " +Emojis.MAG_RIGHT +
                             "\n (enter at least one letter and send it to see available places)");
         }
 
@@ -194,7 +195,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
-                    , "Select the arrival place)");
+                    , "Select the arrival place");
         }
 
         @Override
@@ -212,7 +213,7 @@ public enum BotState {
     OUTBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the outbound partial date (yyyy-mm-dd / yyyy-mm)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE+ " Enter the outbound partial date (yyyy-mm-dd / yyyy-mm)");
         }
 
         @Override
@@ -229,7 +230,7 @@ public enum BotState {
     INBOUND_PARTIAL_DATE(true, false) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the inbound partial date (yyyy-mm-dd / yyyy-mm)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE+ "Enter the inbound partial date (yyyy-mm-dd / yyyy-mm)");
         }
 
         @Override
@@ -248,7 +249,7 @@ public enum BotState {
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on \"Find price\" to find current min price info");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on "+Emojis.PLANE+" to find current min price info");
         }
 
         @Override
