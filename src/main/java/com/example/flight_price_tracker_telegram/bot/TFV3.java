@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -48,6 +49,7 @@ public class TFV3 {
     private static CallbackQuery callbackQuery;
     private static String chatId;
     private static String text;
+
 
 
     public static BotApiMethod<?> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {

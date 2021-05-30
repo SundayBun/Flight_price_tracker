@@ -286,6 +286,7 @@ public enum BotState {
                 context.getUserSubscription().setUserData(context.getUserData());
                 context.getUserSubscription().setUserFlightData(context.getUserFlightData());
                 context.getUserSubscription().setSkyScannerResponseDates(context.getUserFlightData().getSkyScannerResponseDates());
+                context.getUserSubscription().setMinPrice(context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice());
 
                 next = SUBSCRIPT;
             } else {

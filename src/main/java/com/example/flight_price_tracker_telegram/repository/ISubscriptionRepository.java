@@ -12,4 +12,6 @@ public interface ISubscriptionRepository extends MongoRepository<UserSubscriptio
 
     void deleteById(String id);
 
+  //  List<UserSubscription> findAll();
+
 }

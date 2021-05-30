@@ -18,6 +18,7 @@ public class UserSubscription implements Serializable {
     private String id;
 
     private Long chatId;
+    private Integer minPrice;
     private UserFlightData userFlightData;
     private UserData userData;
 
