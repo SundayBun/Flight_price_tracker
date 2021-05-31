@@ -7,6 +7,8 @@ import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
+import com.example.flight_price_tracker_telegram.model.validations.DatesValidatorImpl;
+import com.example.flight_price_tracker_telegram.model.validations.IDatesValidator;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +33,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
-          //  log.info("Repository: {}",getRepository1().toString());
+            //  log.info("Repository: {}",getRepository1().toString());
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
         }
@@ -56,7 +59,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
 
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.EARTH +" Enter the country. "+Emojis.EARTH +
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.EARTH + " Enter the country. " + Emojis.EARTH +
                     "\n (enter at least one letter and send it to see available countries)");
         }
 
@@ -100,7 +103,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
-                    Emojis.MONEYBAG+" Select the currency"+Emojis.MONEYBAG);
+                    Emojis.MONEYBAG + " Select the currency" + Emojis.MONEYBAG);
         }
 
         @Override
@@ -121,7 +124,7 @@ public enum BotState {
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place "+Emojis.MAG_RIGHT +
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place " + Emojis.MAG_RIGHT +
                     "\n (enter at least one letter and send it to see available places)");
         }
 
@@ -169,7 +172,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
-                    "Enter the destination place " +Emojis.MAG_RIGHT +
+                    "Enter the destination place " + Emojis.MAG_RIGHT +
                             "\n (enter at least one letter and send it to see available places)");
         }
 
@@ -211,37 +214,57 @@ public enum BotState {
     },
 
     OUTBOUND_PARTIAL_DATE(true, false) {
+        BotState next;
+        final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE+ " Enter the outbound partial date (yyyy-mm-dd / yyyy-mm)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE + " Enter the outbound partial date (yyyy-mm-dd)");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
             context.getUserData().setStateID(this.ordinal());
-            context.getUserFlightData().setOutboundPartialDate(context.getInput());
-        }
 
+            if (datesValidator.isValid(context.getInput())) {
+                context.getUserFlightData().setOutboundPartialDate(context.getInput());
+                next = INBOUND_PARTIAL_DATE;
+            } else next =OUTBOUND_PARTIAL_DATE;
+        }
         @Override
         public BotState nextState() {
-            return INBOUND_PARTIAL_DATE;
+            return next;
         }
     },
-    INBOUND_PARTIAL_DATE(true, false) {
+    INBOUND_PARTIAL_DATE(true, true) {
+
+        BotState next;
+        final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE+ "Enter the inbound partial date (yyyy-mm-dd / yyyy-mm)");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE + " Enter the inbound partial date (yyyy-mm-dd) or tap on \"One way\"");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
-            context.getUserData().setStateID(this.ordinal());
-            context.getUserFlightData().setInboundPartialDate(context.getInput());
+
+            if (context.getCallbackQuery() != null && context.getCallbackQuery().getData().equals("Button \"One way\" has been pressed")) {
+                context.getUserFlightData().setInboundPartialDate(null);
+                next=DATA_FILLED;
+            } else {
+                context.getUserData().setStateID(this.ordinal());
+
+                if(datesValidator.isValid(context.getInput())){
+                context.getUserFlightData().setInboundPartialDate(context.getInput());
+                next=DATA_FILLED;
+                } else next=INBOUND_PARTIAL_DATE;
+            }
         }
 
         @Override
         public BotState nextState() {
-            return DATA_FILLED;
+            return next;
         }
     },
     DATA_FILLED(true, true) {
@@ -249,7 +272,7 @@ public enum BotState {
 
         @Override
         public SendMessage enter(BotStateContextRepo context) {
-            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on "+Emojis.PLANE+" to find current min price info");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on " + Emojis.PLANE + " to find current min price info");
         }
 
         @Override
@@ -285,9 +308,13 @@ public enum BotState {
                 context.getUserSubscription().setChatId(context.getUserData().getChatId());
                 context.getUserSubscription().setUserData(context.getUserData());
                 context.getUserSubscription().setUserFlightData(context.getUserFlightData());
-                context.getUserSubscription().setSkyScannerResponseDates(context.getUserFlightData().getSkyScannerResponseDates());
-                context.getUserSubscription().setMinPrice(context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice());
-
+                if (context.getUserFlightData().getInboundPartialDate() != null) {
+                    context.getUserSubscription().setSkyScannerResponseDates(context.getUserFlightData().getSkyScannerResponseDates());
+                    context.getUserSubscription().setMinPrice(context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice());
+                } else {
+                    context.getUserSubscription().setSkyScannerResponseQuotes(context.getUserFlightData().getSkyScannerResponseQuotes());
+                    context.getUserSubscription().setMinPrice(context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice());
+                }
                 next = SUBSCRIPT;
             } else {
                 next = MAIN_MENU;
@@ -315,29 +342,25 @@ public enum BotState {
             return SUBSCR_LIST;
         }
     },
-    SUBSCR_LIST(true,false){
+    SUBSCR_LIST(true, false) {
 
         BotState next;
 
         @Override
         public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
-            if(userSubscriptionList.size()>0) {
+            if (userSubscriptionList.size() > 0) {
                 return ResponseMessage.sendSubscripList(context, userSubscriptionList);
             }
-//            SendMessage sendMessage=new SendMessage();
-//            sendMessage.setChatId(context.getUserData().getChatId().toString());
-//            sendMessage.setText("No subscriptions");
-
-            return ResponseMessage.sendMessage(context,this,isQueryResponse(),"No subscriptions");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "No subscriptions");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
-            if(context.getInput().startsWith("/Delete_")){
+            if (context.getInput().startsWith("/Delete_")) {
                 repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
-                next=DELETE_SUBSCR;
-            } else{
-                next=SUBSCR_LIST_EDIT;
+                next = DELETE_SUBSCR;
+            } else {
+                next = SUBSCR_LIST_EDIT;
             }
         }
 
@@ -346,25 +369,25 @@ public enum BotState {
             return next;
         }
     },
-    SUBSCR_LIST_EDIT(true,false){
+    SUBSCR_LIST_EDIT(true, false) {
 
         BotState next;
 
         @Override
         public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
-            if(userSubscriptionList.size()>0) {
+            if (userSubscriptionList.size() > 0) {
                 return ResponseMessage.sendSubscripListEdited(context, userSubscriptionList);
             }
-            return ResponseMessage.sendMessage(context,this,isQueryResponse(),"No subscriptions");
+            return ResponseMessage.sendMessage(context, this, isQueryResponse(), "No subscriptions");
         }
 
         @Override
         public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
-            if(context.getInput().startsWith("/Delete_")){
+            if (context.getInput().startsWith("/Delete_")) {
                 repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
-                next=DELETE_SUBSCR;
-            } else{
-                next=SUBSCR_LIST_EDIT;
+                next = DELETE_SUBSCR;
+            } else {
+                next = SUBSCR_LIST_EDIT;
             }
         }
 
@@ -373,7 +396,7 @@ public enum BotState {
             return next;
         }
     },
-    DELETE_SUBSCR(true,true){
+    DELETE_SUBSCR(true, true) {
         @Override
         public AnswerCallbackQuery enter(BotStateContextRepo context) {
             return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");
@@ -383,6 +406,7 @@ public enum BotState {
         public void handleInput(BotStateContextRepo context) {
 
         }
+
         @Override
         public BotState nextState() {
             return SUBSCR_LIST;
@@ -457,10 +481,10 @@ public enum BotState {
 //        return pricesDTO;
 //    }
 
-    public void handleInput(BotStateContextRepo context) {
+    public void handleInput (BotStateContextRepo context) {
     }
 
-    public void handleInput(BotStateContextRepo context,UserSubscriptionDataService repository) {
+    public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
     }
 
 
@@ -474,15 +498,16 @@ public enum BotState {
 
 
     public void sendQueryForPrice(BotStateContextRepo context) {
-//        IFlightPriceClient priceClient = new FlightPriceClientImpl();
-//
-//        context.getUserFlightData().setSkyScannerResponse(priceClient.browseQuotes(context.getUserData()
-//                , context.getUserFlightData()));
 
-        IFlightPriceDateClient priceDateClient = new FlightPriceDateClientImpl();
-        context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
-                , context.getUserFlightData()));
-
+        if (context.getUserFlightData().getInboundPartialDate() != null) {
+            IFlightPriceDateClient priceDateClient = new FlightPriceDateClientImpl();
+            context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
+                    , context.getUserFlightData()));
+        } else {
+            IFlightPriceClient priceClient = new FlightPriceClientImpl();
+            context.getUserFlightData().setSkyScannerResponseQuotes(priceClient.browseQuotes(context.getUserData()
+                    , context.getUserFlightData()));
+        }
     }
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно

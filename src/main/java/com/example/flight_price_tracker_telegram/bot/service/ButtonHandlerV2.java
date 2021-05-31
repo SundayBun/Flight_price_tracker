@@ -94,7 +94,23 @@ public class ButtonHandlerV2 {
 
             inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
             return inlineKeyboardMarkup;
+        } else if(state == BotState.INBOUND_PARTIAL_DATE){
+
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+
+            InlineKeyboardButton inlineKeyboardOneWay = new InlineKeyboardButton();
+            inlineKeyboardOneWay.setText("One way");
+            inlineKeyboardOneWay.setCallbackData("Button \"One way\" has been pressed");
+            keyboardButtonsRow.add(inlineKeyboardOneWay);
+
+            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+            keyboardButtonsRows.add(keyboardButtonsRow);
+
+            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+            return inlineKeyboardMarkup;
         }
+
         return null;
     }
 
