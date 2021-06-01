@@ -38,10 +38,9 @@ public class SchedulerTasks {
     @Autowired
     SubscriptionScheduler repository;
 
-    private static final long TEN_MINUTES = 1000 * 60 * 10;
-    private static final long ONE_MINUTES = 1000 * 60 * 1;
+    private static final long TEN_MINUTES = 1000 * 60 * 1;
 
-  // @Scheduled(fixedRate = TEN_MINUTES)
+   @Scheduled(fixedRate = TEN_MINUTES)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -112,8 +111,14 @@ public class SchedulerTasks {
             } else return;
         }
 
-        Unirest.post(urlString);
-        System.out.println(urlString);
+        HttpResponse response = null;
+
+        try {
+            response=Unirest.post(urlString).asJson();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        log.info("checking {}",response);
 
 
 //        try {
@@ -127,23 +132,19 @@ public class SchedulerTasks {
 
     }
 
-    @Scheduled(fixedRate = ONE_MINUTES)
+  //  @Scheduled(fixedRate = ONE_MINUTES)
     public void renewSubscript2() {
         String url = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=~~%s~~";
-        String urlString=String.format(url,botToken,"318658114","cheking");
+        String urlString = String.format(url, botToken, "318658114", "chekingklk");
 
-        HttpRequestWithBody response = null;
+        HttpResponse response = null;
 
-        response=Unirest.post(urlString);
-        log.info("checking {}",response);
-
-//        try {
-//            URL url1 = new URL(urlString);
-//             url1.openConnection();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        log.info("checking");
+        try {
+            response = Unirest.post(urlString).asJson();
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+        log.info("checking {}", response);
     }
 
 }
