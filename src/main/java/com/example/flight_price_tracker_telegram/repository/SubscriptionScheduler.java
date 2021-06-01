@@ -19,4 +19,8 @@ public class SubscriptionScheduler {
  return subscriptionRepository.findAll();
     }
 
+    public void save(UserSubscription userSubscription){
+        subscriptionRepository.save(userSubscription);
+    }
+
 }

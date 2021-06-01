@@ -13,8 +13,9 @@ public enum Emojis {
     GB_FLAG(EmojiParser.parseToUnicode(":gb:")),
     RUS_FLAG(EmojiParser.parseToUnicode(":ru:")),
     PUSHPIN(EmojiParser.parseToUnicode(":pushpin:")),
-    MAG_RIGHT(EmojiParser.parseToUnicode(":mag_right:"));
-
+    MAG_RIGHT(EmojiParser.parseToUnicode(":mag_right:")),
+    DANCER(EmojiParser.parseToUnicode(":dancer:")),
+    SCREAM(EmojiParser.parseToUnicode(":scream:"));
 
     private String emojiName;
 
@@ -22,4 +23,4 @@ public enum Emojis {
     public String toString() {
         return emojiName;
     }
-    }
+}

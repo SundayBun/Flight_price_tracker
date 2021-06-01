@@ -11,6 +11,8 @@ public interface ISubscriptionRepository extends MongoRepository<UserSubscriptio
     List<UserSubscription> findByChatId (Long chatID);
 
     void deleteById(String id);
+//
+//    void saveUserSubscription(UserSubscription userSubscription);
 
   //  List<UserSubscription> findAll();
 
