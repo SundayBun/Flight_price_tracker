@@ -149,7 +149,7 @@ public class ResponseMessage {
                     "\n   Origin place: " + userSubscriptionList.get(index).getUserFlightData().getOriginPlace() +
                     "\n   Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
                     "\n   Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
-                    "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
+                    "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
                     userSubscriptionList.get(0).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
                     "\n   Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getCarriers() + "\n" +
                     "\n /Delete_" + context.getCallbackQuery().getData();

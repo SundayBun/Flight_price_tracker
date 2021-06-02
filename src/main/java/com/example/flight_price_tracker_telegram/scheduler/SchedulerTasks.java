@@ -40,7 +40,7 @@ public class SchedulerTasks {
 
     private static final long TEN_MINUTES = 1000 * 60 * 1;
 
-   @Scheduled(fixedRate = TEN_MINUTES)
+ //  @Scheduled(fixedRate = TEN_MINUTES)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -53,18 +53,15 @@ public class SchedulerTasks {
                 x.setSkyScannerResponseDates(priceDateClient.browseQuotes(x.getUserData(), x.getUserFlightData()));
                 sendMessageToBot(x, false);
                 x.setMinPrice(x.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice());
-                repository.save(x);
-
-                log.debug("recount getSkyScannerResponse finished");
 
             } else {
                 x.setSkyScannerResponseQuotes(priceClient.browseQuotes(x.getUserData(), x.getUserFlightData()));
                 sendMessageToBot(x, true);
                 x.setMinPrice(x.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice());
-                repository.save(x);
 
-                log.debug("recount getSkyScannerResponse finished");
             }
+            repository.save(x);
+            log.debug("recount getSkyScannerResponse finished");
         });
 
         log.debug("recount minPrice finished");
@@ -78,24 +75,26 @@ public class SchedulerTasks {
         String textPriceDrop = Emojis.DANCER + " PRICE DROPPED";
 
         if (!oneWay) {
-            String textDates = String.format("\n From: %s to %s \n Dates: %s - %s \n Price:  ~~%s%s~~ **%s%s**",
+            String textDates = String.format("\n From %s to %s \n Dates: %s - %s \n Price:  ~~%s%s~~ **%s%s**",
                     userSubscription.getSkyScannerResponseDates().getPlaces().get(0).getCityName(),
                     userSubscription.getSkyScannerResponseDates().getPlaces().get(1).getCityName(),
-                    userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates(),
-                    userSubscription.getSkyScannerResponseDates().getDates().getInboundDates(),
+                    userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate().replaceAll("-","."),
+                    userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate().replaceAll("-","."),
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol());
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), textPriceDrop + textDates);
+                String text=textPriceDrop+textDates;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-",".").replaceAll("-","+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), textPriceIncreasing + textDates);
+                String text=textPriceIncreasing+textDates;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-",".").replaceAll("-","+"));
             } else return;
 
         } else {
-            String textQuotes = String.format("\n From: %s to %s \n Date: %s \n Price:  ~~%s%s~~ **%s%s**",
+            String textQuotes = String.format(" From %s to %s Date: %s Price: ~%s%s~ **%s%s**",
                     userSubscription.getSkyScannerResponseQuotes().getPlaces().get(0).getCityName(),
                     userSubscription.getSkyScannerResponseQuotes().getPlaces().get(1).getCityName(),
                     userSubscription.getUserFlightData().getOutboundPartialDate(),
@@ -105,20 +104,24 @@ public class SchedulerTasks {
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), textPriceDrop + textQuotes);
+                String text=textPriceDrop+textQuotes;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-",".").replaceAll("-","+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), textPriceIncreasing + textQuotes);
+                String text=textPriceIncreasing+textQuotes;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-",".").replaceAll("-","+"));
             } else return;
         }
 
-        HttpResponse response = null;
+        HttpResponse<JsonNode> response = null;
 
         try {
             response=Unirest.post(urlString).asJson();
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-        log.info("checking {}",response);
+        assert response != null;
+        log.info("Unirest response status {}",response.getStatus());
+        log.info("Unirest response body {}", response.getBody());
 
 
 //        try {
@@ -132,20 +135,27 @@ public class SchedulerTasks {
 
     }
 
-  //  @Scheduled(fixedRate = ONE_MINUTES)
+   // @Scheduled(fixedRate = TEN_MINUTES)
     public void renewSubscript2() {
-        String url = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=~~%s~~";
-        String urlString = String.format(url, botToken, "318658114", "chekingklk");
+        String text="~~Checking~~+"+Emojis.DANCER;
+        String url = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=%s";
+        String body ="";
+        String urlString = String.format(body, botToken, "318658114", text);
 
-        HttpResponse response = null;
+        //HttpResponse<JsonNode> response = null;
 
         try {
-            response = Unirest.post(urlString).asJson();
+            HttpResponse<JsonNode> response = Unirest.post(url+urlString).asJson();
+            log.info("checking {}", response.getStatus());
+            log.info("checking {}", response.getBody());
         } catch (UnirestException e) {
             e.printStackTrace();
         }
-        log.info("checking {}", response);
+
+
     }
+
+
 
 }
 
