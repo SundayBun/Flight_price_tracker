@@ -40,7 +40,7 @@ public class SchedulerTasks {
 
     private static final long TEN_MINUTES = 1000 * 60 * 1;
 
- //  @Scheduled(fixedRate = TEN_MINUTES)
+  @Scheduled(fixedRate = TEN_MINUTES)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -75,11 +75,11 @@ public class SchedulerTasks {
         String textPriceDrop = Emojis.DANCER + " PRICE DROPPED";
 
         if (!oneWay) {
-            String textDates = String.format("\n From %s to %s \n Dates: %s - %s \n Price:  ~~%s%s~~ **%s%s**",
+            String textDates = String.format("\n From %s to %s \n Dates %s - %s \n Price:  %7e%s%s%7e **%s%s**",
                     userSubscription.getSkyScannerResponseDates().getPlaces().get(0).getCityName(),
                     userSubscription.getSkyScannerResponseDates().getPlaces().get(1).getCityName(),
-                    userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate().replaceAll("-","."),
-                    userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate().replaceAll("-","."),
+                    userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate().replaceAll("-","%96"),
+                    userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate().replaceAll("-","%96"),
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
@@ -87,28 +87,28 @@ public class SchedulerTasks {
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
                 String text=textPriceDrop+textDates;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-",".").replaceAll("-","+"));
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","%96").replaceAll(" ","+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
                 String text=textPriceIncreasing+textDates;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-",".").replaceAll("-","+"));
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","%96").replaceAll(" ","+"));
             } else return;
 
         } else {
             String textQuotes = String.format(" From %s to %s Date: %s Price: ~%s%s~ **%s%s**",
                     userSubscription.getSkyScannerResponseQuotes().getPlaces().get(0).getCityName(),
                     userSubscription.getSkyScannerResponseQuotes().getPlaces().get(1).getCityName(),
-                    userSubscription.getUserFlightData().getOutboundPartialDate(),
+                    userSubscription.getUserFlightData().getOutboundPartialDate().replaceAll("-","%96"),
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
-                    userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
+                   userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
                 String text=textPriceDrop+textQuotes;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-",".").replaceAll("-","+"));
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-","%96").replaceAll(" ","+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
                 String text=textPriceIncreasing+textQuotes;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-",".").replaceAll("-","+"));
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(),text.replaceAll("-","%96").replaceAll(" ","+"));
             } else return;
         }
 
@@ -135,17 +135,16 @@ public class SchedulerTasks {
 
     }
 
-   // @Scheduled(fixedRate = TEN_MINUTES)
+ //  @Scheduled(fixedRate = TEN_MINUTES)
     public void renewSubscript2() {
-        String text="~~Checking~~+"+Emojis.DANCER;
+        String text="%7eChecking%7e++"+Emojis.DANCER;
         String url = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=%s";
-        String body ="";
-        String urlString = String.format(body, botToken, "318658114", text);
+        String urlString = String.format(url, botToken, "318658114", text);
 
         //HttpResponse<JsonNode> response = null;
 
         try {
-            HttpResponse<JsonNode> response = Unirest.post(url+urlString).asJson();
+            HttpResponse<JsonNode> response = Unirest.post(urlString).asJson();
             log.info("checking {}", response.getStatus());
             log.info("checking {}", response.getBody());
         } catch (UnirestException e) {

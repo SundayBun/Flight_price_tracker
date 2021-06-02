@@ -41,7 +41,6 @@ import java.util.List;
 
 @Slf4j
 @Component
-@PropertySource("classpath:/static/flights.html")
 public class TFV3 {
 
 
