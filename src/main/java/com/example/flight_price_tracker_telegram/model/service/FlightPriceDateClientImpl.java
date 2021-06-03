@@ -21,7 +21,7 @@ public class FlightPriceDateClientImpl implements IFlightPriceDateClient {
     public static final String ROUTES_KEY = "Routes";
     public static final String DATES_KEY = "Dates";
     public static final String CARRIERS_KEY = "Carriers";
-    public static final String VALIDATIONS_KEY = "ValidationErrors";
+    public static final String VALIDATIONS_KEY = "ERROR";
 
     @Override
     public BrowseDatesDTO browseQuotes(UserData userData, UserFlightData userFlightData) {

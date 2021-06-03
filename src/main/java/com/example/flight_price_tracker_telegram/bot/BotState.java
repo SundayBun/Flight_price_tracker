@@ -30,13 +30,14 @@ import java.util.Locale;
 @Component
 public enum BotState {
     START(true, true) {
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
+
             log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
-            //  log.info("Repository: {}",getRepository1().toString());
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
-        }
+            }
 
         @Override
         public void handleInput(BotStateContextRepo context) {
@@ -80,6 +81,7 @@ public enum BotState {
         }
     },
     COUNTRY_BUTTONS(true, true) {
+
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)

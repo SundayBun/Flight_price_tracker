@@ -1,6 +1,5 @@
 package com.example.flight_price_tracker_telegram.bot;
 
-import com.example.flight_price_tracker_telegram.bot.service.ButtonHandlerV2;
 import com.example.flight_price_tracker_telegram.repository.UserData;
 import com.example.flight_price_tracker_telegram.repository.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
@@ -8,12 +7,11 @@ import com.example.flight_price_tracker_telegram.repository.UserSubscriptionData
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class TelegramFacadeV2 {
@@ -60,7 +58,7 @@ public class TelegramFacadeV2 {
             return sendMessage;
         } else {
             state = BotState.byId(userData.getStateID());
-            mainMenuCommand(update);// checking if query has main menu command
+            mainCommand(update);// checking if query has main menu command
 
             if(state==BotState.DATA_TRANSFERRED) {
                 userSubscription=new UserSubscription(chatId);
@@ -92,20 +90,35 @@ public class TelegramFacadeV2 {
         return sendMessage;
     }
 
-    public void mainMenuCommand(Update update) {
+    public void mainCommand(Update update) {
 
-        List<String> mainMenu = new ArrayList<>();
-        mainMenu.add("Change localisation info");
-        mainMenu.add("New search");
-        mainMenu.add("See your track list");
+        Map<String,BotState> commands =new HashMap<>();
 
-        if (update.hasMessage() && mainMenu.contains(update.getMessage().getText())) {
-            state = BotState.MAIN_MENU;
+        commands.put("Button \"ENG\" has been pressed",BotState.START);
+        commands.put("Button \"RUS\" has been pressed",BotState.START);
+        commands.put("Button \"Find price\" has been pressed",BotState.DATA_FILLED);
+        commands.put("USD",BotState.CURRENCY);
+        commands.put("EUR",BotState.CURRENCY);
+        commands.put("RUB",BotState.CURRENCY);
+        commands.put("Button \"Track it\" has been pressed",BotState.DATA_TRANSFERRED);
+        commands.put("Button \"One way\" has been pressed",BotState.INBOUND_PARTIAL_DATE);
+        commands.put("Delete",BotState.SUBSCR_LIST_EDIT);
+        commands.put("Change localisation info",BotState.MAIN_MENU);
+        commands.put("New search",BotState.MAIN_MENU);
+        commands.put("See your track list",BotState.MAIN_MENU);
+
+        if (update.hasMessage() && commands.containsKey(update.getMessage().getText())){
+            state= commands.get(update.getMessage().getText());
         }
 
-        if (update.hasMessage() && update.getMessage().getText().equals("Delete")) {
-            state = BotState.SUBSCR_LIST_EDIT;
+        if(update.hasCallbackQuery()&& commands.containsKey(update.getCallbackQuery().getData())){
+            state= commands.get(update.getCallbackQuery().getData());
         }
+
+        if (update.hasMessage() && update.getMessage().getText().startsWith("Delete")){
+            state= commands.get("Delete");
+        }
+
     }
 
     public void saveSubscrip(BotState state){
@@ -113,15 +126,5 @@ public class TelegramFacadeV2 {
             repository.saveSubscription(userSubscription);
         }
     }
-
-//    public BotApiMethod<?> recount(BotStateContextRepo context){
-//        List<UserSubscription> subscription=repository.findSubByChatId(chatId);
-//        SendMessage message = new SendMessage();
-//        message.setChatId(context.getUserData().getChatId().toString());
-//        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(subscription));
-//        message.setText("Flight list");
-//        return message;
-//    }
-
 
 }

@@ -16,12 +16,34 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ButtonHandlerV2 {
 
+    public static Map <String,String> buttons;
+
+    public static Map<String,String > toMap(){
+
+        buttons=new HashMap<>();
+        buttons.put(Emojis.GB_FLAG.toString(),"Button \"ENG\" has been pressed");
+        buttons.put(Emojis.RUS_FLAG.toString(),"Button \"RUS\" has been pressed");
+        buttons.put(Emojis.PLANE.toString(),"Button \"Find price\" has been pressed");
+        buttons.put("USD","USD");
+        buttons.put("EUR","EUR");
+        buttons.put("RUB","RUB");
+        buttons.put("Track it","Button \"Track it\" has been pressed");
+        buttons.put("One way","Button \"One way\" has been pressed");
+        return buttons;
+
+    }
+
     public static InlineKeyboardMarkup getMessageFromKeyboard(BotState state) {
+
+        buttons=toMap();
+
         if (state == BotState.START) {
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
@@ -29,9 +51,9 @@ public class ButtonHandlerV2 {
             InlineKeyboardButton inlineKeyboardButtonEng = new InlineKeyboardButton();
             InlineKeyboardButton inlineKeyboardButtonRus = new InlineKeyboardButton();
             inlineKeyboardButtonEng.setText(Emojis.GB_FLAG.toString());
-            inlineKeyboardButtonEng.setCallbackData("Button \"ENG\" has been pressed");
+            inlineKeyboardButtonEng.setCallbackData(buttons.get(Emojis.GB_FLAG.toString()));
             inlineKeyboardButtonRus.setText(Emojis.RUS_FLAG.toString());
-            inlineKeyboardButtonRus.setCallbackData("Button \"RUS\" has been pressed");
+            inlineKeyboardButtonRus.setCallbackData(buttons.get(Emojis.RUS_FLAG.toString()));
             keyboardButtonsRow.add(inlineKeyboardButtonEng);
             keyboardButtonsRow.add(inlineKeyboardButtonRus);
 
@@ -46,7 +68,7 @@ public class ButtonHandlerV2 {
 
             InlineKeyboardButton inlineKeyboardButtonFind = new InlineKeyboardButton();
             inlineKeyboardButtonFind.setText(Emojis.PLANE.toString());
-            inlineKeyboardButtonFind.setCallbackData("Button \"Find price\" has been pressed");
+            inlineKeyboardButtonFind.setCallbackData(buttons.get(Emojis.PLANE.toString()));
             keyboardButtonsRow.add(inlineKeyboardButtonFind);
 
             List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
@@ -64,11 +86,11 @@ public class ButtonHandlerV2 {
             InlineKeyboardButton inlineKeyboardButtonRUB = new InlineKeyboardButton();
 
             inlineKeyboardButtonUSD.setText("USD");
-            inlineKeyboardButtonUSD.setCallbackData("USD");
+            inlineKeyboardButtonUSD.setCallbackData(buttons.get("USD"));
             inlineKeyboardButtonEUR.setText("EUR");
-            inlineKeyboardButtonEUR.setCallbackData("EUR");
+            inlineKeyboardButtonEUR.setCallbackData(buttons.get("EUR"));
             inlineKeyboardButtonRUB.setText("RUB");
-            inlineKeyboardButtonRUB.setCallbackData("RUB");
+            inlineKeyboardButtonRUB.setCallbackData(buttons.get("RUB"));
 
             keyboardButtonsRow.add(inlineKeyboardButtonUSD);
             keyboardButtonsRow.add(inlineKeyboardButtonEUR);
@@ -86,7 +108,7 @@ public class ButtonHandlerV2 {
 
             InlineKeyboardButton inlineKeyboardButtonTrack = new InlineKeyboardButton();
             inlineKeyboardButtonTrack.setText("Track it");
-            inlineKeyboardButtonTrack.setCallbackData("Button \"Track it\" has been pressed");
+            inlineKeyboardButtonTrack.setCallbackData(buttons.get("Track it"));
             keyboardButtonsRow.add(inlineKeyboardButtonTrack);
 
             List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
@@ -101,7 +123,7 @@ public class ButtonHandlerV2 {
 
             InlineKeyboardButton inlineKeyboardOneWay = new InlineKeyboardButton();
             inlineKeyboardOneWay.setText("One way");
-            inlineKeyboardOneWay.setCallbackData("Button \"One way\" has been pressed");
+            inlineKeyboardOneWay.setCallbackData(buttons.get("One way"));
             keyboardButtonsRow.add(inlineKeyboardOneWay);
 
             List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
@@ -201,6 +223,17 @@ public class ButtonHandlerV2 {
         keyboardButtonsRows.add(keyboardButtonsRow);
         inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
         return inlineKeyboardMarkup;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
 }

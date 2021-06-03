@@ -6,12 +6,12 @@ import lombok.Data;
 @Data
 public class ValidationErrorDTO {
 
-    @JsonProperty("ParameterName")
-    private String parameterName;
+//    @JsonProperty("ParameterName")
+//    private String parameterName;
+//
+//    @JsonProperty("ParameterValue")
+//    private String parameterValue;
 
-    @JsonProperty("ParameterValue")
-    private String parameterValue;
-
-    @JsonProperty("Message")
+    @JsonProperty("message")
     private String message;
 }
