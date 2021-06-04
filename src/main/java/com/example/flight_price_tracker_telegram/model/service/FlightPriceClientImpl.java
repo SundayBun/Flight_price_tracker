@@ -80,10 +80,11 @@ public class FlightPriceClientImpl implements IFlightPriceClient {
                     }));
             return flightPricesDTO;
         }
-        throw new FlightClientException(String.format("There are validation errors. statusCode = %s", response.getStatus()),
-                UniRestServiceImpl.readValue(response.getBody().getObject().get(VALIDATIONS_KEY).toString(),
-                        new TypeReference<List<ValidationErrorDTO>>() {
-                        }));
+        return null;
+//        throw new FlightClientException(String.format("There are validation errors. statusCode = %s", response.getStatus()),
+//                UniRestServiceImpl.readValue(response.getBody().getObject().get(VALIDATIONS_KEY).toString(),
+//                        new TypeReference<List<ValidationErrorDTO>>() {
+//                        }));
     }
 
 }

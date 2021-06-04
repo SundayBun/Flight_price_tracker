@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Возможные состояния бота
+ * Possible bot states
  */
 
 @Slf4j
@@ -34,7 +34,7 @@ public enum BotState {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
 
-            log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
+          //  log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
             }
@@ -299,7 +299,13 @@ public enum BotState {
         BotState next;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public BotApiMethod<?> enter(BotStateContextRepo context) {
+            if(!context.getUserFlightData().isRequestNotNull()){
+
+//            if(context.getUserFlightData().getSkyScannerResponseQuotes()!=null || context.getUserFlightData().getSkyScannerResponseDates()!=null) {
+//                return ResponseMessage.sendSearchResult(context, this);
+                return ResponseMessage.sendErrorSearchResult(context,"Invalid input data");
+            }
             return ResponseMessage.sendSearchResult(context, this);
         }
 
@@ -399,6 +405,7 @@ public enum BotState {
         }
     },
     DELETE_SUBSCR(true, true) {
+
         @Override
         public AnswerCallbackQuery enter(BotStateContextRepo context) {
             return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");
@@ -425,7 +432,6 @@ public enum BotState {
 
         @Override
         public void handleInput(BotStateContextRepo context) {
-            log.info("input: {}", context.getInput());
 
             if (context.getInput().equals("Change localisation info")) {
                 next = START;
@@ -471,24 +477,15 @@ public enum BotState {
         return states[id]; //возвращаем значение по индексу
     }
 
-    public boolean isInputNeeded() {
-        return inputNeeded;
-    }
-
     public boolean isQueryResponse() {
         return queryResponse;
     }
-
-//    public FlightPricesDTO pricesDTO() {
-//        return pricesDTO;
-//    }
 
     public void handleInput (BotStateContextRepo context) {
     }
 
     public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
     }
-
 
     public BotApiMethod<?> enter(BotStateContextRepo context) {
         return null;
@@ -505,10 +502,19 @@ public enum BotState {
             IFlightPriceDateClient priceDateClient = new FlightPriceDateClientImpl();
             context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
                     , context.getUserFlightData()));
+
+            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseDates() != null && context.getUserFlightData().getSkyScannerResponseDates().getQuotes().size()!=0);
+
+             // log.info("Search result: {}", context.getUserFlightData().getSkyScannerResponseDates().toString());
+
         } else {
             IFlightPriceClient priceClient = new FlightPriceClientImpl();
             context.getUserFlightData().setSkyScannerResponseQuotes(priceClient.browseQuotes(context.getUserData()
                     , context.getUserFlightData()));
+
+            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseQuotes() != null && context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().size()!=0);
+
+          //  log.info("Search result: {}", context.getUserFlightData().getSkyScannerResponseQuotes().toString());
         }
     }
 

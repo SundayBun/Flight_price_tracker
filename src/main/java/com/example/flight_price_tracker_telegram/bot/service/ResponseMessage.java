@@ -80,6 +80,7 @@ public class ResponseMessage {
         message.setChatId(context.getUserData().getChatId().toString());
         message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardCountry(countryDTOList));
         message.setText(text);
+
         return message;
     }
 
@@ -88,10 +89,19 @@ public class ResponseMessage {
         message.setChatId(context.getUserData().getChatId().toString());
         message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardPlaces(placesDTOList));
         message.setText(text);
+
         return message;
     }
 
     public static AnswerCallbackQuery sendSubConfirmation(BotStateContextRepo context, String text) {
+        AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
+        answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
+        answerCallbackQuery.setShowAlert(true);
+        answerCallbackQuery.setText(text);
+        return answerCallbackQuery;
+    }
+
+    public static AnswerCallbackQuery sendErrorSearchResult(BotStateContextRepo context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(true);
