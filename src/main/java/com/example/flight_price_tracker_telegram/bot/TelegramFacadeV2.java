@@ -77,6 +77,11 @@ public class TelegramFacadeV2 {
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
         }
 
+        if(state.isQueryResponse() && !update.hasCallbackQuery() ){
+
+            return sendMessage;
+        }
+
         if (state == BotState.SUBSCR_LIST || state == BotState.SUBSCR_LIST_EDIT) {
             state.handleInput(context, repository);
         } else {
@@ -140,8 +145,10 @@ public class TelegramFacadeV2 {
         }
     }
 
-    public void log(Update update) {
+  public void properInput(BotState state,Update update){
+        if(update.hasCallbackQuery() && state.isQueryResponse()){
 
-    }
+        }
+  }
 
 }

@@ -2,17 +2,13 @@ package com.example.flight_price_tracker_telegram.bot;
 
 import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
-import com.example.flight_price_tracker_telegram.bot.service.Subscription;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
-import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
-import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.service.*;
 import com.example.flight_price_tracker_telegram.model.validations.DatesValidatorImpl;
 import com.example.flight_price_tracker_telegram.model.validations.IDatesValidator;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -20,7 +16,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Possible bot states
@@ -196,7 +191,7 @@ public enum BotState {
             return next;
         }
     },
-    DESTINATION_PLACE_BUTTONS(true, true) {
+    DESTINATION_PLACE_BUTTONS(false, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
@@ -240,7 +235,7 @@ public enum BotState {
     },
     INBOUND_PARTIAL_DATE(true, true) {
 
-        BotState next;
+        BotState next=null;
         final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         @Override
@@ -269,7 +264,7 @@ public enum BotState {
             return next;
         }
     },
-    DATA_FILLED(true, true) {
+    DATA_FILLED(false, true) {
         private BotState next;
 
         @Override
@@ -350,7 +345,7 @@ public enum BotState {
             return SUBSCR_LIST;
         }
     },
-    SUBSCR_LIST(true, false) {
+    SUBSCR_LIST(true, true) {
 
         BotState next;
 
@@ -377,7 +372,7 @@ public enum BotState {
             return next;
         }
     },
-    SUBSCR_LIST_EDIT(true, false) {
+    SUBSCR_LIST_EDIT(true, true) {
 
         BotState next;
 
@@ -404,7 +399,7 @@ public enum BotState {
             return next;
         }
     },
-    DELETE_SUBSCR(true, true) {
+    DELETE_SUBSCR(false, false) {
 
         @Override
         public AnswerCallbackQuery enter(BotStateContextRepo context) {
@@ -449,17 +444,17 @@ public enum BotState {
     };
 
     private static BotState[] states;
-    private final boolean inputNeeded;
+    private final boolean textMessageRequest;
     private final boolean queryResponse;
 
 
     BotState() {
-        this.inputNeeded = true; // по умолчанию- ждем действия
+        this.textMessageRequest = true; // ждем cообщение типа text
         this.queryResponse = true; //ждем ответа от кнопок
     }
 
-    BotState(boolean inputNeeded, boolean queryResponse) {
-        this.inputNeeded = inputNeeded; //или задаем самостоятельно
+    BotState(boolean textMessageRequest, boolean queryResponse) {
+        this.textMessageRequest = textMessageRequest; //или задаем самостоятельно
         this.queryResponse = queryResponse;
     }
 
