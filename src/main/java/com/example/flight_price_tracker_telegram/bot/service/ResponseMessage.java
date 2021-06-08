@@ -3,14 +3,9 @@ package com.example.flight_price_tracker_telegram.bot.service;
 import com.example.flight_price_tracker_telegram.bot.BotState;
 
 import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
-import com.example.flight_price_tracker_telegram.model.browse.CarriersDTO;
-import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
-import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
-import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
-import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -28,11 +23,11 @@ public class ResponseMessage {
         if (!queryResponse) {
             message.setText(text);
             if (state == BotState.ORIGIN_PLACE_TEXT) {
-                message.setReplyMarkup(ButtonHandlerV2.getMainMenuKeyboard());
+                message.setReplyMarkup(ButtonHandler.getMainMenuKeyboard());
             }
         } else {
             message.setText(text);
-            message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboard(state));
+            message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(state));
         }
         return message;
 
@@ -69,7 +64,7 @@ public class ResponseMessage {
             message.setText(textTwoWays);
         }
 
-        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboard(state));
+        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(state));
 
         log.info("sendSearchResult setText={}", message.getText());
         return message;
@@ -78,7 +73,7 @@ public class ResponseMessage {
     public static SendMessage sendSearchCountry(BotStateContextRepo context, List<CountryDTO> countryDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
-        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardCountry(countryDTOList));
+        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardCountry(countryDTOList));
         message.setText(text);
 
         return message;
@@ -87,7 +82,7 @@ public class ResponseMessage {
     public static SendMessage sendSearchPlaces(BotStateContextRepo context, List<PlacesDTO> placesDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
-        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardPlaces(placesDTOList));
+        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardPlaces(placesDTOList));
         message.setText(text);
 
         return message;
@@ -142,7 +137,7 @@ public class ResponseMessage {
 
                 message.setText(textTwoWays);
             }
-        message.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
+        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
         return message;
     }
 
@@ -160,7 +155,7 @@ public class ResponseMessage {
                     "\n   Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
                     "\n   Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
                     "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
-                    userSubscriptionList.get(0).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
+                    userSubscriptionList.get(index).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
                     "\n   Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getCarriers() + "\n" +
                     "\n /Delete_" + context.getCallbackQuery().getData();
             editMessageText.setText(texOneWay);
@@ -182,7 +177,7 @@ public class ResponseMessage {
             editMessageText.setText(texTwoWays);
         }
 
-        editMessageText.setReplyMarkup(ButtonHandlerV2.getMessageFromKeyboardSubList(userSubscriptionList));
+        editMessageText.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
 
         return editMessageText;
 

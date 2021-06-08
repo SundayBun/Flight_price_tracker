@@ -77,8 +77,10 @@ public class TelegramFacadeV2 {
             context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
         }
 
-        if(state.isQueryResponse() && !update.hasCallbackQuery() ){
+        if(state.isQueryResponse() && !state.isTextMessageRequest() && !update.hasCallbackQuery() ){
 
+            return sendMessage;
+        } else if(!state.isQueryResponse() && state.isTextMessageRequest() && !update.hasMessage()) {
             return sendMessage;
         }
 
@@ -120,7 +122,7 @@ public class TelegramFacadeV2 {
         commands.put("RUB", BotState.CURRENCY);
         commands.put("Button \"Track it\" has been pressed", BotState.DATA_TRANSFERRED);
         commands.put("Button \"One way\" has been pressed", BotState.INBOUND_PARTIAL_DATE);
-        commands.put("Delete", BotState.SUBSCR_LIST_EDIT);
+      //  commands.put("Delete", BotState.SUBSCR_LIST_EDIT);
         commands.put("Change localisation info", BotState.MAIN_MENU);
         commands.put("New search", BotState.MAIN_MENU);
         commands.put("See your track list", BotState.MAIN_MENU);
@@ -133,9 +135,9 @@ public class TelegramFacadeV2 {
             state = commands.get(update.getCallbackQuery().getData());
         }
 
-        if (update.hasMessage() && update.getMessage().getText().startsWith("Delete")) {
-            state = commands.get("Delete");
-        }
+//        if (update.hasMessage() && update.getMessage().getText().startsWith("Delete")) {
+//            state = commands.get("Delete");
+//        }
 
     }
 
@@ -145,10 +147,5 @@ public class TelegramFacadeV2 {
         }
     }
 
-  public void properInput(BotState state,Update update){
-        if(update.hasCallbackQuery() && state.isQueryResponse()){
-
-        }
-  }
 
 }

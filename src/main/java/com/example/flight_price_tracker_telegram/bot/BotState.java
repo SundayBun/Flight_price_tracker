@@ -143,7 +143,7 @@ public enum BotState {
             return next;
         }
     },
-    ORIGIN_PLACE_BUTTONS(true, true) {
+    ORIGIN_PLACE_BUTTONS(false, true) {
         @Override
         public SendMessage enter(BotStateContextRepo context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
@@ -299,7 +299,7 @@ public enum BotState {
 
 //            if(context.getUserFlightData().getSkyScannerResponseQuotes()!=null || context.getUserFlightData().getSkyScannerResponseDates()!=null) {
 //                return ResponseMessage.sendSearchResult(context, this);
-                return ResponseMessage.sendErrorSearchResult(context,"Invalid input data");
+                return ResponseMessage.sendErrorSearchResult(context,"No flights have been found. \n Try to change query. "); //Invalid input data or no s
             }
             return ResponseMessage.sendSearchResult(context, this);
         }
@@ -515,4 +515,7 @@ public enum BotState {
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно
 
+    public boolean isTextMessageRequest() {
+        return textMessageRequest;
+    }
 }

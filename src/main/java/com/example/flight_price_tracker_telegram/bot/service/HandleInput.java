@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 @Component
 public class HandleInput {
 
-
-
     public static List<CountryDTO> country(BotStateContextRepo context){
 
         ILocalisationClient localisationClient = new LocalisationClientImpl();
