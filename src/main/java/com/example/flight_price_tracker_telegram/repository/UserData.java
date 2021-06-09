@@ -16,7 +16,7 @@ import java.util.Set;
 public class UserData implements Serializable {
 
     @Id
-    private Long chatId; //задать там, где будет update
+    private Long chatId;
     private Integer stateID;
     private String id;
 

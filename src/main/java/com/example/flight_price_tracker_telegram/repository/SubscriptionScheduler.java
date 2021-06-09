@@ -11,9 +11,6 @@ public class SubscriptionScheduler {
     @Autowired
     ISubscriptionRepository subscriptionRepository;
 
-    public List<UserSubscription> findSubByChatId (Long chatID) {
-        return subscriptionRepository.findByChatId(chatID);
-    }
 
     public List<UserSubscription> findAll(){
  return subscriptionRepository.findAll();

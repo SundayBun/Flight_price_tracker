@@ -2,7 +2,7 @@ package com.example.flight_price_tracker_telegram.bot.service;
 
 import com.example.flight_price_tracker_telegram.bot.BotState;
 
-import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
+import com.example.flight_price_tracker_telegram.bot.BotStateContext;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class ResponseMessage {
 
-    public static SendMessage sendMessage(BotStateContextRepo context, BotState state, boolean queryResponse, String text) {
+    public static SendMessage sendMessage(BotStateContext context, BotState state, boolean queryResponse, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
 
@@ -33,7 +33,7 @@ public class ResponseMessage {
 
     }
 
-    public static SendMessage sendSearchResult(BotStateContextRepo context, BotState state) {
+    public static SendMessage sendSearchResult(BotStateContext context, BotState state) {
 
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserFlightData().getChatId().toString());
@@ -70,7 +70,7 @@ public class ResponseMessage {
         return message;
     }
 
-    public static SendMessage sendSearchCountry(BotStateContextRepo context, List<CountryDTO> countryDTOList, String text) {
+    public static SendMessage sendSearchCountry(BotStateContext context, List<CountryDTO> countryDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
         message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardCountry(countryDTOList));
@@ -79,7 +79,7 @@ public class ResponseMessage {
         return message;
     }
 
-    public static SendMessage sendSearchPlaces(BotStateContextRepo context, List<PlacesDTO> placesDTOList, String text) {
+    public static SendMessage sendSearchPlaces(BotStateContext context, List<PlacesDTO> placesDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
         message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardPlaces(placesDTOList));
@@ -88,7 +88,7 @@ public class ResponseMessage {
         return message;
     }
 
-    public static AnswerCallbackQuery sendSubConfirmation(BotStateContextRepo context, String text) {
+    public static AnswerCallbackQuery sendSubConfirmation(BotStateContext context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(true);
@@ -96,7 +96,7 @@ public class ResponseMessage {
         return answerCallbackQuery;
     }
 
-    public static AnswerCallbackQuery sendErrorSearchResult(BotStateContextRepo context, String text) {
+    public static AnswerCallbackQuery sendErrorSearchResult(BotStateContext context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(true);
@@ -104,7 +104,7 @@ public class ResponseMessage {
         return answerCallbackQuery;
     }
 
-    public static SendMessage sendSubscripList(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+    public static SendMessage sendSubscripList(BotStateContext context, List<UserSubscription> userSubscriptionList) {
 
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
@@ -141,7 +141,7 @@ public class ResponseMessage {
         return message;
     }
 
-    public static EditMessageText sendSubscripListEdited(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+    public static EditMessageText sendSubscripListEdited(BotStateContext context, List<UserSubscription> userSubscriptionList) {
         int index = Integer.parseInt(context.getCallbackQuery().getData());
         EditMessageText editMessageText = new EditMessageText();
         Integer messageID = context.getCallbackQuery().getMessage().getMessageId();
@@ -183,7 +183,7 @@ public class ResponseMessage {
 
     }
 
-    public static AnswerCallbackQuery sendSubDeleting(BotStateContextRepo context, String text) {
+    public static AnswerCallbackQuery sendSubDeleting(BotStateContext context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(context.getCallbackQuery().getId());
         answerCallbackQuery.setShowAlert(true);

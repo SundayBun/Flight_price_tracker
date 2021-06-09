@@ -40,7 +40,7 @@ public class SchedulerTasks {
 
     private static final long ONE_HOUR = 1000 * 60 * 60;
 
-  @Scheduled(fixedRate = ONE_HOUR)
+    @Scheduled(fixedRate = ONE_HOUR)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -86,11 +86,11 @@ public class SchedulerTasks {
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol());
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                String text=textPriceDrop+textDates;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","+").replaceAll(" ","+"));
+                String text = textPriceDrop + textDates;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                String text=textPriceIncreasing+textDates;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","+").replaceAll(" ","+"));
+                String text = textPriceIncreasing + textDates;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else return;
 
         } else {
@@ -101,50 +101,28 @@ public class SchedulerTasks {
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
-                   userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
+                    userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
 
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                String text=textPriceDrop+textQuotes;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","+").replaceAll(" ","+"));
+                String text = textPriceDrop + textQuotes;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                String text=textPriceIncreasing+textQuotes;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-","+").replaceAll(" ","+"));
+                String text = textPriceIncreasing + textQuotes;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else return;
         }
 
         HttpResponse<JsonNode> response = null;
 
         try {
-            response=Unirest.post(urlString).asJson();
+            response = Unirest.post(urlString).asJson();
         } catch (UnirestException e) {
             e.printStackTrace();
         }
         assert response != null;
-        log.info("Unirest response status {}",response.getStatus());
+
+        log.info("Unirest response status {}", response.getStatus());
         log.info("Unirest response body {}", response.getBody());
-
     }
-
- //  @Scheduled(fixedRate = TEN_MINUTES)
-    public void renewSubscript2() {
-        String text="%7eChecking%7e++"+Emojis.DANCER;
-        String url = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=%s";
-        String urlString = String.format(url, botToken, "318658114", text);
-
-        //HttpResponse<JsonNode> response = null;
-
-        try {
-            HttpResponse<JsonNode> response = Unirest.post(urlString).asJson();
-            log.info("checking {}", response.getStatus());
-            log.info("checking {}", response.getBody());
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-
 }
 

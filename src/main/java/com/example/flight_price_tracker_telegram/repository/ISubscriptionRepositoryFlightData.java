@@ -14,6 +14,4 @@ public interface ISubscriptionRepositoryFlightData extends MongoRepository<UserF
 
     List<UserFlightData> findById(String id);
 
-    void deleteByChatId(Long chatId);
-
 }

@@ -16,9 +16,9 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class TelegramFacadeV2 {
+public class TelegramFacade {
     private BotState state;
-    private BotStateContextRepo context;
+    private BotStateContext context;
 
     private BotApiMethod<?> sendMessage;
 
@@ -57,7 +57,7 @@ public class TelegramFacadeV2 {
             userFlightData = new UserFlightData(chatId, id);
 
 
-            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
+            context = BotStateContext.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
             sendMessage = state.enter(context);
 
             repository.saveUserData(userData);
@@ -74,7 +74,7 @@ public class TelegramFacadeV2 {
                 userSubscription = new UserSubscription(chatId);
             }
 
-            context = BotStateContextRepo.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
+            context = BotStateContext.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
         }
 
         if(state.isQueryResponse() && !state.isTextMessageRequest() && !update.hasCallbackQuery() ){

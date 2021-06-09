@@ -27,15 +27,13 @@ public enum BotState {
     START(true, true) {
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
-
-          //  log.info("!!! MESSAGE: state:{}, message: {}", this, context.getInput());
+        public SendMessage enter(BotStateContext context) {
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Choose the language");
             }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             if (context.getCallbackQuery().getData().equals("Button \"ENG\" has been pressed")) {
                 context.getUserData().setLocale("en-US");
             } else {
@@ -53,14 +51,14 @@ public enum BotState {
         BotState next = null;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
 
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.EARTH + " Enter the country. " + Emojis.EARTH +
                     "\n (enter at least one letter and send it to see available countries)");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
 
             if (HandleInput.country(context) != null) {
@@ -78,13 +76,13 @@ public enum BotState {
     COUNTRY_BUTTONS(true, true) {
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
                     , "Select the country you are in");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
             context.getUserData().setCountry(context.getCallbackQuery().getData());
         }
@@ -98,13 +96,13 @@ public enum BotState {
 
     CURRENCY(true, true) {
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
                     Emojis.MONEYBAG + " Select the currency" + Emojis.MONEYBAG);
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
             context.getUserData().setCurrency(context.getCallbackQuery().getData());
         }
@@ -120,13 +118,13 @@ public enum BotState {
         BotState next = null;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Enter the origin place " + Emojis.MAG_RIGHT +
                     "\n (enter at least one letter and send it to see available places)");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
             context.getUserFlightData().setChatId(context.getUserData().getChatId());
             context.getUserData().setStateID(this.ordinal());
@@ -145,13 +143,13 @@ public enum BotState {
     },
     ORIGIN_PLACE_BUTTONS(false, true) {
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
                     , "Select the departure place");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
             context.getUserFlightData().setOriginPlace(context.getCallbackQuery().getData());
         }
@@ -167,14 +165,14 @@ public enum BotState {
         BotState next;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(),
                     "Enter the destination place " + Emojis.MAG_RIGHT +
                             "\n (enter at least one letter and send it to see available places)");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
 
             context.getUserData().setStateID(this.ordinal());
@@ -193,13 +191,13 @@ public enum BotState {
     },
     DESTINATION_PLACE_BUTTONS(false, true) {
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
                     , "Select the arrival place");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
             context.getUserFlightData().setDestinationPlace(context.getCallbackQuery().getData());
         }
@@ -215,12 +213,12 @@ public enum BotState {
         final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE + " Enter the outbound partial date (yyyy-mm-dd)");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
 
             if (datesValidator.isValid(context.getInput())) {
@@ -239,12 +237,12 @@ public enum BotState {
         final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), Emojis.DATE + " Enter the inbound partial date (yyyy-mm-dd) or tap on \"One way\"");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
             if (context.getCallbackQuery() != null && context.getCallbackQuery().getData().equals("Button \"One way\" has been pressed")) {
                 context.getUserFlightData().setInboundPartialDate(null);
@@ -268,12 +266,12 @@ public enum BotState {
         private BotState next;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Tap on " + Emojis.PLANE + " to find current min price info");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
             context.getUserData().setStateID(this.ordinal());
             if (context.getCallbackQuery().getData().equals("Button \"Find price\" has been pressed")) {
                 sendQueryForPrice(context);
@@ -294,18 +292,16 @@ public enum BotState {
         BotState next;
 
         @Override
-        public BotApiMethod<?> enter(BotStateContextRepo context) {
+        public BotApiMethod<?> enter(BotStateContext context) {
             if(!context.getUserFlightData().isRequestNotNull()){
 
-//            if(context.getUserFlightData().getSkyScannerResponseQuotes()!=null || context.getUserFlightData().getSkyScannerResponseDates()!=null) {
-//                return ResponseMessage.sendSearchResult(context, this);
                 return ResponseMessage.sendErrorSearchResult(context,"No flights have been found. \n Try to change query. "); //Invalid input data or no s
             }
             return ResponseMessage.sendSearchResult(context, this);
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
             if (context.getCallbackQuery().getData().equals("Button \"Track it\" has been pressed")) {
                 context.getUserSubscription().setChatId(context.getUserData().getChatId());
@@ -331,12 +327,12 @@ public enum BotState {
     },
     SUBSCRIPT(false, false) {
         @Override
-        public AnswerCallbackQuery enter(BotStateContextRepo context) {
+        public AnswerCallbackQuery enter(BotStateContext context) {
             return ResponseMessage.sendSubConfirmation(context, "Search result was added to track list");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
         }
 
@@ -350,7 +346,7 @@ public enum BotState {
         BotState next;
 
         @Override
-        public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+        public BotApiMethod<?> enter(BotStateContext context, List<UserSubscription> userSubscriptionList) {
             if (userSubscriptionList.size() > 0) {
                 return ResponseMessage.sendSubscripList(context, userSubscriptionList);
             }
@@ -358,7 +354,7 @@ public enum BotState {
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
+        public void handleInput(BotStateContext context, UserSubscriptionDataService repository) {
             if (context.getInput().startsWith("/Delete_")) {
                 repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
                 next = DELETE_SUBSCR;
@@ -377,7 +373,7 @@ public enum BotState {
         BotState next;
 
         @Override
-        public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+        public BotApiMethod<?> enter(BotStateContext context, List<UserSubscription> userSubscriptionList) {
             if (userSubscriptionList.size() > 0) {
                 return ResponseMessage.sendSubscripListEdited(context, userSubscriptionList);
             }
@@ -385,7 +381,7 @@ public enum BotState {
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
+        public void handleInput(BotStateContext context, UserSubscriptionDataService repository) {
             if (context.getInput().startsWith("/Delete_")) {
                 repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
                 next = DELETE_SUBSCR;
@@ -402,12 +398,12 @@ public enum BotState {
     DELETE_SUBSCR(false, false) {
 
         @Override
-        public AnswerCallbackQuery enter(BotStateContextRepo context) {
+        public AnswerCallbackQuery enter(BotStateContext context) {
             return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
         }
 
@@ -421,12 +417,12 @@ public enum BotState {
         BotState next;
 
         @Override
-        public SendMessage enter(BotStateContextRepo context) {
+        public SendMessage enter(BotStateContext context) {
             return ResponseMessage.sendMessage(context, this, isQueryResponse(), "Main menu");
         }
 
         @Override
-        public void handleInput(BotStateContextRepo context) {
+        public void handleInput(BotStateContext context) {
 
             if (context.getInput().equals("Change localisation info")) {
                 next = START;
@@ -475,23 +471,26 @@ public enum BotState {
     public boolean isQueryResponse() {
         return queryResponse;
     }
-
-    public void handleInput (BotStateContextRepo context) {
+    public boolean isTextMessageRequest() {
+        return textMessageRequest;
     }
 
-    public void handleInput(BotStateContextRepo context, UserSubscriptionDataService repository) {
+    public void handleInput (BotStateContext context) {
     }
 
-    public BotApiMethod<?> enter(BotStateContextRepo context) {
+    public void handleInput(BotStateContext context, UserSubscriptionDataService repository) {
+    }
+
+    public BotApiMethod<?> enter(BotStateContext context) {
         return null;
     }
 
-    public BotApiMethod<?> enter(BotStateContextRepo context, List<UserSubscription> userSubscriptionList) {
+    public BotApiMethod<?> enter(BotStateContext context, List<UserSubscription> userSubscriptionList) {
         return null;
     }
 
 
-    public void sendQueryForPrice(BotStateContextRepo context) {
+    public void sendQueryForPrice(BotStateContext context) {
 
         if (context.getUserFlightData().getInboundPartialDate() != null) {
             IFlightPriceDateClient priceDateClient = new FlightPriceDateClientImpl();
@@ -515,7 +514,5 @@ public enum BotState {
 
     public abstract BotState nextState(); //говорит в какое состояние переходить, когда текущее уже обработанно
 
-    public boolean isTextMessageRequest() {
-        return textMessageRequest;
-    }
+
 }

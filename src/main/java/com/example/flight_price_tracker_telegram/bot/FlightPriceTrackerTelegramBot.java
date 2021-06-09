@@ -9,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 
@@ -27,11 +26,9 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     private String botToken;
 
     @Autowired
-    private TelegramFacadeV2 telegramFacadeV2;
+    private TelegramFacade telegramFacade;
     private BotState botState;
 
-    @Autowired
-    private TFV3 tfv3;
 
     @Override
     public String getBotUsername() {
@@ -52,7 +49,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return telegramFacadeV2.handleUpdate(update,this);
+           return telegramFacade.handleUpdate(update,this);
         }
         return null;
     }

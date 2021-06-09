@@ -1,12 +1,9 @@
 package com.example.flight_price_tracker_telegram.bot.service;
 
 import com.example.flight_price_tracker_telegram.bot.BotState;
-import com.example.flight_price_tracker_telegram.bot.BotStateContextRepo;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
-import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
-import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
