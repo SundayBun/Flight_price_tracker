@@ -8,7 +8,6 @@ import com.example.flight_price_tracker_telegram.model.validations.DatesValidato
 import com.example.flight_price_tracker_telegram.model.validations.IDatesValidator;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -21,7 +20,6 @@ import java.util.List;
  * Possible bot states
  */
 
-@Slf4j
 @Component
 public enum BotState {
     START(true, true) {

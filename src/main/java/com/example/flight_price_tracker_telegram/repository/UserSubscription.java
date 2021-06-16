@@ -28,4 +28,6 @@ public class UserSubscription implements Serializable {
     public UserSubscription (Long chatId){
         this.chatId=chatId;
     }
+    public UserSubscription (){
+    }
 }

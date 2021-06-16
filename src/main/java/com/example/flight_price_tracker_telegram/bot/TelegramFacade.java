@@ -46,7 +46,7 @@ public class TelegramFacade {
 
             log.info("Update data: callbackQueryID:{}, callbackQuery: {}", id, callbackQuery.getData());
         }
-        UserData userData = repository.findByIdOrChatId(id, chatId);
+        UserData userData = repository.findByChatIdOrId(id, chatId);
         UserFlightData userFlightData = repository.findByIdOrChatID(id, chatId);
 
         if (userData == null) {

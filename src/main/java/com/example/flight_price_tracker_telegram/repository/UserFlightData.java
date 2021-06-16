@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 
 @Data
-@Document(collection = "UserSubscriptionFlightData")
+@Document(collection = "UserFlightData")
 public class UserFlightData implements Serializable {
 
     public UserFlightData(Long chatId, String id) {

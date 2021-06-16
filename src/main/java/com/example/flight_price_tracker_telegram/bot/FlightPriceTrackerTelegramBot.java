@@ -1,6 +1,7 @@
 package com.example.flight_price_tracker_telegram.bot;
 
 
+import com.example.flight_price_tracker_telegram.bot.refactored.TelegramFacadeRef;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,9 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
 
     @Autowired
     private TelegramFacade telegramFacade;
-    private BotState botState;
+
+    @Autowired
+    private TelegramFacadeRef telegramFacadeRef;
 
 
     @Override
@@ -49,7 +52,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return telegramFacade.handleUpdate(update,this);
+           return telegramFacadeRef.handleUpdate(update,this);
         }
         return null;
     }

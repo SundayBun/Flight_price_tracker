@@ -24,7 +24,7 @@ public class UserSubscriptionDataService {
         return userDataRepository.findByChatId(chatId);
     }
 
-    public UserData findByIdOrChatId(String id, Long chatID) {
+    public UserData findByChatIdOrId(String id, Long chatID) {
        if(userDataRepository.findByChatId(chatID)==null){
            return userDataRepository.findById(id);
        }
