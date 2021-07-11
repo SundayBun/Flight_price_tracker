@@ -14,6 +14,7 @@ public abstract class State {
     Context context;
     boolean textMessageRequest;
     boolean queryResponse;
+    StateName stateName;
 
     public State(Context context) {
         this.context = context;
@@ -28,21 +29,24 @@ public abstract class State {
 
     public BotApiMethod<?> enter(Context context){
         return null;
-    };
+    }
 
     public BotApiMethod<?> enter(Context context,  List<UserSubscription> userSubscriptionList){
         return null;
-    };
+    }
 
     public void handleInput(Context context){
 
-    };
+    }
 
     public void handleInput(Context context, UserSubscriptionDataService repository){
 
-    };
+    }
 
     public abstract State nextState();
 
+    public StateName getStateName(){
+        return stateName;
+    }
 
 }

@@ -6,10 +6,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 public class DataTransferredState extends State{
 
+    boolean changeState=false;
+
     public DataTransferredState(Context context) {
         super(context);
         this.textMessageRequest=false;
-        this.queryResponse=false;
+        this.queryResponse=true;
+        this.stateName = StateName.DATA_TRANSFERRED;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class DataTransferredState extends State{
 
     @Override
     public void handleInput(Context context) {
-
+        context.getUserData().setStateName(stateName);
         if (context.getCallbackQuery().getData().equals("Button \"Track it\" has been pressed")) {
             context.getUserSubscription().setChatId(context.getUserData().getChatId());
             context.getUserSubscription().setUserData(context.getUserData());
@@ -35,14 +38,17 @@ public class DataTransferredState extends State{
                 context.getUserSubscription().setSkyScannerResponseQuotes(context.getUserFlightData().getSkyScannerResponseQuotes());
                 context.getUserSubscription().setMinPrice(context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice());
             }
-            context.setState(new SubscriptionState(context));
-        } else {
-            context.setState(new MainMenuState(context));
+            changeState=true;
         }
     }
 
     @Override
     public State nextState() {
+        if (changeState) {
+            context.setState(new SubscriptionState(context));
+        } else {
+            context.setState(new MainMenuState(context));
+        }
         return context.getState();
     }
 }

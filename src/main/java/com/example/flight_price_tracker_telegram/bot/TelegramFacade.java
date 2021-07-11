@@ -53,7 +53,7 @@ public class TelegramFacade {
 
             state = BotState.getInitialState();
 
-            userData = new UserData(chatId, state.ordinal(), id);
+          //  userData = new UserData(chatId, state.ordinal(), id);
             userFlightData = new UserFlightData(chatId, id);
 
 

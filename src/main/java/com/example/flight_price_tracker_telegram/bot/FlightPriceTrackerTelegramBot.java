@@ -26,8 +26,8 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     @Value("${telegrambot.botToken}")
     private String botToken;
 
-    @Autowired
-    private TelegramFacade telegramFacade;
+//    @Autowired
+//    private TelegramFacade telegramFacade;
 
     @Autowired
     private TelegramFacadeRef telegramFacadeRef;

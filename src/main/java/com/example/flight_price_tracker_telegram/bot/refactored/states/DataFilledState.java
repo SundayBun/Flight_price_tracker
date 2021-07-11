@@ -9,12 +9,15 @@ import com.example.flight_price_tracker_telegram.model.service.IFlightPriceClien
 import com.example.flight_price_tracker_telegram.model.service.IFlightPriceDateClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
-public class DataFilledState extends State{
+public class DataFilledState extends State {
+
+    boolean changeState = false;
 
     public DataFilledState(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=true;
+        this.textMessageRequest = false;
+        this.queryResponse = true;
+        this.stateName = StateName.DATA_FILLED;
     }
 
     @Override
@@ -24,18 +27,20 @@ public class DataFilledState extends State{
 
     @Override
     public void handleInput(Context context) {
-        context.getUserData().setState(this);
+        context.getUserData().setStateName(stateName);
         if (context.getCallbackQuery().getData().equals("Button \"Find price\" has been pressed")) {
             sendQueryForPrice(context);
-            //вызвать страницу скайсканера и сохранить мин цену в UserData
-            context.setState(new DataTransferredState(context));
-        } else {
-            context.setState(new DataFilledState(context));
+            changeState = true;
         }
     }
 
     @Override
     public State nextState() {
+        if (changeState) {
+            context.setState(new DataTransferredState(context));
+        } else {
+            context.setState(new DataFilledState(context));
+        }
         return context.getState();
     }
 
@@ -46,7 +51,7 @@ public class DataFilledState extends State{
             context.getUserFlightData().setSkyScannerResponseDates(priceDateClient.browseQuotes(context.getUserData()
                     , context.getUserFlightData()));
 
-            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseDates() != null && context.getUserFlightData().getSkyScannerResponseDates().getQuotes().size()!=0);
+            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseDates() != null && context.getUserFlightData().getSkyScannerResponseDates().getQuotes().size() != 0);
 
             // log.info("Search result: {}", context.getUserFlightData().getSkyScannerResponseDates().toString());
 
@@ -55,7 +60,7 @@ public class DataFilledState extends State{
             context.getUserFlightData().setSkyScannerResponseQuotes(priceClient.browseQuotes(context.getUserData()
                     , context.getUserFlightData()));
 
-            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseQuotes() != null && context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().size()!=0);
+            context.getUserFlightData().setRequestNotNull(context.getUserFlightData().getSkyScannerResponseQuotes() != null && context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().size() != 0);
 
             //  log.info("Search result: {}", context.getUserFlightData().getSkyScannerResponseQuotes().toString());
         }

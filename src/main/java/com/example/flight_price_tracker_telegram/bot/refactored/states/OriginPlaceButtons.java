@@ -11,6 +11,7 @@ public class OriginPlaceButtons extends State{
         super(context);
         this.textMessageRequest=false;
         this.queryResponse=true;
+        this.stateName = StateName.ORIGIN_PLACE_BUTTONS;
     }
 
     @Override
@@ -21,7 +22,7 @@ public class OriginPlaceButtons extends State{
 
     @Override
     public void handleInput(Context context) {
-        context.getUserData().setState(this);
+        context.getUserData().setStateName(stateName);
         context.getUserFlightData().setOriginPlace(context.getCallbackQuery().getData());
     }
 

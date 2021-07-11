@@ -2,7 +2,6 @@ package com.example.flight_price_tracker_telegram.bot.refactored.states;
 
 import com.example.flight_price_tracker_telegram.bot.refactored.Context;
 import com.example.flight_price_tracker_telegram.bot.refactored.service.ResponseMessageRef;
-import lombok.EqualsAndHashCode;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 
@@ -10,8 +9,9 @@ public class StartState extends State{
 
     public StartState(Context context){
         super(context);
-        this.textMessageRequest=true;
+        this.textMessageRequest=false;
         this.queryResponse=true;
+        this.stateName = StateName.START;
     }
 
     @Override
@@ -21,6 +21,7 @@ public class StartState extends State{
 
     @Override
     public void handleInput(Context context) {
+        context.getUserData().setStateName(stateName);
         if (context.getCallbackQuery().getData().equals("Button \"ENG\" has been pressed")) {
             context.getUserData().setLocale("en-US");
         } else {

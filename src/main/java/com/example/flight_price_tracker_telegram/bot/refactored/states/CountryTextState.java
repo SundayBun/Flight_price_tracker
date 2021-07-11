@@ -9,10 +9,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 public class CountryTextState extends State{
 
+    boolean changeState=false;
+
     public CountryTextState(Context context){
         super(context);
         this.textMessageRequest=true;
         this.queryResponse=false;
+        this.stateName = StateName.COUNTRY_TEXT;
     }
 
     @Override
@@ -24,17 +27,20 @@ public class CountryTextState extends State{
 
     @Override
     public void handleInput(Context context) {
-        context.getUserData().setState(this);
-
+        context.getUserData().setStateName(stateName);
         if (HandleInputRef.country(context) != null) {
-            context.setState(new CountryButtonState(context));
-        } else {
-            context.setState(new CountryTextState(context));
+            changeState=true;
         }
+
     }
 
     @Override
     public State nextState() {
-       return context.getState();
+        if (changeState) {
+            context.setState(new CountryButtonState(context));
+        } else {
+            context.setState(new CountryTextState(context));
+        }
+        return context.getState();
     }
 }

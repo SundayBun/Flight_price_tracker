@@ -10,6 +10,7 @@ public class SubscriptionState extends State {
         super(context);
         this.textMessageRequest=false;
         this.queryResponse=false;
+        this.stateName = StateName.SUBSCRIPT;
     }
 
     @Override

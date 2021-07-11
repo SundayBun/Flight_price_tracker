@@ -6,43 +6,40 @@ import com.example.flight_price_tracker_telegram.bot.refactored.service.Response
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
-public class OriginPlaceText extends State{
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+public class OriginPlaceText extends State {
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+    boolean changeState = false;
 
     public OriginPlaceText(Context context) {
         super(context);
-        this.textMessageRequest=true;
-        this.queryResponse=false;
+        this.textMessageRequest = true;
+        this.queryResponse = false;
+        this.stateName = StateName.ORIGIN_PLACE_TEXT;
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessageRef.sendMessage(context,  "Enter the origin place " + Emojis.MAG_RIGHT +
+        return ResponseMessageRef.sendMessage(context, "Enter the origin place " + Emojis.MAG_RIGHT +
                 "\n (enter at least one letter and send it to see available places)");
     }
 
     @Override
     public void handleInput(Context context) {
         context.getUserFlightData().setChatId(context.getUserData().getChatId());
-        context.getUserData().setState(this);
+        context.getUserData().setStateName(stateName);
 
         if (HandleInputRef.places(context) != null) {
-            context.setState(new OriginPlaceButtons(context));
-        } else {
-            context.setState(new OriginPlaceText(context));
+            changeState = true;
         }
     }
 
     @Override
     public State nextState() {
+        if (changeState) {
+            context.setState(new OriginPlaceButtons(context));
+        } else {
+            context.setState(new OriginPlaceText(context));
+        }
         return context.getState();
     }
 }

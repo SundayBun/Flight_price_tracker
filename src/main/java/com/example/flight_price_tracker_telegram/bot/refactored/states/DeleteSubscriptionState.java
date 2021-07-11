@@ -9,6 +9,7 @@ public class DeleteSubscriptionState extends State {
         super(context);
         this.textMessageRequest=false;
         this.queryResponse=false;
+        this.stateName = StateName.DELETE_SUBSCR;
     }
 
     @Override

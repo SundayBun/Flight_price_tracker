@@ -6,20 +6,23 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 public class MainMenuState extends State {
 
+
     public MainMenuState(Context context) {
         super(context);
         this.textMessageRequest=true;
         this.queryResponse=false;
+        this.stateName = StateName.MAIN_MENU;
 
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessageRef.sendMessage(context,  "Main menu");
+        return null; //ResponseMessageRef.sendMessage(context,  "Main menu");
     }
 
     @Override
     public void handleInput(Context context) {
+        context.getUserData().setStateName(stateName);
 
         if (context.getInput().equals("Change localisation info")) {
             context.setState(new StartState(context));

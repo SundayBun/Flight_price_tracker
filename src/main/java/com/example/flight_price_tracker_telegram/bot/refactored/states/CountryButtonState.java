@@ -9,8 +9,9 @@ public class CountryButtonState extends State{
 
     public CountryButtonState(Context context) {
         super(context);
-        this.textMessageRequest=true;
+        this.textMessageRequest=false;
         this.queryResponse=true;
+        this.stateName = StateName.COUNTRY_BUTTONS;
     }
 
     @Override
@@ -21,7 +22,7 @@ public class CountryButtonState extends State{
 
     @Override
     public void handleInput(Context context) {
-        context.getUserData().setState(this);
+        context.getUserData().setStateName(stateName);
         context.getUserData().setCountry(context.getCallbackQuery().getData());
     }
 

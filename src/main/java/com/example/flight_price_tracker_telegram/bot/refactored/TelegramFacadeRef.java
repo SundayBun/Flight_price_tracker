@@ -3,6 +3,8 @@ package com.example.flight_price_tracker_telegram.bot.refactored;
 
 import com.example.flight_price_tracker_telegram.bot.FlightPriceTrackerTelegramBot;
 import com.example.flight_price_tracker_telegram.bot.refactored.states.*;
+import com.example.flight_price_tracker_telegram.bot.validation.IInputValidator;
+import com.example.flight_price_tracker_telegram.bot.validation.InputValidatorImpl;
 import com.example.flight_price_tracker_telegram.repository.UserData;
 import com.example.flight_price_tracker_telegram.repository.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
@@ -30,11 +32,14 @@ public class TelegramFacadeRef {
     @Autowired
     private UserSubscriptionDataService repository;
     private UserSubscription userSubscription;
+    @Autowired
+    private IInputValidator inputValidator;
 
     private CallbackQuery callbackQuery;
     private long chatId;
     private String text;
     private String id;
+
 
     public BotApiMethod<?> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
 
@@ -51,8 +56,8 @@ public class TelegramFacadeRef {
 
             log.info("Update data: callbackQueryID:{}, callbackQuery: {}", id, callbackQuery.getData());
         }
-        UserData userData = repository.findByChatId(chatId);
-        UserFlightData userFlightData = repository.findByChatID(chatId);
+        UserData userData = repository.findByChatIdOrId(id,chatId);
+        UserFlightData userFlightData = repository.findByIdOrChatID(id,chatId);
 
         if (userData == null) {
 
@@ -60,6 +65,9 @@ public class TelegramFacadeRef {
             userFlightData = new UserFlightData(chatId, id);
 
             context = new Context(userData, userFlightData, text, callbackQuery);
+
+            userData.setStateName(context.getState().getStateName());
+
             sendMessage = context.getState().enter(context);
 
             repository.saveUserData(userData);
@@ -70,7 +78,7 @@ public class TelegramFacadeRef {
             return sendMessage;
         } else {
             context = new Context(userData, userFlightData, text, callbackQuery);
-            context.setState(userData.getState());
+            context.setState(findState());
 
             mainCommand(update);// checking if query has main menu command
 
@@ -79,31 +87,36 @@ public class TelegramFacadeRef {
                 context.setUserSubscription(userSubscription);
             }
 
+            //sendMessage = context.getState().enter(context);
+
+            if (!inputValidator.isValidInput(update, context)) {
+                return sendMessage = context.getState().enter(context);
+            }
+
+            if (isSubscrStates(context)) {
+                context.getState().handleInput(context, repository);
+            } else {
+                context.getState().handleInput(context);
+            }
+                context.getState().nextState();
+
+            if (isSubscrStates(context)) {
+                sendMessage = context.getState().enter(context, repository.findSubByChatId(chatId));
+            } else {
+                sendMessage = context.getState().enter(context);
+            }
+
+             userData.setStateName(context.getState().getStateName());
+
+            repository.saveUserData(userData);
+            repository.saveUserFlightData(userFlightData);
+            saveSubscrip(context);
+
+            log.info("Process data: chatID:{}, state: {}", chatId, context.getState());
+
+            return sendMessage;
         }
-
-        if (isInValidInput(context, update)) return sendMessage;
-
-        if (isSubscrStates(context)) {
-            context.getState().handleInput(context, repository);
-            context.getState().nextState();
-            sendMessage = context.getState().enter(context, repository.findSubByChatId(chatId));
-        } else {
-            context.getState().handleInput(context);
-            context.getState().nextState();
-            sendMessage = context.getState().enter(context);
-        }
-
-        userData.setState(context.getState());
-
-        repository.saveUserData(userData);
-        repository.saveUserFlightData(userFlightData);
-        saveSubscrip(context);
-
-        log.info("Process data: chatID:{}, state: {}", chatId, context.getState());
-
-        return sendMessage;
     }
-
     public void mainCommand(Update update) {
 
         Map<String, State> commands = new HashMap<>();
@@ -120,6 +133,7 @@ public class TelegramFacadeRef {
         commands.put("Change localisation info", new MainMenuState(context));
         commands.put("New search", new MainMenuState(context));
         commands.put("See your track list", new MainMenuState(context));
+        commands.put("/start",new StartState(context));
 
         if (update.hasMessage() && commands.containsKey(update.getMessage().getText())) {
             context.setState(commands.get(update.getMessage().getText()));
@@ -137,13 +151,35 @@ public class TelegramFacadeRef {
         }
     }
 
-    public boolean isInValidInput(Context context, Update update) {
-
-        return (context.getState().isQueryResponse() && !context.getState().isTextMessageRequest() && !update.hasCallbackQuery())
-                || (!context.getState().isQueryResponse() && context.getState().isTextMessageRequest() && !update.hasMessage());
-    }
+//    public boolean isInValidInput(Context context, Update update) {
+//
+//        return (context.getState().isQueryResponse() && !context.getState().isTextMessageRequest() && !update.hasCallbackQuery())
+//                || (!context.getState().isQueryResponse() && context.getState().isTextMessageRequest() && !update.hasMessage());
+//    }
 
     public boolean isSubscrStates(Context context) {
-        return context.getState().equals(new SubscriptionListState(context)) || context.getState().equals(new SubscriptionListEditState(context));
+        return context.getState().equals(new SubscriptionListState(context));
+    }
+
+    public State findState(){
+        switch (context.getUserData().getStateName()){
+            case START:new StartState(context);
+            case COUNTRY_TEXT: return new CountryTextState(context);
+            case COUNTRY_BUTTONS: return new CountryButtonState(context);
+            case CURRENCY:return new CurrencyState(context);
+            case ORIGIN_PLACE_TEXT:return new OriginPlaceText(context);
+            case ORIGIN_PLACE_BUTTONS: return new OriginPlaceButtons(context);
+            case DESTINATION_PLACE_TEXT: return new DestinationPlaceTextState(context);
+            case DESTINATION_PLACE_BUTTONS:return new DestinationPlaceButtonsState(context);
+            case OUTBOUND_PARTIAL_DATE:return new OutBoundPartialDatesState(context);
+            case INBOUND_PARTIAL_DATE: return new InboundPartialDateState(context);
+            case DATA_FILLED: return new DataFilledState(context);
+            case DATA_TRANSFERRED: return new DataTransferredState(context);
+            case SUBSCR_LIST:return new SubscriptionListState(context);
+            case SUBSCRIPT: return new SubscriptionState(context);
+            case MAIN_MENU: return new MainMenuState(context);
+            default: return new StartState(context);
+
+        }
     }
 }

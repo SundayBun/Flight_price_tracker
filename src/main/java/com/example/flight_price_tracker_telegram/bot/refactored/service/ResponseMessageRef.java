@@ -9,9 +9,11 @@ import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Slf4j
@@ -77,7 +79,7 @@ public class ResponseMessageRef {
     public static SendMessage sendSearchCountry(Context context, List<CountryDTO> countryDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
-        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardCountry(countryDTOList));
+        message.setReplyMarkup(ButtonHandlerRef.getMessageFromKeyboardCountry(countryDTOList));
         message.setText(text);
 
         return message;
@@ -86,7 +88,7 @@ public class ResponseMessageRef {
     public static SendMessage sendSearchPlaces(Context context, List<PlacesDTO> placesDTOList, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
-        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardPlaces(placesDTOList));
+        message.setReplyMarkup(ButtonHandlerRef.getMessageFromKeyboardPlaces(placesDTOList));
         message.setText(text);
 
         return message;
@@ -108,84 +110,26 @@ public class ResponseMessageRef {
         return answerCallbackQuery;
     }
 
-    public static SendMessage sendSubscripList(Context context, List<UserSubscription> userSubscriptionList) {
-
+    public static BotApiMethod<?> sendSubscripList(Context context, List<UserSubscription> userSubscriptionList, int page) {
         SendMessage message = new SendMessage();
-        message.setChatId(context.getUserData().getChatId().toString());
-
-            if (userSubscriptionList.get(0).getUserFlightData().getInboundPartialDate() == null) {
-                String textOneWay = "-------------FLIGHT INFO-------------" + "\n" +
-                        "\n   Origin place: " + userSubscriptionList.get(0).getUserFlightData().getOriginPlace() +
-                        "\n   Destination place: " + userSubscriptionList.get(0).getUserFlightData().getDestinationPlace() + "\n" +
-                        "\n   Outbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getOutboundPartialDate() +
-                        "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
-                        userSubscriptionList.get(0).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
-                        "\n   Carrier: " + userSubscriptionList.get(0).getSkyScannerResponseQuotes().getCarriers() + "\n" +
-                        "\n /Delete_0";
-
-                message.setText(textOneWay);
-            } else {
-                String textTwoWays = "-------------FLIGHT INFO-------------" + "\n" +
-                        "\n   Origin place: " + userSubscriptionList.get(0).getUserFlightData().getOriginPlace() +
-                        "\n   Destination place: " + userSubscriptionList.get(0).getUserFlightData().getDestinationPlace() + "\n" +
-                        "\n   Outbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getOutboundPartialDate() +
-//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                        "\n   Inbound partial date: " + userSubscriptionList.get(0).getUserFlightData().getInboundPartialDate() +
-//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                        "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice() +
-                        userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                        "\n   Carrier: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getCarriers() + "\n" +
-                        "\n /Delete_0";
-
-                message.setText(textTwoWays);
-            }
-        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
-        return message;
-    }
-
-    public static EditMessageText sendSubscripListEdited(Context context, List<UserSubscription> userSubscriptionList) {
-        int index = Integer.parseInt(context.getCallbackQuery().getData());
         EditMessageText editMessageText = new EditMessageText();
-        Integer messageID = context.getCallbackQuery().getMessage().getMessageId();
 
-        editMessageText.setChatId(context.getUserData().getChatId().toString());
-        editMessageText.setMessageId(messageID);
-
-        if (userSubscriptionList.get(index).getUserFlightData().getInboundPartialDate()== null) {
-            String texOneWay = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + userSubscriptionList.get(index).getUserFlightData().getOriginPlace() +
-                    "\n   Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
-                    "\n   Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
-                    "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
-                    userSubscriptionList.get(index).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseQuotes().getCarriers() + "\n" +
-                    "\n /Delete_" + context.getCallbackQuery().getData();
-            editMessageText.setText(texOneWay);
+        if (page == 0) {
+            message.setChatId(context.getUserData().getChatId().toString());
+            message.setText(textRepresentation(context, userSubscriptionList, page));
+            message.setReplyMarkup(ButtonHandlerRef.getMessageFromKeyboardSubList(userSubscriptionList));
+            return message;
         } else {
-            String texTwoWays = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + userSubscriptionList.get(index).getUserFlightData().getOriginPlace() +
-                    "\n   Destination place: " + userSubscriptionList.get(index).getUserFlightData().getDestinationPlace() +
-                    "\n   Outbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getOutboundPartialDate() +
-//                "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                    "\n   Inbound partial date: " + userSubscriptionList.get(index).getUserFlightData().getInboundPartialDate() +
-//                "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-//                userSubscriptionList.get(index).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() +
-                    "\n   Min price: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice() +
-                    userSubscriptionList.get(index).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + userSubscriptionList.get(index).getSkyScannerResponseDates().getCarriers() + "\n" +
-                    "\n /Delete_" + context.getCallbackQuery().getData();
+            Integer messageID = context.getCallbackQuery().getMessage().getMessageId();
+            editMessageText.setChatId(context.getUserData().getChatId().toString());
+            editMessageText.setMessageId(messageID);
+            editMessageText.setText(textRepresentation(context, userSubscriptionList, page));
+            editMessageText.setReplyMarkup(ButtonHandlerRef.getMessageFromKeyboardSubList(userSubscriptionList));
 
-            editMessageText.setText(texTwoWays);
+            return editMessageText;
         }
-
-        editMessageText.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
-
-        return editMessageText;
-
     }
+
 
     public static AnswerCallbackQuery sendSubDeleting(Context context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
@@ -193,6 +137,35 @@ public class ResponseMessageRef {
         answerCallbackQuery.setShowAlert(true);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
+    }
+
+    public static String textRepresentation(Context context, List<UserSubscription> userSubscriptionList,int page){
+        String text="";
+        if (userSubscriptionList.get(page).getUserFlightData().getInboundPartialDate() == null) {
+            text= "-------------FLIGHT INFO-------------" + "\n" +
+                    "\n   Origin place: " + userSubscriptionList.get(page).getUserFlightData().getOriginPlace() +
+                    "\n   Destination place: " + userSubscriptionList.get(page).getUserFlightData().getDestinationPlace() + "\n" +
+                    "\n   Outbound partial date: " + userSubscriptionList.get(page).getUserFlightData().getOutboundPartialDate() +
+                    "\n   Min price: " + userSubscriptionList.get(page).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
+                    userSubscriptionList.get(page).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
+                    "\n   Carrier: " + userSubscriptionList.get(page).getSkyScannerResponseQuotes().getCarriers() + "\n" +
+                    "\n /Delete_"+page;
+        } else {
+            text = "-------------FLIGHT INFO-------------" + "\n" +
+                    "\n   Origin place: " + userSubscriptionList.get(page).getUserFlightData().getOriginPlace() +
+                    "\n   Destination place: " + userSubscriptionList.get(page).getUserFlightData().getDestinationPlace() + "\n" +
+                    "\n   Outbound partial date: " + userSubscriptionList.get(page).getUserFlightData().getOutboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                    "\n   Inbound partial date: " + userSubscriptionList.get(page).getUserFlightData().getInboundPartialDate() +
+//                "\n   Min price: " + userSubscriptionList.get(0).getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
+//                userSubscriptionList.get(0).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                    "\n   Min price: " + userSubscriptionList.get(page).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice() +
+                    userSubscriptionList.get(page).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
+                    "\n   Carrier: " + userSubscriptionList.get(page).getSkyScannerResponseDates().getCarriers() + "\n" +
+                    "\n /Delete_"+page;
+        }
+        return text;
     }
 
 }

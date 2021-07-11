@@ -11,6 +11,7 @@ public class CurrencyState extends State{
         super(context);
         this.textMessageRequest=false;
         this.queryResponse=true;
+        this.stateName = StateName.CURRENCY;
     }
 
     @Override
@@ -21,7 +22,7 @@ public class CurrencyState extends State{
 
     @Override
     public void handleInput(Context context) {
-        context.getUserData().setState(this);
+        context.getUserData().setStateName(stateName);
         context.getUserData().setCurrency(context.getCallbackQuery().getData());
     }
 
