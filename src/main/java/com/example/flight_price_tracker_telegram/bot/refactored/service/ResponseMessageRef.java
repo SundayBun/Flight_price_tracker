@@ -13,7 +13,6 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class ResponseMessageRef {
         if (!context.getState().isQueryResponse()) {
             message.setText(text);
             if (context.getState().equals(new OriginPlaceText(context))) {
-                message.setReplyMarkup(ButtonHandler.getMainMenuKeyboard());
+                message.setReplyMarkup(ButtonHandlerRef.getMainMenuKeyboard());
             }
         } else {
             message.setText(text);

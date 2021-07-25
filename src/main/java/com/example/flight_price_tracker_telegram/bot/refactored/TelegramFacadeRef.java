@@ -4,7 +4,6 @@ package com.example.flight_price_tracker_telegram.bot.refactored;
 import com.example.flight_price_tracker_telegram.bot.FlightPriceTrackerTelegramBot;
 import com.example.flight_price_tracker_telegram.bot.refactored.states.*;
 import com.example.flight_price_tracker_telegram.bot.validation.IInputValidator;
-import com.example.flight_price_tracker_telegram.bot.validation.InputValidatorImpl;
 import com.example.flight_price_tracker_telegram.repository.UserData;
 import com.example.flight_price_tracker_telegram.repository.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
@@ -80,7 +79,7 @@ public class TelegramFacadeRef {
             context = new Context(userData, userFlightData, text, callbackQuery);
             context.setState(findState());
 
-            mainCommand(update);// checking if query has main menu command
+            buttonCommand(update);// checking if query has buttons command
 
             if (context.getState().equals(new DataTransferredState(context))) {
                 userSubscription = new UserSubscription(chatId);
@@ -117,7 +116,7 @@ public class TelegramFacadeRef {
             return sendMessage;
         }
     }
-    public void mainCommand(Update update) {
+    public void buttonCommand(Update update) {
 
         Map<String, State> commands = new HashMap<>();
 

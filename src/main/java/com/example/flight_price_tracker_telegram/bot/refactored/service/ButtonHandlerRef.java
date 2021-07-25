@@ -21,148 +21,143 @@ import java.util.Map;
 @Service
 public class ButtonHandlerRef {
 
-    public static Map <String,String> buttons;
+    public static Map<String, String> buttons;
 
-    public static Map<String,String > toMap(){
+    public static Map<String, String> toMap() {
 
-        buttons=new HashMap<>();
-        buttons.put(Emojis.GB_FLAG.toString(),"Button \"ENG\" has been pressed");
-        buttons.put(Emojis.RUS_FLAG.toString(),"Button \"RUS\" has been pressed");
-        buttons.put(Emojis.PLANE.toString(),"Button \"Find price\" has been pressed");
-        buttons.put("USD","USD");
-        buttons.put("EUR","EUR");
-        buttons.put("RUB","RUB");
-        buttons.put("Track it","Button \"Track it\" has been pressed");
-        buttons.put("One way","Button \"One way\" has been pressed");
+        buttons = new HashMap<>();
+        buttons.put(Emojis.GB_FLAG.toString(), "Button \"ENG\" has been pressed");
+        buttons.put(Emojis.RUS_FLAG.toString(), "Button \"RUS\" has been pressed");
+        buttons.put(Emojis.PLANE.toString(), "Button \"Find price\" has been pressed");
+        buttons.put("USD", "USD");
+        buttons.put("EUR", "EUR");
+        buttons.put("RUB", "RUB");
+        buttons.put("Track it", "Button \"Track it\" has been pressed");
+        buttons.put("One way", "Button \"One way\" has been pressed");
         return buttons;
 
     }
 
     public static InlineKeyboardMarkup getMessageFromKeyboard(Context context) {
 
-        buttons=toMap();
+        buttons = toMap();
 
-        if (context.getState().equals(new StartState(context))) {
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
 
-            InlineKeyboardButton inlineKeyboardButtonEng = new InlineKeyboardButton();
-            InlineKeyboardButton inlineKeyboardButtonRus = new InlineKeyboardButton();
-            inlineKeyboardButtonEng.setText(Emojis.GB_FLAG.toString());
-            inlineKeyboardButtonEng.setCallbackData(buttons.get(Emojis.GB_FLAG.toString()));
-            inlineKeyboardButtonRus.setText(Emojis.RUS_FLAG.toString());
-            inlineKeyboardButtonRus.setCallbackData(buttons.get(Emojis.RUS_FLAG.toString()));
-            keyboardButtonsRow.add(inlineKeyboardButtonEng);
-            keyboardButtonsRow.add(inlineKeyboardButtonRus);
+        switch (context.getState().getStateName()) {
+            case START: {
+                InlineKeyboardButton inlineKeyboardButtonEng = new InlineKeyboardButton();
+                InlineKeyboardButton inlineKeyboardButtonRus = new InlineKeyboardButton();
+                inlineKeyboardButtonEng.setText(Emojis.GB_FLAG.toString());
+                inlineKeyboardButtonEng.setCallbackData(buttons.get(Emojis.GB_FLAG.toString()));
+                inlineKeyboardButtonRus.setText(Emojis.RUS_FLAG.toString());
+                inlineKeyboardButtonRus.setCallbackData(buttons.get(Emojis.RUS_FLAG.toString()));
+                keyboardButtonsRow.add(inlineKeyboardButtonEng);
+                keyboardButtonsRow.add(inlineKeyboardButtonRus);
 
-            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
+                List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+                keyboardButtonsRows.add(keyboardButtonsRow);
 
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
-        } else if (context.getState().equals(new DataFilledState(context))) {
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+                inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+                return inlineKeyboardMarkup;
+            }
+            case DATA_FILLED: {
 
-            InlineKeyboardButton inlineKeyboardButtonFind = new InlineKeyboardButton();
-            inlineKeyboardButtonFind.setText(Emojis.PLANE.toString());
-            inlineKeyboardButtonFind.setCallbackData(buttons.get(Emojis.PLANE.toString()));
-            keyboardButtonsRow.add(inlineKeyboardButtonFind);
+                InlineKeyboardButton inlineKeyboardButtonFind = new InlineKeyboardButton();
+                inlineKeyboardButtonFind.setText(Emojis.PLANE.toString());
+                inlineKeyboardButtonFind.setCallbackData(buttons.get(Emojis.PLANE.toString()));
+                keyboardButtonsRow.add(inlineKeyboardButtonFind);
 
-            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
+                List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+                keyboardButtonsRows.add(keyboardButtonsRow);
 
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
-        } else if (context.getState().equals(new CurrencyState(context))) {
+                inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+                return inlineKeyboardMarkup;
+            }
+            case CURRENCY: {
 
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+                InlineKeyboardButton inlineKeyboardButtonUSD = new InlineKeyboardButton();
+                InlineKeyboardButton inlineKeyboardButtonEUR = new InlineKeyboardButton();
+                InlineKeyboardButton inlineKeyboardButtonRUB = new InlineKeyboardButton();
 
-            InlineKeyboardButton inlineKeyboardButtonUSD = new InlineKeyboardButton();
-            InlineKeyboardButton inlineKeyboardButtonEUR = new InlineKeyboardButton();
-            InlineKeyboardButton inlineKeyboardButtonRUB = new InlineKeyboardButton();
+                inlineKeyboardButtonUSD.setText("USD");
+                inlineKeyboardButtonUSD.setCallbackData(buttons.get("USD"));
+                inlineKeyboardButtonEUR.setText("EUR");
+                inlineKeyboardButtonEUR.setCallbackData(buttons.get("EUR"));
+                inlineKeyboardButtonRUB.setText("RUB");
+                inlineKeyboardButtonRUB.setCallbackData(buttons.get("RUB"));
 
-            inlineKeyboardButtonUSD.setText("USD");
-            inlineKeyboardButtonUSD.setCallbackData(buttons.get("USD"));
-            inlineKeyboardButtonEUR.setText("EUR");
-            inlineKeyboardButtonEUR.setCallbackData(buttons.get("EUR"));
-            inlineKeyboardButtonRUB.setText("RUB");
-            inlineKeyboardButtonRUB.setCallbackData(buttons.get("RUB"));
+                keyboardButtonsRow.add(inlineKeyboardButtonUSD);
+                keyboardButtonsRow.add(inlineKeyboardButtonEUR);
+                keyboardButtonsRow.add(inlineKeyboardButtonRUB);
 
-            keyboardButtonsRow.add(inlineKeyboardButtonUSD);
-            keyboardButtonsRow.add(inlineKeyboardButtonEUR);
-            keyboardButtonsRow.add(inlineKeyboardButtonRUB);
+                List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+                keyboardButtonsRows.add(keyboardButtonsRow);
 
-            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
+                inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+                return inlineKeyboardMarkup;
+            }
+            case DATA_TRANSFERRED: {
 
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
+                InlineKeyboardButton inlineKeyboardButtonTrack = new InlineKeyboardButton();
+                inlineKeyboardButtonTrack.setText("Track it");
+                inlineKeyboardButtonTrack.setCallbackData(buttons.get("Track it"));
+                keyboardButtonsRow.add(inlineKeyboardButtonTrack);
 
-        } else if(context.getState().equals(new DataTransferredState(context))){
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+                List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+                keyboardButtonsRows.add(keyboardButtonsRow);
 
-            InlineKeyboardButton inlineKeyboardButtonTrack = new InlineKeyboardButton();
-            inlineKeyboardButtonTrack.setText("Track it");
-            inlineKeyboardButtonTrack.setCallbackData(buttons.get("Track it"));
-            keyboardButtonsRow.add(inlineKeyboardButtonTrack);
+                inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+                return inlineKeyboardMarkup;
+            }
+            case INBOUND_PARTIAL_DATE: {
 
-            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
+                InlineKeyboardButton inlineKeyboardOneWay = new InlineKeyboardButton();
+                inlineKeyboardOneWay.setText("One way");
+                inlineKeyboardOneWay.setCallbackData(buttons.get("One way"));
+                keyboardButtonsRow.add(inlineKeyboardOneWay);
 
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
-        } else if(context.getState().equals(new InboundPartialDateState(context))){
+                List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
+                keyboardButtonsRows.add(keyboardButtonsRow);
 
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-
-            InlineKeyboardButton inlineKeyboardOneWay = new InlineKeyboardButton();
-            inlineKeyboardOneWay.setText("One way");
-            inlineKeyboardOneWay.setCallbackData(buttons.get("One way"));
-            keyboardButtonsRow.add(inlineKeyboardOneWay);
-
-            List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
-            keyboardButtonsRows.add(keyboardButtonsRow);
-
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
+                inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+                return inlineKeyboardMarkup;
+            }
+            default:
+                return null;
         }
-
-        return null;
     }
 
     public static InlineKeyboardMarkup getMessageFromKeyboardCountry(List<CountryDTO> countryDTOList) {
 
-            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
 
 
-            for (CountryDTO country:countryDTOList){
-                List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-                InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
+        for (CountryDTO country : countryDTOList) {
+            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
-                inlineKeyboardButton.setText(country.getName());
-                inlineKeyboardButton.setCallbackData(country.getCode());
+            inlineKeyboardButton.setText(country.getName());
+            inlineKeyboardButton.setCallbackData(country.getCode());
 
-                keyboardButtonsRow.add(inlineKeyboardButton);
-                keyboardButtonsRows.add(keyboardButtonsRow);
-            }
+            keyboardButtonsRow.add(inlineKeyboardButton);
+            keyboardButtonsRows.add(keyboardButtonsRow);
+        }
 
-            inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
-            return inlineKeyboardMarkup;
+        inlineKeyboardMarkup.setKeyboard(keyboardButtonsRows);
+        return inlineKeyboardMarkup;
     }
 
     public static InlineKeyboardMarkup getMessageFromKeyboardPlaces(List<PlacesDTO> placesDTOList) {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
 
-        for (PlacesDTO places:placesDTOList){
+        for (PlacesDTO places : placesDTOList) {
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
             inlineKeyboardButton.setText(places.getPlaceName());
             inlineKeyboardButton.setCallbackData(places.getPlaceId());
@@ -203,16 +198,16 @@ public class ButtonHandlerRef {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
-        List< List<InlineKeyboardButton>> keyboardButtonsRows=new ArrayList<>();
+        List<List<InlineKeyboardButton>> keyboardButtonsRows = new ArrayList<>();
         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-        int n=1;
+        int n = 1;
 
-        for (UserSubscription subscription:subscriptionList){
+        for (UserSubscription subscription : subscriptionList) {
 
-            InlineKeyboardButton inlineKeyboardButton=new InlineKeyboardButton();
-            inlineKeyboardButton.setText(""+n);
-           // inlineKeyboardButton.setCallbackData(subscription.getId());
-            inlineKeyboardButton.setCallbackData(""+subscriptionList.indexOf(subscription));
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText("" + n);
+            // inlineKeyboardButton.setCallbackData(subscription.getId());
+            inlineKeyboardButton.setCallbackData("" + subscriptionList.indexOf(subscription));
             n++;
             keyboardButtonsRow.add(inlineKeyboardButton);
 
