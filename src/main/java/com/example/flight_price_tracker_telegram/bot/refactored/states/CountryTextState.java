@@ -20,9 +20,8 @@ public class CountryTextState extends State{
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessageRef.sendMessage(context,  Emojis.EARTH + " Enter the country. " + Emojis.EARTH +
+        return ResponseMessageRef.sendMessage(context,  Emojis.EARTH + " Enter the country you are based in" + Emojis.EARTH +
                 "\n (enter at least one letter and send it to see available countries)");
-   //     return null;
     }
 
     @Override

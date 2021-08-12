@@ -40,7 +40,7 @@ public class SchedulerTasks {
 
     private static final long ONE_HOUR = 1000 * 60 * 60;
 
-   // @Scheduled(fixedRate = ONE_HOUR)
+  //  @Scheduled(fixedRate = ONE_HOUR)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -48,6 +48,8 @@ public class SchedulerTasks {
         IFlightPriceClient priceClient = new FlightPriceClientImpl();
 
         List<UserSubscription> userSubscriptionList = repository.findAll();
+
+
         userSubscriptionList.forEach(x -> {
             if (x.getUserFlightData().getInboundPartialDate() != null) {
                 x.setSkyScannerResponseDates(priceDateClient.browseQuotes(x.getUserData(), x.getUserFlightData()));

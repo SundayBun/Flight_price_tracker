@@ -4,11 +4,13 @@ import com.example.flight_price_tracker_telegram.bot.refactored.Context;
 import com.example.flight_price_tracker_telegram.bot.refactored.service.ResponseMessageRef;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
 
+@Slf4j
 public class SubscriptionListState extends State {
 
     private boolean deleteItem = false;
@@ -23,6 +25,12 @@ public class SubscriptionListState extends State {
 
     @Override
     public BotApiMethod<?> enter(Context context, List<UserSubscription> userSubscriptionList) {
+
+        log.info("deleteItem: {}",deleteItem);
+
+        if(deleteItem) {
+            return getDeleteItemMessage(context);}
+
         if (userSubscriptionList.size() > 0) {
 
             CallbackQuery callbackQuery = context.getCallbackQuery();
@@ -33,6 +41,7 @@ public class SubscriptionListState extends State {
 
             return ResponseMessageRef.sendSubscripList(context, userSubscriptionList, pageNumber);
         }
+
         return ResponseMessageRef.sendMessage(context, "No subscriptions");
 
     }
@@ -44,24 +53,30 @@ public class SubscriptionListState extends State {
             try {
                 repository.deleteSubscription(repository.findSubByChatId(context.getUserData().getChatId()).get(Integer.parseInt(context.getInput().substring(8))).getId());
                 deleteItem = true;
+
             } catch (IndexOutOfBoundsException exp){
                 deleteItem=false;
             }
-
+            log.info("deleteItem: {}",deleteItem);
         }
     }
 
     @Override
     public State nextState() {
-        if (deleteItem) {
-            context.setState(new DeleteSubscriptionState(context));
-        } else {
-            context.setState(new SubscriptionListState(context));
-        }
-        return context.getState();
+//        if (deleteItem) {
+//            context.setState(new DeleteSubscriptionState(context));
+//        } else {
+//            context.setState(new SubscriptionListState(context));
+//        }
+//        return context.getState();
+        return null;
     }
 
-    public boolean isNumeric(String str) {
+    private boolean isNumeric(String str) {
         return str.matches("-?\\d+");
+    }
+
+    private BotApiMethod<?> getDeleteItemMessage(Context context){
+          return ResponseMessageRef.sendSubDeleting(context, "Search result was deleted from track list");
     }
 }

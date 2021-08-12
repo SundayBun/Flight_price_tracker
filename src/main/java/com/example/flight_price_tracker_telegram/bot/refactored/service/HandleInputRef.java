@@ -3,6 +3,7 @@ package com.example.flight_price_tracker_telegram.bot.refactored.service;
 
 
 import com.example.flight_price_tracker_telegram.bot.refactored.Context;
+import com.example.flight_price_tracker_telegram.bot.refactored.states.StateName;
 import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
@@ -10,8 +11,11 @@ import com.example.flight_price_tracker_telegram.model.service.IPlacesClient;
 import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
 import com.example.flight_price_tracker_telegram.model.service.PlacesClientImpl;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,7 +40,5 @@ public class HandleInputRef {
 
         return placesList;
     }
-
-
 }
 

@@ -1,6 +1,7 @@
 package com.example.flight_price_tracker_telegram.repository;
 
 import com.example.flight_price_tracker_telegram.bot.refactored.states.StateName;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,12 +23,6 @@ public class UserData implements Serializable {
     private String currency;
     private String locale;
 
-
-//    public UserData(Long chatId, Integer stateID,String id) {
-//        this.chatId = chatId;
-//        this.stateID = stateID;
-//        this.id=id;
-//    }
     public UserData(Long chatId, String id){
         this.chatId = chatId;
         this.id=id;

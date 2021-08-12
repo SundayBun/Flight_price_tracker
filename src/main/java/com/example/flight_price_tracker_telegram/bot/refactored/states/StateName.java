@@ -4,7 +4,9 @@ import com.example.flight_price_tracker_telegram.bot.BotState;
 import com.example.flight_price_tracker_telegram.bot.refactored.Context;
 import lombok.EqualsAndHashCode;
 
-public enum StateName {
+import java.io.Serializable;
+
+public enum StateName implements Serializable {
     START,
     COUNTRY_TEXT,
     COUNTRY_BUTTONS,

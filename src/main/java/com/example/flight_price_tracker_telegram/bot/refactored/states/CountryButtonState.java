@@ -17,7 +17,7 @@ public class CountryButtonState extends State{
     @Override
     public BotApiMethod<?> enter(Context context) {
         return ResponseMessageRef.sendSearchCountry(context, HandleInputRef.country(context)
-                , "Select the country you are in");
+                , "Select the country you are based in");
     }
 
     @Override

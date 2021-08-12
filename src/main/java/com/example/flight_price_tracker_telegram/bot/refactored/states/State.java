@@ -49,4 +49,8 @@ public abstract class State {
         return stateName;
     }
 
+    public void setStateName(StateName stateName){
+        this.stateName=stateName;
+    }
+
 }

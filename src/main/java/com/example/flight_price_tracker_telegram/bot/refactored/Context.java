@@ -5,13 +5,14 @@ import com.example.flight_price_tracker_telegram.bot.refactored.states.State;
 import com.example.flight_price_tracker_telegram.repository.UserData;
 import com.example.flight_price_tracker_telegram.repository.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.UserSubscription;
-import lombok.EqualsAndHashCode;
+import lombok.Data;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
-@Setter
 @Getter
+@Setter
 public class Context {
     State state;
 
@@ -19,8 +20,8 @@ public class Context {
     private UserFlightData userFlightData;
     private UserSubscription userSubscription;
 
-    private final String input;
-    private final CallbackQuery callbackQuery;
+    private String input;
+    private CallbackQuery callbackQuery;
 
 //    public Context(UserData userData, UserFlightData userFlightData, UserSubscription userSubscription, String input, CallbackQuery callbackQuery) {
 //        this.state = new StartState(this);
@@ -38,6 +39,8 @@ public class Context {
         this.callbackQuery = callbackQuery;
         this.userSubscription=new UserSubscription();
     }
+
+    public Context(){}
 
     @Override
     public String toString() {

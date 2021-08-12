@@ -28,10 +28,10 @@ public class TelegramFacadeRef {
 
     private BotApiMethod<?> sendMessage;
 
-    @Autowired
+   // @Autowired
     private UserSubscriptionDataService repository;
     private UserSubscription userSubscription;
-    @Autowired
+   // @Autowired
     private IInputValidator inputValidator;
 
     private CallbackQuery callbackQuery;
@@ -72,7 +72,7 @@ public class TelegramFacadeRef {
             repository.saveUserData(userData);
             repository.saveUserFlightData(userFlightData);
 
-            log.info("Process data: chatID:{}, state: {}", chatId, context.getState().toString());
+            log.info("Process data: chatID:{}, state: {}", chatId, context.getState().getStateName().toString());
 
             return sendMessage;
         } else {
@@ -86,7 +86,7 @@ public class TelegramFacadeRef {
                 context.setUserSubscription(userSubscription);
             }
 
-            //sendMessage = context.getState().enter(context);
+            //sendMessage = context.getStateFromUserData().enter(context);
 
             if (!inputValidator.isValidInput(update, context)) {
                 return sendMessage = context.getState().enter(context);
@@ -111,7 +111,7 @@ public class TelegramFacadeRef {
             repository.saveUserFlightData(userFlightData);
             saveSubscrip(context);
 
-            log.info("Process data: chatID:{}, state: {}", chatId, context.getState());
+            log.info("Process data: chatID:{}, state: {}", chatId, context.getState().getStateName());
 
             return sendMessage;
         }
@@ -152,8 +152,8 @@ public class TelegramFacadeRef {
 
 //    public boolean isInValidInput(Context context, Update update) {
 //
-//        return (context.getState().isQueryResponse() && !context.getState().isTextMessageRequest() && !update.hasCallbackQuery())
-//                || (!context.getState().isQueryResponse() && context.getState().isTextMessageRequest() && !update.hasMessage());
+//        return (context.getStateFromUserData().isQueryResponse() && !context.getStateFromUserData().isTextMessageRequest() && !update.hasCallbackQuery())
+//                || (!context.getStateFromUserData().isQueryResponse() && context.getStateFromUserData().isTextMessageRequest() && !update.hasMessage());
 //    }
 
     public boolean isSubscrStates(Context context) {
@@ -161,24 +161,24 @@ public class TelegramFacadeRef {
     }
 
     public State findState(){
-        switch (context.getUserData().getStateName()){
-            case START:new StartState(context);
-            case COUNTRY_TEXT: return new CountryTextState(context);
-            case COUNTRY_BUTTONS: return new CountryButtonState(context);
-            case CURRENCY:return new CurrencyState(context);
-            case ORIGIN_PLACE_TEXT:return new OriginPlaceText(context);
-            case ORIGIN_PLACE_BUTTONS: return new OriginPlaceButtons(context);
-            case DESTINATION_PLACE_TEXT: return new DestinationPlaceTextState(context);
-            case DESTINATION_PLACE_BUTTONS:return new DestinationPlaceButtonsState(context);
-            case OUTBOUND_PARTIAL_DATE:return new OutBoundPartialDatesState(context);
-            case INBOUND_PARTIAL_DATE: return new InboundPartialDateState(context);
-            case DATA_FILLED: return new DataFilledState(context);
-            case DATA_TRANSFERRED: return new DataTransferredState(context);
-            case SUBSCR_LIST:return new SubscriptionListState(context);
-            case SUBSCRIPT: return new SubscriptionState(context);
-            case MAIN_MENU: return new MainMenuState(context);
-            default: return new StartState(context);
+            switch (context.getUserData().getStateName()){
+                case START:new StartState(context);
+                case COUNTRY_TEXT: return new CountryTextState(context);
+                case COUNTRY_BUTTONS: return new CountryButtonState(context);
+                case CURRENCY:return new CurrencyState(context);
+                case ORIGIN_PLACE_TEXT:return new OriginPlaceText(context);
+                case ORIGIN_PLACE_BUTTONS: return new OriginPlaceButtons(context);
+                case DESTINATION_PLACE_TEXT: return new DestinationPlaceTextState(context);
+                case DESTINATION_PLACE_BUTTONS:return new DestinationPlaceButtonsState(context);
+                case OUTBOUND_PARTIAL_DATE:return new OutBoundPartialDatesState(context);
+                case INBOUND_PARTIAL_DATE: return new InboundPartialDateState(context);
+                case DATA_FILLED: return new DataFilledState(context);
+                case DATA_TRANSFERRED: return new DataTransferredState(context);
+                case SUBSCR_LIST:return new SubscriptionListState(context);
+                case SUBSCRIPT: return new SubscriptionState(context);
+                case MAIN_MENU: return new MainMenuState(context);
+                default: return new StartState(context);
 
-        }
+            }
     }
 }

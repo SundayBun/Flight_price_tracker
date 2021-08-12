@@ -10,7 +10,7 @@ public class InputValidatorImpl implements IInputValidator{
     public boolean isValidInput(Update update, Context context) {
         return (context.getState().isQueryResponse() && update.hasCallbackQuery())
          || (context.getState().isTextMessageRequest() && update.hasMessage());
-                //(context.getState().isQueryResponse() && !context.getState().isTextMessageRequest() && update.hasCallbackQuery())
-               // || (!context.getState().isQueryResponse() && context.getState().isTextMessageRequest() && update.hasMessage());
+                //(context.getStateFromUserData().isQueryResponse() && !context.getStateFromUserData().isTextMessageRequest() && update.hasCallbackQuery())
+               // || (!context.getStateFromUserData().isQueryResponse() && context.getStateFromUserData().isTextMessageRequest() && update.hasMessage());
     }
 }
