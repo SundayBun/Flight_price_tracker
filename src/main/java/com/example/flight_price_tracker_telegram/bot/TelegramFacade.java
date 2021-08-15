@@ -74,7 +74,6 @@ public class TelegramFacade {
 
         } else {
             context = new Context(userData, userFlightData, text, callbackQuery);
-
             stepStrategy=new RegisteredUserStepStrategy(context,update,repository);
         }
 

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 
 import java.util.List;
 
@@ -69,12 +70,14 @@ public class SchedulerTasks {
         String textPriceIncreasing = Emojis.SCREAM + " PRICE INCREASED";
         String textPriceDrop = Emojis.DANCER + " PRICE DROPPED";
 
+
+
         if (!oneWay) {
             String textDates = String.format(" from %s to %s      Dates: %s - %s        Price:  ~%s%s~ %s%s",
-                    userSubscription.getSkyScannerResponseDates().getPlaces().get(0).getCityName(),
-                    userSubscription.getSkyScannerResponseDates().getPlaces().get(1).getCityName(),
-                    userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate(),
-                    userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate(),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate()),
+                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate()),
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
@@ -90,9 +93,9 @@ public class SchedulerTasks {
 
         } else {
             String textQuotes = String.format(" from %s to %s       Date: %s            Price: ~%s%s~  %s%s",
-                    userSubscription.getSkyScannerResponseQuotes().getPlaces().get(0).getCityName(),
-                    userSubscription.getSkyScannerResponseQuotes().getPlaces().get(1).getCityName(),
-                    userSubscription.getUserFlightData().getOutboundPartialDate(),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(userSubscription.getUserFlightData().getOutboundPartialDate()),
                     userSubscription.getMinPrice(),
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
@@ -119,5 +122,7 @@ public class SchedulerTasks {
         log.info("Unirest response status {}", response.getStatus());
         log.info("Unirest response body {}", response.getBody());
     }
+
+
 }
 

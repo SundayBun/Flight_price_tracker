@@ -29,7 +29,7 @@ public class SubscriptionListState extends State {
         log.info("deleteItem: {}",deleteItem);
 
         if(deleteItem) {
-            return getDeleteItemMessage(context);}
+            return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");}
 
         if (userSubscriptionList.size() > 0) {
 
@@ -63,12 +63,6 @@ public class SubscriptionListState extends State {
 
     @Override
     public State nextState() {
-//        if (deleteItem) {
-//            context.setState(new DeleteSubscriptionState(context));
-//        } else {
-//            context.setState(new SubscriptionListState(context));
-//        }
-//        return context.getState();
         return null;
     }
 
@@ -76,7 +70,4 @@ public class SubscriptionListState extends State {
         return str.matches("-?\\d+");
     }
 
-    private BotApiMethod<?> getDeleteItemMessage(Context context){
-          return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");
-    }
 }

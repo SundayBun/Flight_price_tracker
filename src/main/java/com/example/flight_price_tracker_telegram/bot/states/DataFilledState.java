@@ -30,6 +30,7 @@ public class DataFilledState extends State {
         context.getUserData().setStateName(stateName);
         if (context.getCallbackQuery().getData().equals("Button \"Find price\" has been pressed")) {
             sendQueryForPrice(context);
+            context.getUserData().setId(context.getCallbackQuery().getId());
             changeState = true;
         }
     }
