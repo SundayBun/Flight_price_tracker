@@ -1,8 +1,9 @@
 package com.example.flight_price_tracker_telegram.repository;
 
 
-import com.example.flight_price_tracker_telegram.model.browse.FlightPricesDTO;
-import org.springframework.context.annotation.Scope;
+import com.example.flight_price_tracker_telegram.repository.entity.UserData;
+import com.example.flight_price_tracker_telegram.repository.entity.UserFlightData;
+import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,13 +13,14 @@ public class UserSubscriptionDataService {
 
     ISubscriptionRepositoryUserData userDataRepository;
     ISubscriptionRepositoryFlightData userFlightDataIml;
-    ISubscriptionRepository subscriptionRepository;
+    ISubscriptionRepositoryUserSubscription subscriptionRepository;
 
-    public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData,  ISubscriptionRepository subscriptionRepository) {
+    public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData, ISubscriptionRepositoryUserSubscription subscriptionRepository) {
         this.userDataRepository = userDataRepository;
         this.userFlightDataIml = userFlightData;
         this.subscriptionRepository=subscriptionRepository;
     }
+
 
     public UserData findByChatId(long chatId) {
         return userDataRepository.findByChatId(chatId);

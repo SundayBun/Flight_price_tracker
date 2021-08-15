@@ -1,13 +1,14 @@
 package com.example.flight_price_tracker_telegram.bot.service;
 
 
-import com.example.flight_price_tracker_telegram.bot.BotStateContext;
-import com.example.flight_price_tracker_telegram.model.localisation.CountryDTO;
-import com.example.flight_price_tracker_telegram.model.places.PlacesDTO;
-import com.example.flight_price_tracker_telegram.model.service.ILocalisationClient;
-import com.example.flight_price_tracker_telegram.model.service.IPlacesClient;
-import com.example.flight_price_tracker_telegram.model.service.LocalisationClientImpl;
-import com.example.flight_price_tracker_telegram.model.service.PlacesClientImpl;
+
+import com.example.flight_price_tracker_telegram.bot.Context;
+import com.example.flight_price_tracker_telegram.skyscanner_api.dto.localisation.CountryDTO;
+import com.example.flight_price_tracker_telegram.skyscanner_api.dto.places.PlacesDTO;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.ILocalisationClient;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.IPlacesClient;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.LocalisationClientImpl;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.PlacesClientImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class HandleInput {
 
-    public static List<CountryDTO> country(BotStateContext context){
+    public static List<CountryDTO> country(Context context){
 
         ILocalisationClient localisationClient = new LocalisationClientImpl();
         List<CountryDTO> countriesList = localisationClient.retrieveCountries(context.getUserData().getLocale());
@@ -28,14 +29,12 @@ public class HandleInput {
         return null;
     }
 
-    public static List<PlacesDTO> places(BotStateContext context){
+    public static List<PlacesDTO> places(Context context){
         IPlacesClient iPlacesClient = new PlacesClientImpl();
         List<PlacesDTO> placesList = iPlacesClient.retrievePlaces(context.getInput(),context.getUserData().getCountry(),
                 context.getUserData().getCurrency(),context.getUserData().getLocale());
 
         return placesList;
     }
-
-
 }
 

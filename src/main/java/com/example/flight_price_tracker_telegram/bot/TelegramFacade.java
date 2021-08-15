@@ -1,9 +1,18 @@
 package com.example.flight_price_tracker_telegram.bot;
 
-import com.example.flight_price_tracker_telegram.repository.UserData;
-import com.example.flight_price_tracker_telegram.repository.UserFlightData;
-import com.example.flight_price_tracker_telegram.repository.UserSubscription;
+import com.example.flight_price_tracker_telegram.bot.strategy.IStepStrategy;
+import com.example.flight_price_tracker_telegram.bot.strategy.NewUserStepStrategy;
+import com.example.flight_price_tracker_telegram.bot.strategy.RegisteredUserStepStrategy;
+
+import com.example.flight_price_tracker_telegram.bot.states.*;
+
+import com.example.flight_price_tracker_telegram.repository.entity.UserData;
+import com.example.flight_price_tracker_telegram.repository.entity.UserFlightData;
+import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,29 +20,29 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@Setter
+@Getter
 @Slf4j
 @Component
 public class TelegramFacade {
-    private BotState state;
-    private BotStateContext context;
 
-    private BotApiMethod<?> sendMessage;
+    private Context context;
+    private IStepStrategy stepStrategy;
+
+    private BotApiMethod<?> outgoingData;
 
     @Autowired
     private UserSubscriptionDataService repository;
     private UserSubscription userSubscription;
+
 
     private CallbackQuery callbackQuery;
     private long chatId;
     private String text;
     private String id;
 
-    public BotApiMethod<?> handleUpdate(Update update, FlightPriceTrackerTelegramBot bot) {
-
-
+    private void initChatIdCallbackQueryTextId(Update update) {
+        log.info("**************************");
         if (!update.hasCallbackQuery()) {
             chatId = update.getMessage().getChatId();
             text = update.getMessage().getText();
@@ -43,109 +52,55 @@ public class TelegramFacade {
         } else {
             id = update.getCallbackQuery().getId();
             callbackQuery = update.getCallbackQuery();
+            chatId = update.getCallbackQuery().getMessage().getChatId();
 
-            log.info("Update data: callbackQueryID:{}, callbackQuery: {}", id, callbackQuery.getData());
+            log.info("Update data: callbackQueryID:{}, callbackQuery: {}, message: {}", id, callbackQuery.getData(),update.hasMessage());
         }
+    }
+
+    public BotApiMethod<?> handleUpdate(Update update) {
+
+        initChatIdCallbackQueryTextId(update);
         UserData userData = repository.findByChatIdOrId(id, chatId);
         UserFlightData userFlightData = repository.findByIdOrChatID(id, chatId);
+         userSubscription = new UserSubscription(chatId);
 
         if (userData == null) {
 
-            state = BotState.getInitialState();
-
-          //  userData = new UserData(chatId, state.ordinal(), id);
+            userData = new UserData(chatId, id);
             userFlightData = new UserFlightData(chatId, id);
+            context = new Context(userData, userFlightData, text, callbackQuery);
+            stepStrategy=new NewUserStepStrategy(context);
 
-
-            context = BotStateContext.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
-            sendMessage = state.enter(context);
-
-            repository.saveUserData(userData);
-            repository.saveUserFlightData(userFlightData);
-
-            log.info("Process data: chatID:{}, state: {}", chatId, state);
-
-            return sendMessage;
         } else {
-            state = BotState.byId(userData.getStateID());
-            mainCommand(update);// checking if query has main menu command
+            context = new Context(userData, userFlightData, text, callbackQuery);
 
-            if (state == BotState.DATA_TRANSFERRED) {
-                userSubscription = new UserSubscription(chatId);
-            }
-
-            context = BotStateContext.of(bot, userData, text, callbackQuery, userFlightData, userSubscription);
+            stepStrategy=new RegisteredUserStepStrategy(context,update,repository);
         }
 
-        if(state.isQueryResponse() && !state.isTextMessageRequest() && !update.hasCallbackQuery() ){
+        outgoingData= stepStrategy.doStateLogic();
 
-            return sendMessage;
-        } else if(!state.isQueryResponse() && state.isTextMessageRequest() && !update.hasMessage()) {
-            return sendMessage;
-        }
-
-        if (state == BotState.SUBSCR_LIST || state == BotState.SUBSCR_LIST_EDIT) {
-            state.handleInput(context, repository);
-        } else {
-            state.handleInput(context);
-        }
-
-        state = state.nextState();
-
-        if (state == BotState.SUBSCR_LIST || state == BotState.SUBSCR_LIST_EDIT) {
-            sendMessage = state.enter(context, repository.findSubByChatId(chatId));
-        } else {
-            sendMessage = state.enter(context);
-        }
-
-
-        userData.setStateID(state.ordinal());
+        userData=stepStrategy.getContext().getUserData();
+        userFlightData=stepStrategy.getContext().getUserFlightData();
+        userData.setStateName(stepStrategy.getContext().getState().getStateName());
+        userSubscription=stepStrategy.getContext().getUserSubscription();
 
         repository.saveUserData(userData);
         repository.saveUserFlightData(userFlightData);
-        saveSubscrip(state);
+        saveSubscrip(stepStrategy.getContext());
 
-        log.info("Process data: chatID:{}, state: {}", chatId, state);
+        log.info("Process data: chatID:{}, state: {}", chatId, stepStrategy.getContext().getState().getStateName().toString());
+        log.info("**************************");
 
-        return sendMessage;
+
+        return outgoingData;
     }
 
-    public void mainCommand(Update update) {
-
-        Map<String, BotState> commands = new HashMap<>();
-
-        commands.put("Button \"ENG\" has been pressed", BotState.START);
-        commands.put("Button \"RUS\" has been pressed", BotState.START);
-        commands.put("Button \"Find price\" has been pressed", BotState.DATA_FILLED);
-        commands.put("USD", BotState.CURRENCY);
-        commands.put("EUR", BotState.CURRENCY);
-        commands.put("RUB", BotState.CURRENCY);
-        commands.put("Button \"Track it\" has been pressed", BotState.DATA_TRANSFERRED);
-        commands.put("Button \"One way\" has been pressed", BotState.INBOUND_PARTIAL_DATE);
-      //  commands.put("Delete", BotState.SUBSCR_LIST_EDIT);
-        commands.put("Change localisation info", BotState.MAIN_MENU);
-        commands.put("New search", BotState.MAIN_MENU);
-        commands.put("See your track list", BotState.MAIN_MENU);
-
-        if (update.hasMessage() && commands.containsKey(update.getMessage().getText())) {
-            state = commands.get(update.getMessage().getText());
-        }
-
-        if (update.hasCallbackQuery() && commands.containsKey(update.getCallbackQuery().getData())) {
-            state = commands.get(update.getCallbackQuery().getData());
-        }
-
-//        if (update.hasMessage() && update.getMessage().getText().startsWith("Delete")) {
-//            state = commands.get("Delete");
-//        }
-
-    }
-
-    public void saveSubscrip(BotState state) {
-        if (state == BotState.SUBSCRIPT) {
+    private void saveSubscrip(Context context) {
+        if (context.getState().equals(new SubscriptionState(context))) {
             repository.saveSubscription(userSubscription);
         }
     }
 
-
 }
+

@@ -1,9 +1,8 @@
 package com.example.flight_price_tracker_telegram.prototype;
 
-import com.example.flight_price_tracker_telegram.bot.refactored.states.StateName;
-import com.example.flight_price_tracker_telegram.repository.UserData;
-import com.example.flight_price_tracker_telegram.repository.UserFlightData;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.flight_price_tracker_telegram.bot.states.StateName;
+import com.example.flight_price_tracker_telegram.repository.entity.UserData;
+import com.example.flight_price_tracker_telegram.repository.entity.UserFlightData;
 
 import static org.mockito.Mockito.mock;
 
@@ -23,16 +22,8 @@ public class UsersPrototype {
 
     public static UserData aUserData(){
         UserData userData=new UserData(chatId,id);
+        userData.setStateName(StateName.START);
         return userData;
-
-//       return UserData.builder()
-//                .chatId(chatId)
-//                .id(id)
-////                .stateName(stateName)
-////                .country(country)
-////                .currency(currency)
-////                .locale(locale)
-//                .build();
     }
 
     public static UserFlightData aUserFlightData(){

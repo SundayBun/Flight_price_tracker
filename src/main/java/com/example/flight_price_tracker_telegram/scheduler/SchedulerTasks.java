@@ -1,30 +1,23 @@
 package com.example.flight_price_tracker_telegram.scheduler;
 
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
-import com.example.flight_price_tracker_telegram.model.browse.BrowseDatesDTO;
-import com.example.flight_price_tracker_telegram.model.service.FlightPriceClientImpl;
-import com.example.flight_price_tracker_telegram.model.service.FlightPriceDateClientImpl;
-import com.example.flight_price_tracker_telegram.model.service.IFlightPriceClient;
-import com.example.flight_price_tracker_telegram.model.service.IFlightPriceDateClient;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.FlightPriceClientImpl;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.FlightPriceDateClientImpl;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.IFlightPriceClient;
+import com.example.flight_price_tracker_telegram.skyscanner_api.service.IFlightPriceDateClient;
 import com.example.flight_price_tracker_telegram.repository.SubscriptionScheduler;
-import com.example.flight_price_tracker_telegram.repository.UserSubscription;
+import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
 @PropertySource("classpath:application.properties")
@@ -40,7 +33,7 @@ public class SchedulerTasks {
 
     private static final long ONE_HOUR = 1000 * 60 * 60;
 
-  //  @Scheduled(fixedRate = ONE_HOUR)
+   @Scheduled(fixedRate = ONE_HOUR)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 

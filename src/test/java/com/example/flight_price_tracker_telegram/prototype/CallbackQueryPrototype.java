@@ -1,6 +1,5 @@
 package com.example.flight_price_tracker_telegram.prototype;
 
-import com.example.flight_price_tracker_telegram.repository.UserData;
 import lombok.Data;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,6 +13,8 @@ public class CallbackQueryPrototype {
         CallbackQuery callbackQuery=new CallbackQuery();
         callbackQuery.setData(data);
         callbackQuery.setId(id);
+        callbackQuery.setMessage(new Message());
+        callbackQuery.getMessage().setChat(ChatPrototype.aChat());
         return callbackQuery;
     }
 }
