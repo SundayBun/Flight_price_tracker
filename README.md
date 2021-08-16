@@ -1,4 +1,5 @@
-#Flight price tracker telegram bot
+#**Flight price tracker telegram bot**
+
 Telegram bot for finding and tracking ticket price changes
 ## Technology stack
 Java 8, Maven, Spring Boot, Spring MVC, Spring Data, MongoDB, Telegram API,
