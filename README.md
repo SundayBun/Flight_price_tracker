@@ -1,4 +1,4 @@
-#**Flight price tracker telegram bot**
+##**Flight price tracker telegram bot**
 
 Telegram bot for finding and tracking ticket price changes
 ## Technology stack
