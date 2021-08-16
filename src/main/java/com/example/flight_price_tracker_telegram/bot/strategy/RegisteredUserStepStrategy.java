@@ -90,7 +90,7 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
         commands.put("Button \"Track it\" has been pressed", StateName.DATA_TRANSFERRED);
         commands.put("Button \"One way\" has been pressed", StateName.INBOUND_PARTIAL_DATE);
         //  commands.put("Delete", BotState.SUBSCR_LIST_EDIT);
-        commands.put("Change localisation info", StateName.MAIN_MENU);
+        commands.put("Change localisation info", StateName.START);
         commands.put("New search", StateName.MAIN_MENU);
         commands.put("See your track list", StateName.SUBSCR_LIST);
         commands.put("/start", StateName.START);

@@ -19,7 +19,7 @@ public class OriginPlaceText extends State {
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, "Enter the origin place " + Emojis.MAG_RIGHT +
+        return ResponseMessage.sendMessage(context, Emojis.FROM +" FROM " + Emojis.MAG_RIGHT +
                 "\n (enter at least one letter and send it to see available places)");
     }
 

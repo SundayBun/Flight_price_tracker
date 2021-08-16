@@ -20,7 +20,7 @@ public class DestinationPlaceTextState extends State {
     @Override
     public BotApiMethod<?> enter(Context context) {
         return ResponseMessage.sendMessage(context,
-                "Enter the destination place " + Emojis.MAG_RIGHT +
+                Emojis.TO +" TO " + Emojis.MAG_RIGHT +
                         "\n (enter at least one letter and send it to see available places)");
     }
 

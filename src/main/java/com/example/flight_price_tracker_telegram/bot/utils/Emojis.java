@@ -15,7 +15,9 @@ public enum Emojis {
     PUSHPIN(EmojiParser.parseToUnicode(":pushpin:")),
     MAG_RIGHT(EmojiParser.parseToUnicode(":mag_right:")),
     DANCER(EmojiParser.parseToUnicode(":dancer:")),
-    SCREAM(EmojiParser.parseToUnicode(":scream:"));
+    SCREAM(EmojiParser.parseToUnicode(":scream:")),
+    FROM(EmojiParser.parseToUnicode(":airplane_departure:")),
+    TO(EmojiParser.parseToUnicode(":airplane_arriving:"));
 
     private String emojiName;
 

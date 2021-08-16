@@ -172,7 +172,7 @@ public class ResponseMessage {
 
     public static String getPlaceNameFromDTO(List<BrowsePlacesDTO> places, String place) {
         String cutPlace = place.substring(0, place.lastIndexOf("-"));
-        BrowsePlacesDTO browsePlacesDTO = places.stream().filter(x -> x.getSkyscannerCode().startsWith(cutPlace)).findFirst().orElse(null);
+        BrowsePlacesDTO browsePlacesDTO = places.stream().filter(x -> x.getCityId().startsWith(cutPlace)).findFirst().orElse(null);
         if (browsePlacesDTO != null) {
             return browsePlacesDTO.getCityName();
         }

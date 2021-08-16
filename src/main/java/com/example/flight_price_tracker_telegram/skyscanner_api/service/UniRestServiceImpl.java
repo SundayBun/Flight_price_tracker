@@ -37,8 +37,8 @@ public class UniRestServiceImpl implements IUniRestService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-   @Value("${X-RapidAPI-Key}")
-    private String xRapidApiKey;
+//   @Value("${rapidAPI.key}")
+//    private String xRapidApiKey;
 
     @Override
     public HttpResponse<JsonNode> get(String path) {

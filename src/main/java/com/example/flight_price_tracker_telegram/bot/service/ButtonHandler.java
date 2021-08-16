@@ -158,7 +158,7 @@ public class ButtonHandler {
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
-            inlineKeyboardButton.setText(places.getPlaceName());
+            inlineKeyboardButton.setText(places.getPlaceName()+", "+places.getCountryName());
             inlineKeyboardButton.setCallbackData(places.getPlaceId());
 
             keyboardButtonsRow.add(inlineKeyboardButton);
