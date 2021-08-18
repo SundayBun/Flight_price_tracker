@@ -11,6 +11,8 @@ import com.example.flight_price_tracker_telegram.skyscanner_api.service.Localisa
 import com.example.flight_price_tracker_telegram.skyscanner_api.service.PlacesClientImpl;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,13 @@ public class HandleInput {
                 context.getUserData().getCurrency(),context.getUserData().getLocale());
 
         return placesList;
+    }
+
+    public static String formatDate(String date){
+        DateTimeFormatter yymmdd=DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter ddmmyy=DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate localDate= LocalDate.parse(date,ddmmyy);
+        return yymmdd.format(localDate);
     }
 }
 

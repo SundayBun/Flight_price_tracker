@@ -60,6 +60,9 @@ public class TelegramFacade {
 
     public BotApiMethod<?> handleUpdate(Update update) {
 
+        if ((!update.hasMessage() || update.getMessage().getText()==null) & !update.hasCallbackQuery()) {
+            return null;
+        }
         initChatIdCallbackQueryTextId(update);
         UserData userData = repository.findByChatIdOrId(id, chatId);
         UserFlightData userFlightData = repository.findByIdOrChatID(id, chatId);
@@ -96,7 +99,7 @@ public class TelegramFacade {
     }
 
     private void saveSubscrip(Context context) {
-        if (context.getState().equals(new SubscriptionState(context))) {
+        if (context.getUserData().getStateName().equals(StateName.SUBSCRIPT)) {
             repository.saveSubscription(userSubscription);
         }
     }

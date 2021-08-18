@@ -6,6 +6,8 @@ import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class OriginPlaceText extends State {
 
     boolean changeState = false;
@@ -15,12 +17,13 @@ public class OriginPlaceText extends State {
         this.textMessageRequest = true;
         this.queryResponse = false;
         this.stateName = StateName.ORIGIN_PLACE_TEXT;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, Emojis.FROM +" FROM " + Emojis.MAG_RIGHT +
-                "\n (enter at least one letter and send it to see available places)");
+        return ResponseMessage.sendMessageOriginPlace(context, localeMessageService.getMessage("state.originPlaceText",Emojis.FROM,Emojis.MAG_RIGHT),
+                localeMessageService.getMessage("state.mainMenuLocalisation"),localeMessageService.getMessage("state.mainMenuNewSearch"),localeMessageService.getMessage("state.mainMenuTrackList"));
     }
 
     @Override

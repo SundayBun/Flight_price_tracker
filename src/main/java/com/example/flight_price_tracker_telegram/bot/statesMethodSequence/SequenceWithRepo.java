@@ -15,8 +15,12 @@ public class SequenceWithRepo extends StatesMethodSequence {
 
     @Override
   public BotApiMethod<?> getStatesMethodSequence() {
-        context.getState().handleInput(context, repository);
-       // context.getState().nextState();
+        try {
+            context.getState().handleInput(context, repository);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        // context.getState().nextState();
         return context.getState().enter(context, repository.findSubByChatId(context.getUserData().getChatId()));
     }
 }

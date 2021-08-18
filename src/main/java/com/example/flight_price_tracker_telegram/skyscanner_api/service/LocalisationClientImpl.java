@@ -22,7 +22,7 @@ public class LocalisationClientImpl implements ILocalisationClient{
 
         IUniRestService uniRestService=new UniRestServiceImpl();
 
-        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.COUNTRIES_FORMAT,locale));
+        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.COUNTRIES_FORMAT,locale.replaceAll(" ","")));
 
         if(response.getStatus()!= HttpStatus.SC_OK) {
             return null;

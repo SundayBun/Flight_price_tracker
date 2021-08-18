@@ -20,7 +20,7 @@ public class PlacesClientImpl implements IPlacesClient {
     public List<PlacesDTO> retrievePlaces(String query, String country, String currency, String locale) {
         IUniRestService uniRestService=new UniRestServiceImpl();
 
-        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.PLACES_FORMAT,country,currency,locale,query));
+        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.PLACES_FORMAT,country,currency,locale,query.replaceAll(" ","")));
 
         if(response.getStatus()!= HttpStatus.SC_OK) {
             return null;

@@ -37,7 +37,7 @@ public class ButtonHandler {
 
     }
 
-    public static InlineKeyboardMarkup getMessageFromKeyboard(Context context) {
+    public static InlineKeyboardMarkup getMessageFromKeyboard(Context context,String buttonText) {
 
         buttons = toMap();
 
@@ -100,7 +100,7 @@ public class ButtonHandler {
             case DATA_TRANSFERRED: {
 
                 InlineKeyboardButton inlineKeyboardButtonTrack = new InlineKeyboardButton();
-                inlineKeyboardButtonTrack.setText("Track it");
+                inlineKeyboardButtonTrack.setText(buttonText);
                 inlineKeyboardButtonTrack.setCallbackData(buttons.get("Track it"));
                 keyboardButtonsRow.add(inlineKeyboardButtonTrack);
 
@@ -113,7 +113,7 @@ public class ButtonHandler {
             case INBOUND_PARTIAL_DATE: {
 
                 InlineKeyboardButton inlineKeyboardOneWay = new InlineKeyboardButton();
-                inlineKeyboardOneWay.setText("One way");
+                inlineKeyboardOneWay.setText(buttonText);
                 inlineKeyboardOneWay.setCallbackData(buttons.get("One way"));
                 keyboardButtonsRow.add(inlineKeyboardOneWay);
 
@@ -169,7 +169,7 @@ public class ButtonHandler {
         return inlineKeyboardMarkup;
     }
 
-    public static ReplyKeyboardMarkup getMainMenuKeyboard() {
+    public static ReplyKeyboardMarkup getMainMenuKeyboard(String...buttonTextArgs) {
 
         final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setSelective(true);
@@ -181,9 +181,9 @@ public class ButtonHandler {
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
         KeyboardRow row3 = new KeyboardRow();
-        row1.add(new KeyboardButton("Change localisation info"));
-        row2.add(new KeyboardButton("New search"));
-        row3.add(new KeyboardButton("See your track list"));
+        row1.add(new KeyboardButton(buttonTextArgs[0]));
+        row2.add(new KeyboardButton(buttonTextArgs[1]));
+        row3.add(new KeyboardButton(buttonTextArgs[2]));
         keyboard.add(row1);
         keyboard.add(row2);
         keyboard.add(row3);

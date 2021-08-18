@@ -5,6 +5,8 @@ import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class CurrencyState extends State{
 
     public CurrencyState(Context context) {
@@ -12,12 +14,12 @@ public class CurrencyState extends State{
         this.textMessageRequest=false;
         this.queryResponse=true;
         this.stateName = StateName.CURRENCY;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,
-                Emojis.MONEYBAG + " Select the currency" + Emojis.MONEYBAG);
+        return ResponseMessage.sendMessage(context,localeMessageService.getMessage("state.currency",Emojis.MONEYBAG),null);
     }
 
     @Override

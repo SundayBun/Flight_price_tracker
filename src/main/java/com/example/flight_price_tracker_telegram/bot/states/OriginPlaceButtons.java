@@ -5,6 +5,8 @@ import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class OriginPlaceButtons extends State{
 
     public OriginPlaceButtons(Context context) {
@@ -12,12 +14,13 @@ public class OriginPlaceButtons extends State{
         this.textMessageRequest=false;
         this.queryResponse=true;
         this.stateName = StateName.ORIGIN_PLACE_BUTTONS;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
         return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
-                , "Select the departure place");
+                , localeMessageService.getMessage("state.originPlaceButtons"));
     }
 
     @Override

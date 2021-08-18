@@ -11,6 +11,8 @@ import com.example.flight_price_tracker_telegram.bot.validation.InputValidatorIm
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -20,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @EqualsAndHashCode
 public class RegisteredUserStepStrategy implements IStepStrategy {
+
 
     private Context context;
     private Update update;
@@ -47,13 +50,13 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
 
         checkIfButtonCommand();
 
-        log.info("step 1 UserData after checkIfButtonCommand(): chatID:{}, state: {}, country{}, currency{}, locale {}",
+        log.info("step 1 UserData after checkIfButtonCommand(): chatID:{}, stateName: {}, country{}, currency{}, locale {}",
                 context.getUserData().getChatId(), context.getUserData().getStateName(), context.getUserData().getCountry(), context.getUserData().getCurrency(), context.getUserData().getLocale());
         log.info("step 1 Context after after checkIfButtonCommand(): state {}", context.getState().getStateName());
 
         getStateFromUserData();
 
-        log.info("step 2 UserData after getStateFromUserData(context): chatID:{}, state: {}, country{}, currency{}, locale {}",
+        log.info("step 2 UserData after getStateFromUserData(context): chatID:{}, stateName: {}, country{}, currency{}, locale {}",
                 context.getUserData().getChatId(), context.getUserData().getStateName(), context.getUserData().getCountry(), context.getUserData().getCurrency(), context.getUserData().getLocale());
         log.info("step 2 Context after getStateFromUserData(context): state {}", context.getState().getStateName());
 
@@ -81,6 +84,7 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
 
         Map<String, StateName> commands = new HashMap<>();
 
+
         commands.put("Button \"ENG\" has been pressed", StateName.START);
         commands.put("Button \"RUS\" has been pressed", StateName.START);
         commands.put("Button \"Find price\" has been pressed", StateName.DATA_FILLED);
@@ -90,8 +94,11 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
         commands.put("Button \"Track it\" has been pressed", StateName.DATA_TRANSFERRED);
         commands.put("Button \"One way\" has been pressed", StateName.INBOUND_PARTIAL_DATE);
         //  commands.put("Delete", BotState.SUBSCR_LIST_EDIT);
+        commands.put("Региональные настройки", StateName.START);
         commands.put("Change localisation info", StateName.START);
+        commands.put("Новый поиск", StateName.MAIN_MENU);
         commands.put("New search", StateName.MAIN_MENU);
+        commands.put("Подписки", StateName.SUBSCR_LIST);
         commands.put("See your track list", StateName.SUBSCR_LIST);
         commands.put("/start", StateName.START);
 
@@ -210,9 +217,8 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
         }
     }
 
-
     private boolean isSubscrState(Context context) {
-        return context.getState().equals(new SubscriptionListState(context));
+        return context.getUserData().getStateName().equals(StateName.SUBSCR_LIST);
     }
 
     public void setStatesMethodSequence(StatesMethodSequence statesMethodSequence) {

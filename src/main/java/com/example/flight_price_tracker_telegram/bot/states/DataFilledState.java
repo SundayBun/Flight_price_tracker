@@ -9,6 +9,8 @@ import com.example.flight_price_tracker_telegram.skyscanner_api.service.IFlightP
 import com.example.flight_price_tracker_telegram.skyscanner_api.service.IFlightPriceDateClient;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class DataFilledState extends State {
 
     boolean changeState = false;
@@ -18,11 +20,12 @@ public class DataFilledState extends State {
         this.textMessageRequest = false;
         this.queryResponse = true;
         this.stateName = StateName.DATA_FILLED;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, "Tap on " + Emojis.PLANE + " to find current min price info");
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.dataFilled",Emojis.PLANE),null);
     }
 
     @Override

@@ -60,4 +60,13 @@ class TelegramFacadeTest {
         outgoingData=telegramFacade.handleUpdate(update);
         Assertions.assertThat(outgoingDataExpected).isEqualTo(outgoingData);
     }
+    @Test
+    void handleUpdateInvalidInput() {
+        telegramFacade=new TelegramFacade();
+        update.setMessage(null);
+        update.setCallbackQuery(null);
+        outgoingData=telegramFacade.handleUpdate(update);
+        outgoingDataExpected=null;
+        Assertions.assertThat(outgoingDataExpected).isEqualTo(outgoingData);
+    }
 }

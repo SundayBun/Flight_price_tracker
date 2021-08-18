@@ -4,19 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class DatesValidatorImplTest {
+class DatesValidatorDateImplTest {
 
-    DatesValidatorImpl datesValidator;
+    ValidatorDateImpl datesValidator;
 
     @Test
     void isValid() {
-        datesValidator=new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        datesValidator=new ValidatorDateImpl(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         boolean isValid1=datesValidator.isValid("447444");
         assertThat(isValid1).isFalse();
 
-        boolean isValid2=datesValidator.isValid("2021-02-15");
+        boolean isValid2=datesValidator.isValid("15.02.2021");
         assertThat(isValid2).isTrue();
     }
 }

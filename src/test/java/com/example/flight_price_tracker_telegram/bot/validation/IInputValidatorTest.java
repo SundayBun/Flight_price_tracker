@@ -2,10 +2,8 @@ package com.example.flight_price_tracker_telegram.bot.validation;
 
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.states.CountryButtonState;
-import com.example.flight_price_tracker_telegram.bot.states.CountryTextState;
-import com.example.flight_price_tracker_telegram.bot.states.InboundPartialDateState;
-import com.example.flight_price_tracker_telegram.bot.states.StartState;
+import com.example.flight_price_tracker_telegram.bot.states.*;
+import com.example.flight_price_tracker_telegram.prototype.MessagePrototype;
 import com.example.flight_price_tracker_telegram.prototype.UpdatePrototype;
 import com.example.flight_price_tracker_telegram.prototype.UsersPrototype;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +55,16 @@ class IInputValidatorTest {
         context.setState(new InboundPartialDateState(context));
         update = UpdatePrototype.aUpdateCallbackQuery();
 
+        boolean validResult2=inputValidator.isValidInput(update,context);
+        assertThat(validResult2).isEqualTo(true);
+    }
+
+    @Test
+    void isValidInputHasNoMessageNoCallbackQuery() {
+        update=new Update();
+        update.setMessage(MessagePrototype.aMessage());
+        context.getUserData().setLocale("en-US");
+        context.setState(new MainMenuState(context));
         boolean validResult2=inputValidator.isValidInput(update,context);
         assertThat(validResult2).isEqualTo(true);
     }

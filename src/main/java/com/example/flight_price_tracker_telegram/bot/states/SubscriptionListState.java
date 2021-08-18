@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 public class SubscriptionListState extends State {
@@ -21,6 +22,7 @@ public class SubscriptionListState extends State {
         this.textMessageRequest = true;
         this.queryResponse = true;
         this.stateName = StateName.SUBSCR_LIST;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
@@ -29,25 +31,42 @@ public class SubscriptionListState extends State {
         log.info("deleteItem: {}",deleteItem);
 
         if(deleteItem) {
-            return ResponseMessage.sendSubDeleting(context, "Search result was deleted from track list");}
+            return ResponseMessage.sendSubDeleting(context, localeMessageService.getMessage("state.subscriptionListDel"));}
 
         if (userSubscriptionList.size() > 0) {
 
-            CallbackQuery callbackQuery = context.getCallbackQuery();
-
-            if (callbackQuery != null && isNumeric(callbackQuery.getData()) && Integer.parseInt(callbackQuery.getData())<userSubscriptionList.size()) {
-                pageNumber = Integer.parseInt(callbackQuery.getData());
+            if (context.getCallbackQuery() != null && isNumeric(context.getCallbackQuery().getData()) && Integer.parseInt(context.getCallbackQuery().getData())<userSubscriptionList.size()) {
+                pageNumber = Integer.parseInt(context.getCallbackQuery().getData());
             }
 
-            return ResponseMessage.sendSubscripList(context, userSubscriptionList, pageNumber);
+            if (userSubscriptionList.get(pageNumber).getUserFlightData().getInboundPartialDate() == null) {
+                return ResponseMessage.sendSubscripList(context,userSubscriptionList, pageNumber,localeMessageService.getMessage("state.subscriptionListOneWay",
+                        ResponseMessage.getPlaceNameFromDTO(userSubscriptionList.get(pageNumber).getSkyScannerResponseQuotes().getPlaces(),userSubscriptionList.get(pageNumber).getUserFlightData().getOriginPlace()),
+                        ResponseMessage.getPlaceNameFromDTO(userSubscriptionList.get(pageNumber).getSkyScannerResponseQuotes().getPlaces(),userSubscriptionList.get(pageNumber).getUserFlightData().getDestinationPlace()),
+                        ResponseMessage.getDate(userSubscriptionList.get(pageNumber).getUserFlightData().getOutboundPartialDate(),userSubscriptionList.get(pageNumber).getUserData().getLocale()),
+                        userSubscriptionList.get(pageNumber).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
+                        userSubscriptionList.get(pageNumber).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
+                        userSubscriptionList.get(pageNumber).getUserFlightData().getSkyScannerResponseQuotes().getCarriers(),
+                         pageNumber));
+            }
+
+            return ResponseMessage.sendSubscripList(context,userSubscriptionList, pageNumber,localeMessageService.getMessage("state.subscriptionListTwoWays",
+                    ResponseMessage.getPlaceNameFromDTO(userSubscriptionList.get(pageNumber).getSkyScannerResponseDates().getPlaces(),userSubscriptionList.get(pageNumber).getUserFlightData().getOriginPlace()),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscriptionList.get(pageNumber).getSkyScannerResponseDates().getPlaces(),userSubscriptionList.get(pageNumber).getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(userSubscriptionList.get(pageNumber).getUserFlightData().getOutboundPartialDate(),userSubscriptionList.get(pageNumber).getUserData().getLocale()),
+                    ResponseMessage.getDate(userSubscriptionList.get(pageNumber).getUserFlightData().getInboundPartialDate(),userSubscriptionList.get(pageNumber).getUserData().getLocale()),
+                    userSubscriptionList.get(pageNumber).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
+                    userSubscriptionList.get(pageNumber).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
+                    userSubscriptionList.get(pageNumber).getSkyScannerResponseDates().getCarriers(),
+                    pageNumber));
         }
 
-        return ResponseMessage.sendMessage(context, "No subscriptions");
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.subscriptionListNoSub"),null);
 
     }
 
     @Override
-    public void handleInput(Context context, UserSubscriptionDataService repository) {
+    public void handleInput(Context context, UserSubscriptionDataService repository) throws NullPointerException {
         context.getUserData().setStateName(stateName);
         if (context.getInput().matches("/Delete_"+"-?\\d+")) {
             try {

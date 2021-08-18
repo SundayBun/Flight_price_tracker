@@ -1,17 +1,19 @@
 package com.example.flight_price_tracker_telegram.bot.states;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
+import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
-import com.example.flight_price_tracker_telegram.bot.validation.DatesValidatorImpl;
-import com.example.flight_price_tracker_telegram.bot.validation.IDatesValidator;
+import com.example.flight_price_tracker_telegram.bot.validation.ValidatorDateImpl;
+import com.example.flight_price_tracker_telegram.bot.validation.IValidator;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class InboundPartialDateState extends State{
 
-    final IDatesValidator datesValidator = new DatesValidatorImpl(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    final IValidator datesValidator = new ValidatorDateImpl(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     boolean dataFilled=false;
 
     public InboundPartialDateState(Context context) {
@@ -19,11 +21,12 @@ public class InboundPartialDateState extends State{
         this.textMessageRequest=true;
         this.queryResponse=true;
         this.stateName = StateName.INBOUND_PARTIAL_DATE;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,  Emojis.DATE + " Enter the inbound partial date (yyyy-mm-dd) or tap on \"One way\"");
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.inboundPartialDates",Emojis.DATE),localeMessageService.getMessage("state.inboundPartialDatesButton"));
     }
 
     @Override
@@ -34,7 +37,8 @@ public class InboundPartialDateState extends State{
             dataFilled=true;
         } else {
             if(datesValidator.isValid(context.getInput())){
-                context.getUserFlightData().setInboundPartialDate(context.getInput());
+                String validDate= HandleInput.formatDate(context.getInput());
+                context.getUserFlightData().setInboundPartialDate(validDate);
                 dataFilled=true;
             }
         }

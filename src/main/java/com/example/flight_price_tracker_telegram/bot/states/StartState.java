@@ -16,7 +16,7 @@ public class StartState extends State{
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,  "Choose the language");
+        return ResponseMessage.sendMessage(context,  "Choose the language / Выберите язык",null);
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.example.flight_price_tracker_telegram.bot.Context;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class SubscriptionState extends State {
 
     public SubscriptionState(Context context) {
@@ -11,11 +13,12 @@ public class SubscriptionState extends State {
         this.textMessageRequest=false;
         this.queryResponse=false;
         this.stateName = StateName.SUBSCRIPT;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendSubConfirmation(context, "Search result was added to track list");
+        return ResponseMessage.sendSubConfirmation(context, localeMessageService.getMessage("state.subscription"));
     }
 
     @Override

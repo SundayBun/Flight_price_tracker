@@ -5,10 +5,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 
-public class DatesValidatorImpl implements IDatesValidator{
+public class ValidatorDateImpl implements IValidator {
 private DateTimeFormatter dateTimeFormatter;
 
-    public DatesValidatorImpl(DateTimeFormatter dateTimeFormatter) {
+    public ValidatorDateImpl(DateTimeFormatter dateTimeFormatter) {
         this.dateTimeFormatter = dateTimeFormatter;
     }
 

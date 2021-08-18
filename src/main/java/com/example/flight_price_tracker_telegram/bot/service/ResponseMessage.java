@@ -2,82 +2,61 @@ package com.example.flight_price_tracker_telegram.bot.service;
 
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.states.OriginPlaceText;
-import com.example.flight_price_tracker_telegram.bot.validation.DatesValidatorImpl;
-import com.example.flight_price_tracker_telegram.repository.entity.UserFlightData;
 import com.example.flight_price_tracker_telegram.skyscanner_api.dto.browse.BrowsePlacesDTO;
 import com.example.flight_price_tracker_telegram.skyscanner_api.dto.localisation.CountryDTO;
 import com.example.flight_price_tracker_telegram.skyscanner_api.dto.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
+import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
-
+@Service
 public class ResponseMessage {
 
-    public static SendMessage sendMessage(Context context, String text) {
+
+    public static SendMessage sendMessage(Context context, String messageText, String buttonText) {
 
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserData().getChatId().toString());
 
         if (!context.getState().isQueryResponse()) {
-            message.setText(text);
-            if (context.getState().equals(new OriginPlaceText(context))) {
-                message.setReplyMarkup(ButtonHandler.getMainMenuKeyboard());
-            }
+            message.setText(messageText);
         } else {
-            message.setText(text);
-            message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(context));
+            message.setText(messageText);
+            message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(context, buttonText));
         }
         return message;
-
     }
 
-    public static SendMessage sendSearchResult(Context context) {
+    public static SendMessage sendMessageOriginPlace(Context context, String messageText, String... buttonTextArgs) {
+        SendMessage message = new SendMessage();
+        message.setChatId(context.getUserData().getChatId().toString());
+        message.setText(messageText);
+        message.setReplyMarkup(ButtonHandler.getMainMenuKeyboard(buttonTextArgs[0], buttonTextArgs[1], buttonTextArgs[2]));
+        return message;
+    }
+
+
+    public static SendMessage sendSearchResult(Context context, String messageText, String buttonText) {
 
         SendMessage message = new SendMessage();
         message.setChatId(context.getUserFlightData().getChatId().toString());
-
-
-
-        if (context.getUserFlightData().getInboundPartialDate() == null) {
-
-            String textOneWay = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseQuotes().getPlaces(),context.getUserFlightData().getOriginPlace()) +
-                    "\n   Destination place: " + getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseQuotes().getPlaces(),context.getUserFlightData().getDestinationPlace()) + "\n" +
-                    "\n   Outbound partial date: " +getDate(context.getUserFlightData().getOutboundPartialDate()) +
-                    "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
-                    context.getUserFlightData().getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + context.getUserFlightData().getSkyScannerResponseQuotes().getCarriers();
-
-            message.setText(textOneWay);
-        } else {
-            String textTwoWays = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseDates().getPlaces(),context.getUserFlightData().getOriginPlace()) +
-                    "\n   Destination place: " + getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseDates().getPlaces(),context.getUserFlightData().getDestinationPlace()) + "\n" +
-                    "\n   Outbound partial date: " +getDate(context.getUserFlightData().getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate()) +
-//                "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPrice() +
-//                context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Inbound partial date: " + getDate(context.getUserFlightData().getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate()) +
-//                "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPrice() +
-//                context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Min price: " + context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice() +
-                    context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + context.getUserFlightData().getSkyScannerResponseDates().getCarriers();
-            message.setText(textTwoWays);
-        }
-
-        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(context));
+        message.setText(messageText);
+        message.setReplyMarkup(ButtonHandler.getMessageFromKeyboard(context, buttonText));
 
         log.info("sendSearchResult setText={}", message.getText());
+
         return message;
     }
 
@@ -115,26 +94,25 @@ public class ResponseMessage {
         return answerCallbackQuery;
     }
 
-    public static BotApiMethod<?> sendSubscripList(Context context, List<UserSubscription> userSubscriptionList, int page) {
+    public static BotApiMethod<?> sendSubscripList(Context context, List<UserSubscription> userSubscriptionList, int page, String text) {
         SendMessage message = new SendMessage();
         EditMessageText editMessageText = new EditMessageText();
 
         if (page == 0) {
             message.setChatId(context.getUserData().getChatId().toString());
-            message.setText(textRepresentation(context, userSubscriptionList, page));
+            message.setText(text);
             message.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
             return message;
         } else {
             Integer messageID = context.getCallbackQuery().getMessage().getMessageId();
             editMessageText.setChatId(context.getUserData().getChatId().toString());
             editMessageText.setMessageId(messageID);
-            editMessageText.setText(textRepresentation(context, userSubscriptionList, page));
+            editMessageText.setText(text);
             editMessageText.setReplyMarkup(ButtonHandler.getMessageFromKeyboardSubList(userSubscriptionList));
 
             return editMessageText;
         }
     }
-
 
     public static AnswerCallbackQuery sendSubDeleting(Context context, String text) {
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
@@ -142,32 +120,6 @@ public class ResponseMessage {
         answerCallbackQuery.setShowAlert(true);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;
-    }
-
-    public static String textRepresentation(Context context, List<UserSubscription> userSubscriptionList, int page) {
-
-        String text = "";
-        if (userSubscriptionList.get(page).getUserFlightData().getInboundPartialDate() == null) {
-            text = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + getPlaceNameFromDTO(userSubscriptionList.get(page).getSkyScannerResponseQuotes().getPlaces(),userSubscriptionList.get(page).getUserFlightData().getOriginPlace()) +
-                    "\n   Destination place: " + getPlaceNameFromDTO(userSubscriptionList.get(page).getSkyScannerResponseQuotes().getPlaces(),userSubscriptionList.get(page).getUserFlightData().getDestinationPlace()) + "\n" +
-                    "\n   Outbound partial date: " + getDate(userSubscriptionList.get(page).getUserFlightData().getOutboundPartialDate()) +
-                    "\n   Min price: " + userSubscriptionList.get(page).getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice() +
-                    userSubscriptionList.get(page).getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + userSubscriptionList.get(page).getSkyScannerResponseQuotes().getCarriers() + "\n" +
-                    "\n /Delete_" + page;
-        } else {
-            text = "-------------FLIGHT INFO-------------" + "\n" +
-                    "\n   Origin place: " + getPlaceNameFromDTO(userSubscriptionList.get(page).getSkyScannerResponseDates().getPlaces(),userSubscriptionList.get(page).getUserFlightData().getOriginPlace()) +
-                    "\n   Destination place: " + getPlaceNameFromDTO(userSubscriptionList.get(page).getSkyScannerResponseDates().getPlaces(),userSubscriptionList.get(page).getUserFlightData().getDestinationPlace()) + "\n" +
-                    "\n   Outbound partial date: " + getDate(userSubscriptionList.get(page).getUserFlightData().getOutboundPartialDate()) +
-                    "\n   Inbound partial date: " + getDate(userSubscriptionList.get(page).getUserFlightData().getInboundPartialDate()) +
-                    "\n   Min price: " + userSubscriptionList.get(page).getSkyScannerResponseDates().getQuotes().get(0).getMinPrice() +
-                    userSubscriptionList.get(page).getSkyScannerResponseDates().getCurrencies().get(0).getSymbol() + "\n" +
-                    "\n   Carrier: " + userSubscriptionList.get(page).getSkyScannerResponseDates().getCarriers() + "\n" +
-                    "\n /Delete_" + page;
-        }
-        return text;
     }
 
     public static String getPlaceNameFromDTO(List<BrowsePlacesDTO> places, String place) {
@@ -179,11 +131,35 @@ public class ResponseMessage {
         return place;
     }
 
-    public static String getDate(String date){
-        DateTimeFormatter yymmdd=DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter ddmmyy=DateTimeFormatter.ofPattern("dd MMM yyyy");
-        LocalDate localDate= LocalDate.parse(date,yymmdd);
+    public static String getDate(String date, String locale) {
+        Locale localeRu = new Locale("ru", "Ru");
+        DateTimeFormatter yymmdd = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        if (locale.equals("ru-RU")) {
+            DateTimeFormatter ddmmyyRu = DateTimeFormatter.ofPattern("dd MMM yyyy", localeRu);
+            LocalDate localDate = LocalDate.parse(date, yymmdd);
+            return ddmmyyRu.format(localDate);
+        }
+
+        DateTimeFormatter ddmmyy = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+        LocalDate localDate = LocalDate.parse(date, yymmdd);
         return ddmmyy.format(localDate);
+
     }
+//     private static Locale localeRu(String date){
+//         Locale locale = new Locale("ru","Ru");
+//         DateTimeFormatter ddmmyy=DateTimeFormatter.ofPattern("dd MMM yyyy",locale);
+//         LocalDate localDate= LocalDate.parse(date);
+//         return ddmmyy.format(localDate);
+//         DateFormatSymbols dfs = DateFormatSymbols.getInstance(locale);
+//         String[] months = {
+//                 "января", "февраля", "марта", "апреля", "мая", "июня",
+//                 "июля", "августа", "сентября", "октября", "ноября", "декабря"};
+//         String[] shortMonths = {
+//                 "янв", "фев", "мар", "апр", "май", "июн",
+//                 "июл", "авг", "сен", "окт", "ноя", "дек"};
+//         dfs.setMonths(months);
+//         dfs.setShortMonths(shortMonths);
+    //    }
 
 }

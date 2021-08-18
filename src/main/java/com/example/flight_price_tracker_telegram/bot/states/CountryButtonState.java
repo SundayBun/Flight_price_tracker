@@ -5,6 +5,8 @@ import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
+import java.util.Locale;
+
 public class CountryButtonState extends State{
 
     public CountryButtonState(Context context) {
@@ -12,12 +14,13 @@ public class CountryButtonState extends State{
         this.textMessageRequest=false;
         this.queryResponse=true;
         this.stateName = StateName.COUNTRY_BUTTONS;
+        localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
         return ResponseMessage.sendSearchCountry(context, HandleInput.country(context)
-                , "Select the country you are based in");
+                , localeMessageService.getMessage("state.countryButton"));
     }
 
     @Override
