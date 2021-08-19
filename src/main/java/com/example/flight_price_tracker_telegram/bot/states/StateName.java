@@ -18,6 +18,5 @@ public enum StateName implements Serializable {
     SUBSCRIPT,
     SUBSCR_LIST,
     DELETE_SUBSCR,
-    MAIN_MENU;
-
+    MAIN_MENU
 }

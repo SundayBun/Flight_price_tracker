@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Data transfer object for Carriers.
- *
  */
 
 public class CarriersDTO {
@@ -65,9 +64,6 @@ public class CarriersDTO {
     }
 
     public String toString() {
-//        return "CarriersDTO(carrierId=" + this.getCarrierId()
-//                + ", name=" + this.getName() + ")";
-
         return " "+this.getName();
     }
 }

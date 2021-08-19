@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Data transfer object for quotes.
- *
  */
 
 public class QuotesDTO {
@@ -136,11 +135,6 @@ public class QuotesDTO {
     }
 
     public String toString() {
-//        return "QuotesDTO(quoteId=" + this.getQuoteId()
-//                + ", minPrice=" + this.getMinPrice() + ", direct=" + this.getDirect()
-//                + ", outboundLeg=" + this.getOutboundLeg() + ", inboundLeg="
-//                + this.getInboundLeg() + ", quoteDateTime=" + this.getQuoteDateTime() + ")";
-
         return "Min price: " + this.getMinPrice();
     }
 }

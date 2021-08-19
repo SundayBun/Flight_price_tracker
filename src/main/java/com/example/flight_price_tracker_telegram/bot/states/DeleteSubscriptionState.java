@@ -7,8 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 public class DeleteSubscriptionState extends State {
     public DeleteSubscriptionState(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=false;
+        this.textMessageRequest = false;
+        this.queryResponse = false;
         this.stateName = StateName.DELETE_SUBSCR;
     }
 

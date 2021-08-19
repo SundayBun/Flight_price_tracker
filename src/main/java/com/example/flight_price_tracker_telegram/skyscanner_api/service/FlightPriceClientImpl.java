@@ -27,22 +27,10 @@ public class FlightPriceClientImpl implements IFlightPriceClient {
     public static final String CARRIERS_KEY = "Carriers";
     public static final String VALIDATIONS_KEY = "ERROR";
 
-//    @Autowired
-//    private IUniRestService uniRestService;
-
-//    @Override
-//    public FlightPricesDTO browseQuotes(String country, String currency, String locale, String originPlace, String destinationPlace, String outboundPartialDate) {
-//
-//        HttpResponse<JsonNode> response = uniRestService.get(String.format(BROWSE_QUOTES_FORMAT, country, currency,
-//                locale, originPlace, destinationPlace, outboundPartialDate));
-//
-//        return mapToObject(response);
-//    }
-
     @Override
     public FlightPricesDTO browseQuotes(UserData userData, UserFlightData userFlightData) {
-        IUniRestService uniRestService=new UniRestServiceImpl();
-        HttpResponse<JsonNode> response=null;
+        IUniRestService uniRestService = new UniRestServiceImpl();
+        HttpResponse<JsonNode> response = null;
         if (userFlightData.getInboundPartialDate() != null) {
 
             response = uniRestService.get(String.format(OPTIONAL_BROWSE_QUOTES_FORMAT, userData.getCountry(), userData.getCurrency(),
@@ -76,10 +64,6 @@ public class FlightPriceClientImpl implements IFlightPriceClient {
             return flightPricesDTO;
         }
         return null;
-//        throw new FlightClientException(String.format("There are validation errors. statusCode = %s", response.getStatus()),
-//                UniRestServiceImpl.readValue(response.getBody().getObject().get(VALIDATIONS_KEY).toString(),
-//                        new TypeReference<List<ValidationErrorDTO>>() {
-//                        }));
     }
 
 }

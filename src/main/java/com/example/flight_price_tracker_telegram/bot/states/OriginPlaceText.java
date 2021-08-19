@@ -22,8 +22,8 @@ public class OriginPlaceText extends State {
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessageOriginPlace(context, localeMessageService.getMessage("state.originPlaceText",Emojis.FROM,Emojis.MAG_RIGHT),
-                localeMessageService.getMessage("state.mainMenuLocalisation"),localeMessageService.getMessage("state.mainMenuNewSearch"),localeMessageService.getMessage("state.mainMenuTrackList"));
+        return ResponseMessage.sendMessageOriginPlace(context, localeMessageService.getMessage("state.originPlaceText", Emojis.FROM, Emojis.MAG_RIGHT),
+                localeMessageService.getMessage("state.mainMenuLocalisation"), localeMessageService.getMessage("state.mainMenuNewSearch"), localeMessageService.getMessage("state.mainMenuTrackList"));
     }
 
     @Override

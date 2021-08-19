@@ -10,7 +10,6 @@ import com.example.flight_price_tracker_telegram.repository.entity.UserData;
 import com.example.flight_price_tracker_telegram.repository.entity.UserFlightData;
 import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +27,11 @@ public class TelegramFacade {
 
     private Context context;
     private IStepStrategy stepStrategy;
-
     private BotApiMethod<?> outgoingData;
 
     @Autowired
     private UserSubscriptionDataService repository;
     private UserSubscription userSubscription;
-
 
     private CallbackQuery callbackQuery;
     private long chatId;
@@ -54,38 +51,38 @@ public class TelegramFacade {
             callbackQuery = update.getCallbackQuery();
             chatId = update.getCallbackQuery().getMessage().getChatId();
 
-            log.info("Update data: callbackQueryID:{}, callbackQuery: {}, message: {}", id, callbackQuery.getData(),update.hasMessage());
+            log.info("Update data: callbackQueryID:{}, callbackQuery: {}, message: {}", id, callbackQuery.getData(), update.hasMessage());
         }
     }
 
     public BotApiMethod<?> handleUpdate(Update update) {
 
-        if ((!update.hasMessage() || update.getMessage().getText()==null) & !update.hasCallbackQuery()) {
+        if ((!update.hasMessage() || update.getMessage().getText() == null) & !update.hasCallbackQuery()) {
             return null;
         }
         initChatIdCallbackQueryTextId(update);
         UserData userData = repository.findByChatIdOrId(id, chatId);
         UserFlightData userFlightData = repository.findByIdOrChatID(id, chatId);
-         userSubscription = new UserSubscription(chatId);
+        userSubscription = new UserSubscription(chatId);
 
         if (userData == null) {
 
             userData = new UserData(chatId, id);
             userFlightData = new UserFlightData(chatId, id);
             context = new Context(userData, userFlightData, text, callbackQuery);
-            stepStrategy=new NewUserStepStrategy(context);
+            stepStrategy = new NewUserStepStrategy(context);
 
         } else {
             context = new Context(userData, userFlightData, text, callbackQuery);
-            stepStrategy=new RegisteredUserStepStrategy(context,update,repository);
+            stepStrategy = new RegisteredUserStepStrategy(context, update, repository);
         }
 
-        outgoingData= stepStrategy.doStateLogic();
+        outgoingData = stepStrategy.doStateLogic();
 
-        userData=stepStrategy.getContext().getUserData();
-        userFlightData=stepStrategy.getContext().getUserFlightData();
+        userData = stepStrategy.getContext().getUserData();
+        userFlightData = stepStrategy.getContext().getUserFlightData();
         userData.setStateName(stepStrategy.getContext().getState().getStateName());
-        userSubscription=stepStrategy.getContext().getUserSubscription();
+        userSubscription = stepStrategy.getContext().getUserSubscription();
 
         repository.saveUserData(userData);
         repository.saveUserFlightData(userFlightData);
@@ -93,7 +90,6 @@ public class TelegramFacade {
 
         log.info("Process data: chatID:{}, state: {}", chatId, stepStrategy.getContext().getState().getStateName().toString());
         log.info("**************************");
-
 
         return outgoingData;
     }

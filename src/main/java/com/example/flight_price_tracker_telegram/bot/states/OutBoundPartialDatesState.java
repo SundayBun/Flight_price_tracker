@@ -11,22 +11,24 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class OutBoundPartialDatesState extends State{
+public class OutBoundPartialDatesState extends State {
 
     final IValidator datesValidator = new ValidatorDateImpl(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    boolean changeState=false;
+    boolean changeState = false;
 
     public OutBoundPartialDatesState(Context context) {
         super(context);
-        this.textMessageRequest=true;
-        this.queryResponse=false;
+        this.textMessageRequest = true;
+        this.queryResponse = false;
         this.stateName = StateName.OUTBOUND_PARTIAL_DATE;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.outBoundPartialDates",Emojis.DATE),null);
+        return ResponseMessage.sendMessage(context,
+                localeMessageService.getMessage("state.outBoundPartialDates", Emojis.DATE),
+                null);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class OutBoundPartialDatesState extends State{
         context.getUserData().setStateName(stateName);
 
         if (datesValidator.isValid(context.getInput())) {
-            String validDate= HandleInputService.formatDate(context.getInput());
+            String validDate = HandleInputService.formatDate(context.getInput());
             context.getUserFlightData().setOutboundPartialDate(validDate);
             changeState = true;
         }

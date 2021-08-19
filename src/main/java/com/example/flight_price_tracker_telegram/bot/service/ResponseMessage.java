@@ -7,14 +7,12 @@ import com.example.flight_price_tracker_telegram.skyscanner_api.dto.localisation
 import com.example.flight_price_tracker_telegram.skyscanner_api.dto.places.PlacesDTO;
 import com.example.flight_price_tracker_telegram.repository.entity.UserSubscription;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
-import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -115,10 +113,10 @@ public class ResponseMessage {
     }
 
     public static AnswerCallbackQuery sendSubDeleting(Context context, String text) {
-        String id=context.getUserData().getId();
+        String id = context.getUserData().getId();
 
-        if (context.getCallbackQuery()!=null){
-            id=context.getCallbackQuery().getId();
+        if (context.getCallbackQuery() != null) {
+            id = context.getCallbackQuery().getId();
         }
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
         answerCallbackQuery.setCallbackQueryId(id);
@@ -151,20 +149,4 @@ public class ResponseMessage {
         return ddmmyy.format(localDate);
 
     }
-//     private static Locale localeRu(String date){
-//         Locale locale = new Locale("ru","Ru");
-//         DateTimeFormatter ddmmyy=DateTimeFormatter.ofPattern("dd MMM yyyy",locale);
-//         LocalDate localDate= LocalDate.parse(date);
-//         return ddmmyy.format(localDate);
-//         DateFormatSymbols dfs = DateFormatSymbols.getInstance(locale);
-//         String[] months = {
-//                 "января", "февраля", "марта", "апреля", "мая", "июня",
-//                 "июля", "августа", "сентября", "октября", "ноября", "декабря"};
-//         String[] shortMonths = {
-//                 "янв", "фев", "мар", "апр", "май", "июн",
-//                 "июл", "авг", "сен", "окт", "ноя", "дек"};
-//         dfs.setMonths(months);
-//         dfs.setShortMonths(shortMonths);
-    //    }
-
 }

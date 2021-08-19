@@ -18,30 +18,16 @@ public class UserSubscriptionDataService {
     public UserSubscriptionDataService(ISubscriptionRepositoryUserData userDataRepository, ISubscriptionRepositoryFlightData userFlightData, ISubscriptionRepositoryUserSubscription subscriptionRepository) {
         this.userDataRepository = userDataRepository;
         this.userFlightDataIml = userFlightData;
-        this.subscriptionRepository=subscriptionRepository;
-    }
-
-
-    public UserData findByChatId(long chatId) {
-        return userDataRepository.findByChatId(chatId);
+        this.subscriptionRepository = subscriptionRepository;
     }
 
     public UserData findByChatIdOrId(String id, Long chatID) {
-       if(userDataRepository.findByChatId(chatID)==null){
-           return userDataRepository.findById(id);
-       }
+        if (userDataRepository.findByChatId(chatID) == null) {
+            return userDataRepository.findById(id);
+        }
         return userDataRepository.findByChatId(chatID);
 
     }
-
-    public UserFlightData findByFlightData(long chatId, UserFlightData userFlightData) {
-        if (userFlightDataIml.findByChatId(chatId) != null) {
-            return userFlightDataIml.findByChatId(chatId)
-                    .stream().filter(x -> x.equals(userFlightData)).findFirst().orElse(null);
-        }
-        return null;
-    }
-
 
     public void saveUserData(UserData userData) {
         userDataRepository.save(userData);
@@ -51,17 +37,10 @@ public class UserSubscriptionDataService {
         userFlightDataIml.save(userFlightData);
     }
 
-
-    public UserFlightData findByChatID(long chatId) {
-        return userFlightDataIml.findByChatId(chatId)
-                .stream().filter(x -> x.getChatId()
-                        .equals(chatId)).findFirst().orElse(null);
-    }
-
     public UserFlightData findByIdOrChatID(String id, Long chatID) {
-        if(userFlightDataIml.findByChatId(chatID)==null){
+        if (userFlightDataIml.findByChatId(chatID) == null) {
             return userFlightDataIml.findById(id).stream()
-                    .filter(x->x.getId().equals(id))
+                    .filter(x -> x.getId().equals(id))
                     .findFirst().orElse(null);
         }
 
@@ -71,15 +50,15 @@ public class UserSubscriptionDataService {
                 .orElse(null);
     }
 
-    public List<UserSubscription> findSubByChatId (Long chatID) {
+    public List<UserSubscription> findSubByChatId(Long chatID) {
         return subscriptionRepository.findByChatId(chatID);
     }
 
-    public void saveSubscription(UserSubscription userSubscription){
+    public void saveSubscription(UserSubscription userSubscription) {
         subscriptionRepository.save(userSubscription);
     }
 
-    public void deleteSubscription(String id){
+    public void deleteSubscription(String id) {
         subscriptionRepository.deleteById(id);
     }
 }

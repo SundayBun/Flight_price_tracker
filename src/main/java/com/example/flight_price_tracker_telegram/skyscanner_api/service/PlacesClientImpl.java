@@ -18,14 +18,15 @@ public class PlacesClientImpl implements IPlacesClient {
 
     @Override
     public List<PlacesDTO> retrievePlaces(String query, String country, String currency, String locale) {
-        IUniRestService uniRestService=new UniRestServiceImpl();
+        IUniRestService uniRestService = new UniRestServiceImpl();
 
-        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.PLACES_FORMAT,country,currency,locale,query.replaceAll(" ","")));
+        HttpResponse<JsonNode> response = uniRestService.get(String.format(UniRestServiceImpl.PLACES_FORMAT, country, currency, locale, query.replaceAll(" ", "")));
 
-        if(response.getStatus()!= HttpStatus.SC_OK) {
+        if (response.getStatus() != HttpStatus.SC_OK) {
             return null;
         }
-        String jsonList=response.getBody().getObject().get(UniRestServiceImpl.PLACES_KEY).toString();
-        return UniRestServiceImpl.readValue(jsonList,new TypeReference<List<PlacesDTO>>(){});
+        String jsonList = response.getBody().getObject().get(UniRestServiceImpl.PLACES_KEY).toString();
+        return UniRestServiceImpl.readValue(jsonList, new TypeReference<List<PlacesDTO>>() {
+        });
     }
 }

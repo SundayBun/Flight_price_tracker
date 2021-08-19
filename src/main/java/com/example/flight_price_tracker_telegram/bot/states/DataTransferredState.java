@@ -2,7 +2,6 @@ package com.example.flight_price_tracker_telegram.bot.states;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
-import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.util.Locale;
@@ -28,8 +27,8 @@ public class DataTransferredState extends State {
         if (context.getUserFlightData().getInboundPartialDate() == null) {
             return ResponseMessage.sendSearchResult(context, localeMessageService.getMessage("state.dataTransferredOneWay",
                     ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseQuotes().getPlaces(), context.getUserFlightData().getOriginPlace()),
-                    ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseQuotes().getPlaces(),context.getUserFlightData().getDestinationPlace()),
-                    ResponseMessage.getDate(context.getUserFlightData().getOutboundPartialDate(),context.getUserData().getLocale()),
+                    ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseQuotes().getPlaces(), context.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(context.getUserFlightData().getOutboundPartialDate(), context.getUserData().getLocale()),
                     context.getUserFlightData().getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
                     context.getUserFlightData().getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
                     context.getUserFlightData().getSkyScannerResponseQuotes().getCarriers()),
@@ -37,15 +36,14 @@ public class DataTransferredState extends State {
         } else {
             return ResponseMessage.sendSearchResult(context, localeMessageService.getMessage("state.dataTransferredTwoWays",
                     ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseDates().getPlaces(), context.getUserFlightData().getOriginPlace()),
-                    ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseDates().getPlaces(),context.getUserFlightData().getDestinationPlace()),
-                    ResponseMessage.getDate(context.getUserFlightData().getOutboundPartialDate(),context.getUserData().getLocale()),
-                    ResponseMessage.getDate(context.getUserFlightData().getInboundPartialDate(),context.getUserData().getLocale()),
+                    ResponseMessage.getPlaceNameFromDTO(context.getUserFlightData().getSkyScannerResponseDates().getPlaces(), context.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(context.getUserFlightData().getOutboundPartialDate(), context.getUserData().getLocale()),
+                    ResponseMessage.getDate(context.getUserFlightData().getInboundPartialDate(), context.getUserData().getLocale()),
                     context.getUserFlightData().getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
                     context.getUserFlightData().getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
                     context.getUserFlightData().getSkyScannerResponseDates().getCarriers()),
                     localeMessageService.getMessage("state.dataTransferredButton"));
         }
-
     }
 
     @Override

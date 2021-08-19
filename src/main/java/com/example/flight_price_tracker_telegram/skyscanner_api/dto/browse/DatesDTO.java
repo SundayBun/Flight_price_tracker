@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * Data transfer object for Dates.
- *
  */
 
 public class DatesDTO {
@@ -16,7 +15,6 @@ public class DatesDTO {
 
     @JsonProperty("OutboundDates")
     private List<OutInboundDatesDTO> outboundDates;
-
 
     public DatesDTO() {
     }
@@ -71,7 +69,7 @@ public class DatesDTO {
 
     public String toString() {
         return "Outbound date: " + this.getOutboundDates()
-                + "\n" + "Inbound date: " + this.getInboundDates()  ;
+                + "\n" + "Inbound date: " + this.getInboundDates();
     }
 
 }

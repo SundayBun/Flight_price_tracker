@@ -10,5 +10,4 @@ public interface ISubscriptionRepositoryUserData extends MongoRepository<UserDat
     UserData findByChatId(Long chatID);
     UserData findById (String id);
 
-
 }

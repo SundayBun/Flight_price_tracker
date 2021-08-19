@@ -8,8 +8,8 @@ class HandleInputServiceTest {
 
     @Test
     void formatDate() {
-        String dateExp="2021-05-06";
-        String dateVer= HandleInputService.formatDate("06.05.2021");
+        String dateExp = "2021-05-06";
+        String dateVer = HandleInputService.formatDate("06.05.2021");
         assertThat(dateVer).isEqualTo(dateExp);
     }
 }

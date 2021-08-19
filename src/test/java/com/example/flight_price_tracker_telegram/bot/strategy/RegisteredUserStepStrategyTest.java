@@ -1,23 +1,17 @@
 package com.example.flight_price_tracker_telegram.bot.strategy;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.states.InboundPartialDateState;
-import com.example.flight_price_tracker_telegram.bot.states.State;
 import com.example.flight_price_tracker_telegram.bot.states.StateName;
 import com.example.flight_price_tracker_telegram.bot.statesMethodSequence.RegularSequence;
 import com.example.flight_price_tracker_telegram.bot.statesMethodSequence.StatesMethodSequence;
-import com.example.flight_price_tracker_telegram.prototype.CallbackQueryPrototype;
 import com.example.flight_price_tracker_telegram.prototype.UpdatePrototype;
 import com.example.flight_price_tracker_telegram.prototype.UsersPrototype;
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+
 
 class RegisteredUserStepStrategyTest {
 
@@ -31,10 +25,10 @@ class RegisteredUserStepStrategyTest {
     void setUp() {
         context = new Context();
         context.setUserData(UsersPrototype.aUserData());
+        context.getUserData().setLocale("en-US");
 
         update = UpdatePrototype.aUpdateCallbackQuery();
         repository = null;
-
     }
 
     @Test
@@ -57,8 +51,7 @@ class RegisteredUserStepStrategyTest {
         registeredUserStepStrategy.setStatesMethodSequence(statesMethodSequence);
 
         registeredUserStepStrategy.getStateFromUserData();
-        State state=registeredUserStepStrategy.getContext().getState();
-        assertThat(state).isEqualTo(new InboundPartialDateState(context));
-
+        StateName stateName = registeredUserStepStrategy.getContext().getState().getStateName();
+        assertThat(stateName).isEqualTo(StateName.INBOUND_PARTIAL_DATE);
     }
 }

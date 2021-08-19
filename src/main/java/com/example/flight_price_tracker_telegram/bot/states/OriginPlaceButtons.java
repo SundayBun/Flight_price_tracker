@@ -7,12 +7,12 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.util.Locale;
 
-public class OriginPlaceButtons extends State{
+public class OriginPlaceButtons extends State {
 
     public OriginPlaceButtons(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=true;
+        this.textMessageRequest = false;
+        this.queryResponse = true;
         this.stateName = StateName.ORIGIN_PLACE_BUTTONS;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }

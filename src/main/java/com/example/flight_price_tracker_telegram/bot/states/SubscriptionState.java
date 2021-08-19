@@ -10,8 +10,8 @@ public class SubscriptionState extends State {
 
     public SubscriptionState(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=false;
+        this.textMessageRequest = false;
+        this.queryResponse = false;
         this.stateName = StateName.SUBSCRIPT;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }

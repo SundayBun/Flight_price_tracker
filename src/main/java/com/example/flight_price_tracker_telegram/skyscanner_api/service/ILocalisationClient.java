@@ -18,9 +18,7 @@ public interface ILocalisationClient {
      * It is therefore necessary to specify the market country in every query.
      *
      * @param locale locale of the response.
-     *
      * @return the collection of the {@link CountryDTO} objects.
-     *
      * @throws IOException
      */
 
@@ -30,7 +28,6 @@ public interface ILocalisationClient {
      * Retrieve the currencies that we ScyScanner flight search API.
      *
      * @return the collection of the {@link CurrencyDTO} objects.
-     *
      * @throws IOException
      */
 

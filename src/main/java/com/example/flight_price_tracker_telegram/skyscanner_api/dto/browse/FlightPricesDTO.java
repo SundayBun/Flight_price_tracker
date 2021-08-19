@@ -7,7 +7,6 @@ import java.util.List;
 
 /**
  * Data transfer object for FlightPrices.
- *
  */
 public class FlightPricesDTO {
 
@@ -25,7 +24,6 @@ public class FlightPricesDTO {
 
     public FlightPricesDTO() {
     }
-
 
     public List<QuotesDTO> getQuotes() {
         return this.quotes;
@@ -103,11 +101,7 @@ public class FlightPricesDTO {
     }
 
     public String toString() {
-//        return "FlightPricesDTO(quotes=" + this.getQuotes()
-//                + ", places=" + this.getPlaces() + ", carriers=" + this.getCarriers()
-//                + ", currencies=" + this.getCurrencies() + ")";
-
-        return ""+this.getPlaces()+ "\n "+this.getCarriers()+"\n "+this.getQuotes()
-                +" "+this.getCurrencies();
+        return "" + this.getPlaces() + "\n " + this.getCarriers() + "\n " + this.getQuotes()
+                + " " + this.getCurrencies();
     }
 }

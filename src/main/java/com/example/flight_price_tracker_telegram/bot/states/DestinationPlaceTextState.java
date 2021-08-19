@@ -22,7 +22,7 @@ public class DestinationPlaceTextState extends State {
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,localeMessageService.getMessage("state.destinationPlaceText",Emojis.TO,Emojis.MAG_RIGHT),null);
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.destinationPlaceText", Emojis.TO, Emojis.MAG_RIGHT), null);
     }
 
     @Override

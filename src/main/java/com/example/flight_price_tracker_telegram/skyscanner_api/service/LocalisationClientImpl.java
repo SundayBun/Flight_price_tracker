@@ -12,39 +12,41 @@ import java.util.List;
 
 
 @Component
-public class LocalisationClientImpl implements ILocalisationClient{
+public class LocalisationClientImpl implements ILocalisationClient {
 
-   // @Autowired private IUniRestService uniRestService;
+    // @Autowired private IUniRestService uniRestService;
 
 
     @Override
     public List<CountryDTO> retrieveCountries(String locale) {
 
-        IUniRestService uniRestService=new UniRestServiceImpl();
+        IUniRestService uniRestService = new UniRestServiceImpl();
 
-        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.COUNTRIES_FORMAT,locale.replaceAll(" ","")));
+        HttpResponse<JsonNode> response = uniRestService.get(String.format(UniRestServiceImpl.COUNTRIES_FORMAT, locale.replaceAll(" ", "")));
 
-        if(response.getStatus()!= HttpStatus.SC_OK) {
+        if (response.getStatus() != HttpStatus.SC_OK) {
             return null;
         }
-        String jsonList=response.getBody().getObject().get(UniRestServiceImpl.COUNTRIES_KEY).toString();
+        String jsonList = response.getBody().getObject().get(UniRestServiceImpl.COUNTRIES_KEY).toString();
 
-        return UniRestServiceImpl.readValue(jsonList,new TypeReference<List<CountryDTO>>(){});
+        return UniRestServiceImpl.readValue(jsonList, new TypeReference<List<CountryDTO>>() {
+        });
     }
 
     @Override
     public List<CurrencyDTO> retrieveCurrencies() {
 
-        IUniRestService uniRestService=new UniRestServiceImpl();
-        HttpResponse<JsonNode> response=uniRestService.get(String.format(UniRestServiceImpl.CURRENCIES_FORMAT));
+        IUniRestService uniRestService = new UniRestServiceImpl();
+        HttpResponse<JsonNode> response = uniRestService.get(String.format(UniRestServiceImpl.CURRENCIES_FORMAT));
 
-        if(response.getStatus()!= HttpStatus.SC_OK) {
+        if (response.getStatus() != HttpStatus.SC_OK) {
             return null;
         }
 
-        String jsonList=response.getBody().getObject().get(UniRestServiceImpl.CURRENCIES_KEY).toString();
+        String jsonList = response.getBody().getObject().get(UniRestServiceImpl.CURRENCIES_KEY).toString();
 
-        return UniRestServiceImpl.readValue(jsonList,new TypeReference<List<CurrencyDTO>>(){});
+        return UniRestServiceImpl.readValue(jsonList, new TypeReference<List<CurrencyDTO>>() {
+        });
 
     }
 }

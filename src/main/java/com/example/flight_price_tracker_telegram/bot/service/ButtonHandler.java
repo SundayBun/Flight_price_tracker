@@ -37,7 +37,7 @@ public class ButtonHandler {
 
     }
 
-    public static InlineKeyboardMarkup getMessageFromKeyboard(Context context,String buttonText) {
+    public static InlineKeyboardMarkup getMessageFromKeyboard(Context context, String buttonText) {
 
         buttons = toMap();
 
@@ -158,7 +158,7 @@ public class ButtonHandler {
             List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
-            inlineKeyboardButton.setText(places.getPlaceName()+", "+places.getCountryName());
+            inlineKeyboardButton.setText(places.getPlaceName() + ", " + places.getCountryName());
             inlineKeyboardButton.setCallbackData(places.getCityId());
 
             keyboardButtonsRow.add(inlineKeyboardButton);
@@ -169,7 +169,7 @@ public class ButtonHandler {
         return inlineKeyboardMarkup;
     }
 
-    public static ReplyKeyboardMarkup getMainMenuKeyboard(String...buttonTextArgs) {
+    public static ReplyKeyboardMarkup getMainMenuKeyboard(String... buttonTextArgs) {
 
         final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setSelective(true);

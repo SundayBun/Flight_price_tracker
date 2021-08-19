@@ -10,7 +10,7 @@ public class RegularSequence extends StatesMethodSequence {
     }
 
     @Override
-    public BotApiMethod<?> getStatesMethodSequence(){
+    public BotApiMethod<?> getStatesMethodSequence() {
         context.getState().handleInput(context);
         context.getState().nextState();
         return context.getState().enter(context);

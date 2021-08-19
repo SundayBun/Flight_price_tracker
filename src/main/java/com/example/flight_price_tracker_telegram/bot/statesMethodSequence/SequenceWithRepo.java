@@ -10,11 +10,11 @@ public class SequenceWithRepo extends StatesMethodSequence {
 
     public SequenceWithRepo(Context context, UserSubscriptionDataService repository) {
         super(context);
-        this.repository=repository;
+        this.repository = repository;
     }
 
     @Override
-  public BotApiMethod<?> getStatesMethodSequence() {
+    public BotApiMethod<?> getStatesMethodSequence() {
         try {
             context.getState().handleInput(context, repository);
         } catch (NullPointerException e) {

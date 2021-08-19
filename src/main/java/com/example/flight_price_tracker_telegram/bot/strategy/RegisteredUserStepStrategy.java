@@ -11,8 +11,6 @@ import com.example.flight_price_tracker_telegram.bot.validation.InputValidatorIm
 import com.example.flight_price_tracker_telegram.repository.UserSubscriptionDataService;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -162,57 +160,58 @@ public class RegisteredUserStepStrategy implements IStepStrategy {
             }
             default:
                 context.setState(new StartState(context));
-            log.info("step ** Context after getStateFromUserData(context): state {}", context.getState());
+                log.info("step ** Context after getStateFromUserData(context): state {}", context.getState());
 
         }
     }
+
     public void getStateFromUserData() {
 
-            context.setState(new StartState(context));
+        context.setState(new StartState(context));
 
-        if(context.getUserData().getStateName().equals(StateName.COUNTRY_TEXT)){
+        if (context.getUserData().getStateName().equals(StateName.COUNTRY_TEXT)) {
             context.setState(new CountryTextState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.COUNTRY_BUTTONS)){
+        if (context.getUserData().getStateName().equals(StateName.COUNTRY_BUTTONS)) {
             context.setState(new CountryButtonState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.CURRENCY)){
+        if (context.getUserData().getStateName().equals(StateName.CURRENCY)) {
             context.setState(new CurrencyState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.CURRENCY)){
+        if (context.getUserData().getStateName().equals(StateName.CURRENCY)) {
             context.setState(new CurrencyState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.ORIGIN_PLACE_TEXT)){
+        if (context.getUserData().getStateName().equals(StateName.ORIGIN_PLACE_TEXT)) {
             context.setState(new OriginPlaceText(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.ORIGIN_PLACE_BUTTONS)){
+        if (context.getUserData().getStateName().equals(StateName.ORIGIN_PLACE_BUTTONS)) {
             context.setState(new OriginPlaceButtons(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.DESTINATION_PLACE_TEXT)){
+        if (context.getUserData().getStateName().equals(StateName.DESTINATION_PLACE_TEXT)) {
             context.setState(new DestinationPlaceTextState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.DESTINATION_PLACE_BUTTONS)){
+        if (context.getUserData().getStateName().equals(StateName.DESTINATION_PLACE_BUTTONS)) {
             context.setState(new DestinationPlaceButtonsState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.OUTBOUND_PARTIAL_DATE)){
+        if (context.getUserData().getStateName().equals(StateName.OUTBOUND_PARTIAL_DATE)) {
             context.setState(new OutBoundPartialDatesState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.INBOUND_PARTIAL_DATE)){
+        if (context.getUserData().getStateName().equals(StateName.INBOUND_PARTIAL_DATE)) {
             context.setState(new InboundPartialDateState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.DATA_FILLED)){
+        if (context.getUserData().getStateName().equals(StateName.DATA_FILLED)) {
             context.setState(new DataFilledState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.DATA_TRANSFERRED)){
+        if (context.getUserData().getStateName().equals(StateName.DATA_TRANSFERRED)) {
             context.setState(new DataTransferredState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.SUBSCR_LIST)){
+        if (context.getUserData().getStateName().equals(StateName.SUBSCR_LIST)) {
             context.setState(new SubscriptionListState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.SUBSCRIPT)){
+        if (context.getUserData().getStateName().equals(StateName.SUBSCRIPT)) {
             context.setState(new SubscriptionState(context));
         }
-        if(context.getUserData().getStateName().equals(StateName.MAIN_MENU)){
+        if (context.getUserData().getStateName().equals(StateName.MAIN_MENU)) {
             context.setState(new MainMenuState(context));
         }
     }

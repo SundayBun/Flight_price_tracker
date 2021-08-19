@@ -25,9 +25,10 @@ public class UserSubscription implements Serializable {
     private FlightPricesDTO skyScannerResponseQuotes;
     private BrowseDatesDTO skyScannerResponseDates;
 
-    public UserSubscription (Long chatId){
-        this.chatId=chatId;
+    public UserSubscription(Long chatId) {
+        this.chatId = chatId;
     }
-    public UserSubscription (){
+
+    public UserSubscription() {
     }
 }

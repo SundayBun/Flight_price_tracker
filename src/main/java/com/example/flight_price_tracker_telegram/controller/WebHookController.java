@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
- *класс, обрабатывающий get и post запросы
+ * класс, обрабатывающий get и post запросы
  */
 
 @RestController //@ResponseBody ()+@Controller
@@ -22,6 +22,6 @@ public class WebHookController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public BotApiMethod<?> updatesReceived(@RequestBody Update update) { //@RequestBody - получает все тело запроса (в отличии от @RequestParam, который запрашивает парам отдельно)
-        return   bot.onWebhookUpdateReceived(update);
+        return bot.onWebhookUpdateReceived(update);
     }
 }

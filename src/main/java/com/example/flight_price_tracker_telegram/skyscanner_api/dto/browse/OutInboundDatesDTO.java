@@ -105,8 +105,7 @@ public class OutInboundDatesDTO {
     }
 
     public String toString() {
-      //  return "OutInboundDatesDTO(partialDate=" + this.getPartialDate() + ", quoteDateTime=" + this.getQuoteDateTime() + ", price=" + this.getPrice() + ", quoteIds=" + this.getQuoteIds() + ")";
-    return " " + this.getPartialDate()+ "\n One way price: "+ this.getPrice()+"\n";
+        return " " + this.getPartialDate() + "\n One way price: " + this.getPrice() + "\n";
     }
 }
 

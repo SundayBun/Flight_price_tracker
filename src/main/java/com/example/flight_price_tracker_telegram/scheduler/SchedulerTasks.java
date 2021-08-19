@@ -34,14 +34,12 @@ public class SchedulerTasks {
     @Autowired
     LocaleMessageService localeMessageService;
 
-
-
     @Autowired
     SubscriptionScheduler repository;
 
     private static final long ONE_HOUR = 1000 * 60 * 60;
 
-   @Scheduled(fixedRate = ONE_HOUR)
+    @Scheduled(fixedRate = ONE_HOUR)
     public void renewSubscript() {
         log.debug("recount minPrice Started");
 
@@ -49,7 +47,6 @@ public class SchedulerTasks {
         IFlightPriceClient priceClient = new FlightPriceClientImpl();
 
         List<UserSubscription> userSubscriptionList = repository.findAll();
-
 
         userSubscriptionList.forEach(x -> {
             if (x.getUserFlightData().getInboundPartialDate() != null) {
@@ -76,63 +73,44 @@ public class SchedulerTasks {
         String urlString = "https://api.telegram.org/bot%s/sendMessage?chat_id=%s&parse_mode=MarkdownV2&text=%s";
 
 
-        String textPriceIncreasing =localeMessageService.getMessage("scheduler.textPriceIncreasing",Emojis.SCREAM); //Emojis.SCREAM + " PRICE INCREASED";
-        String textPriceDrop =localeMessageService.getMessage("scheduler.textPriceDrop",Emojis.DANCER); //Emojis.DANCER + " PRICE DROPPED";
+        String textPriceIncreasing = localeMessageService.getMessage("scheduler.textPriceIncreasing", Emojis.SCREAM); //Emojis.SCREAM + " PRICE INCREASED";
+        String textPriceDrop = localeMessageService.getMessage("scheduler.textPriceDrop", Emojis.DANCER); //Emojis.DANCER + " PRICE DROPPED";
 
         if (!oneWay) {
-            String textDates=localeMessageService.getMessage("scheduler.textDates",
-                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
-                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
-                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate(),userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
-                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate(),userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
+            String textDates = localeMessageService.getMessage("scheduler.textDates",
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(), userSubscription.getUserFlightData().getOriginPlace()),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(), userSubscription.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate(), userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
+                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate(), userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
                     userSubscription.getMinPrice().toString(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice().toString(),
                     userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol());
 
-//            String textDates = String.format(" from %s to %s      Dates: %s - %s        Price:  ~%s%s~ %s%s",
-//                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
-//                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseDates().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
-//                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getOutboundDates().get(0).getPartialDate(),userSubscription.getUserData().getLocale()),
-//                    ResponseMessage.getDate(userSubscription.getSkyScannerResponseDates().getDates().getInboundDates().get(0).getPartialDate(),userSubscription.getUserData().getLocale()),
-//                    userSubscription.getMinPrice(),
-//                    userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol(),
-//                    userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice(),
-//                    userSubscription.getSkyScannerResponseDates().getCurrencies().get(0).getSymbol());
-
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                String text = textPriceDrop+" "+ textDates;
+                String text = textPriceDrop + " " + textDates;
                 urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseDates().getQuotes().get(0).getMinPrice()) {
-                String text = textPriceIncreasing+" " + textDates;
-                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+").replaceAll(".", "+"));
+                String text = textPriceIncreasing + " " + textDates;
+                urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else return;
 
         } else {
 
-            String textQuotes=localeMessageService.getMessage("scheduler.textQuotes",
-                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
-                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
-                    ResponseMessage.getDate(userSubscription.getUserFlightData().getOutboundPartialDate(),userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
+            String textQuotes = localeMessageService.getMessage("scheduler.textQuotes",
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(), userSubscription.getUserFlightData().getOriginPlace()),
+                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(), userSubscription.getUserFlightData().getDestinationPlace()),
+                    ResponseMessage.getDate(userSubscription.getUserFlightData().getOutboundPartialDate(), userSubscription.getUserData().getLocale()).replaceAll("\\.", "+"),
                     userSubscription.getMinPrice().toString(),
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
                     userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice().toString(),
                     userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
 
-//            String textQuotes = String.format(" from %s to %s       Date: %s            Price: ~%s%s~  %s%s",
-//                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getOriginPlace()),
-//                    ResponseMessage.getPlaceNameFromDTO(userSubscription.getSkyScannerResponseQuotes().getPlaces(),userSubscription.getUserFlightData().getDestinationPlace()),
-//                    ResponseMessage.getDate(userSubscription.getUserFlightData().getOutboundPartialDate(),userSubscription.getUserData().getLocale()),
-//                    userSubscription.getMinPrice(),
-//                    userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol(),
-//                    userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice(),
-//                    userSubscription.getSkyScannerResponseQuotes().getCurrencies().get(0).getSymbol());
-
             if (userSubscription.getMinPrice() > userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                String text = textPriceDrop+" " + textQuotes;
+                String text = textPriceDrop + " " + textQuotes;
                 urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else if (userSubscription.getMinPrice() < userSubscription.getSkyScannerResponseQuotes().getQuotes().get(0).getMinPrice()) {
-                String text = textPriceIncreasing+" " + textQuotes;
+                String text = textPriceIncreasing + " " + textQuotes;
                 urlString = String.format(urlString, botToken, userSubscription.getChatId(), text.replaceAll("-", "+").replaceAll(" ", "+"));
             } else return;
         }

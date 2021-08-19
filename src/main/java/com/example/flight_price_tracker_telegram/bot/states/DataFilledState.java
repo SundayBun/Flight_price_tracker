@@ -25,7 +25,7 @@ public class DataFilledState extends State {
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.dataFilled",Emojis.PLANE),null);
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.dataFilled", Emojis.PLANE), null);
     }
 
     @Override

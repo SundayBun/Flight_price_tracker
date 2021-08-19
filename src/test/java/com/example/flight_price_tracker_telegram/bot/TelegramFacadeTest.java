@@ -16,7 +16,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 import org.assertj.core.api.Assertions;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class TelegramFacadeTest {
     Context context;
@@ -32,7 +31,7 @@ class TelegramFacadeTest {
 
     @BeforeEach
     void setUp() {
-        chatId=1L;
+        chatId = 1L;
         context = new Context();
         context.setUserData(UsersPrototype.aUserData());
         context.setCallbackQuery(CallbackQueryPrototype.aCallbackQuery());
@@ -43,30 +42,31 @@ class TelegramFacadeTest {
 
     @Test
     void handleUpdate() {
-        telegramFacade=new TelegramFacade();
+        telegramFacade = new TelegramFacade();
         telegramFacade.setContext(context);
         telegramFacade.setRepository(repository);
 
-        Mockito.doReturn(UsersPrototype.aUserData()).when(repository).findByChatIdOrId(any(),any());
-        Mockito.doReturn(UsersPrototype.aUserFlightData()).when(repository).findByIdOrChatID(any(),any());
+        Mockito.doReturn(UsersPrototype.aUserData()).when(repository).findByChatIdOrId(any(), any());
+        Mockito.doReturn(UsersPrototype.aUserFlightData()).when(repository).findByIdOrChatID(any(), any());
         Mockito.doNothing().when(repository).saveUserData(any());
         Mockito.doNothing().when(repository).saveUserFlightData(any());
 
         statesMethodSequence = new RegularSequence(context);
-        RegisteredUserStepStrategy registeredUserStepStrategy=new RegisteredUserStepStrategy(context,update,repository);
+        RegisteredUserStepStrategy registeredUserStepStrategy = new RegisteredUserStepStrategy(context, update, repository);
         registeredUserStepStrategy.setStatesMethodSequence(statesMethodSequence);
-        outgoingDataExpected=registeredUserStepStrategy.doStateLogic();
+        outgoingDataExpected = registeredUserStepStrategy.doStateLogic();
 
-        outgoingData=telegramFacade.handleUpdate(update);
+        outgoingData = telegramFacade.handleUpdate(update);
         Assertions.assertThat(outgoingDataExpected).isEqualTo(outgoingData);
     }
+
     @Test
     void handleUpdateInvalidInput() {
-        telegramFacade=new TelegramFacade();
+        telegramFacade = new TelegramFacade();
         update.setMessage(null);
         update.setCallbackQuery(null);
-        outgoingData=telegramFacade.handleUpdate(update);
-        outgoingDataExpected=null;
+        outgoingData = telegramFacade.handleUpdate(update);
+        outgoingDataExpected = null;
         Assertions.assertThat(outgoingDataExpected).isEqualTo(outgoingData);
     }
 }

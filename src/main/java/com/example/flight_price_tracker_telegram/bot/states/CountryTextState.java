@@ -9,30 +9,29 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.util.Locale;
 
-public class CountryTextState extends State{
+public class CountryTextState extends State {
 
-    boolean changeState=false;
+    boolean changeState = false;
 
-    public CountryTextState(Context context){
+    public CountryTextState(Context context) {
         super(context);
-        this.textMessageRequest=true;
-        this.queryResponse=false;
+        this.textMessageRequest = true;
+        this.queryResponse = false;
         this.stateName = StateName.COUNTRY_TEXT;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.countryText",Emojis.EARTH,Emojis.EARTH),null);
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.countryText", Emojis.EARTH, Emojis.EARTH), null);
     }
 
     @Override
     public void handleInput(Context context) {
         context.getUserData().setStateName(stateName);
         if (HandleInputService.country(context) != null) {
-            changeState=true;
+            changeState = true;
         }
-
     }
 
     @Override

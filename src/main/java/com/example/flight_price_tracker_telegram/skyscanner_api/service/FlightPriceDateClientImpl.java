@@ -24,14 +24,14 @@ public class FlightPriceDateClientImpl implements IFlightPriceDateClient {
     @Override
     public BrowseDatesDTO browseQuotes(UserData userData, UserFlightData userFlightData) {
 
-        IUniRestService uniRestService=new UniRestServiceImpl();
-        HttpResponse<JsonNode> response=null;
+        IUniRestService uniRestService = new UniRestServiceImpl();
+        HttpResponse<JsonNode> response = null;
 
-            response = uniRestService.get(String.format(BROWSE_DATES_FORMAT, userData.getCountry(), userData.getCurrency(),
-                    userData.getLocale(), userFlightData.getOriginPlace(), userFlightData.getDestinationPlace(),
-                    userFlightData.getOutboundPartialDate(), userFlightData.getInboundPartialDate()));
+        response = uniRestService.get(String.format(BROWSE_DATES_FORMAT, userData.getCountry(), userData.getCurrency(),
+                userData.getLocale(), userFlightData.getOriginPlace(), userFlightData.getDestinationPlace(),
+                userFlightData.getOutboundPartialDate(), userFlightData.getInboundPartialDate()));
 
-            return mapToObject(response);
+        return mapToObject(response);
 
     }
 
@@ -58,9 +58,5 @@ public class FlightPriceDateClientImpl implements IFlightPriceDateClient {
             return flightDatesDTO;
         }
         return null;
-//        throw new FlightClientException(String.format("There are validation errors. statusCode = %s", response.getStatus()),
-//                UniRestServiceImpl.readValue(response.getBody().getObject().get(VALIDATIONS_KEY).toString(),
-//                        new TypeReference<List<ValidationErrorDTO>>() {
-//                        }));
     }
 }

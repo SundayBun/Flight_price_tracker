@@ -10,8 +10,8 @@ public class MainMenuState extends State {
 
     public MainMenuState(Context context) {
         super(context);
-        this.textMessageRequest=true;
-        this.queryResponse=false;
+        this.textMessageRequest = true;
+        this.queryResponse = false;
         this.stateName = StateName.MAIN_MENU;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
 
@@ -34,8 +34,9 @@ public class MainMenuState extends State {
             context.setState(new SubscriptionListState(context));
         }
     }
+
     @Override
     public State nextState() {
-       return context.getState();
+        return context.getState();
     }
 }

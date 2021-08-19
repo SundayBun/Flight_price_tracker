@@ -11,22 +11,22 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class InboundPartialDateState extends State{
+public class InboundPartialDateState extends State {
 
     final IValidator datesValidator = new ValidatorDateImpl(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    boolean dataFilled=false;
+    boolean dataFilled = false;
 
     public InboundPartialDateState(Context context) {
         super(context);
-        this.textMessageRequest=true;
-        this.queryResponse=true;
+        this.textMessageRequest = true;
+        this.queryResponse = true;
         this.stateName = StateName.INBOUND_PARTIAL_DATE;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.inboundPartialDates",Emojis.DATE),localeMessageService.getMessage("state.inboundPartialDatesButton"));
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.inboundPartialDates", Emojis.DATE), localeMessageService.getMessage("state.inboundPartialDatesButton"));
     }
 
     @Override
@@ -34,12 +34,12 @@ public class InboundPartialDateState extends State{
         context.getUserData().setStateName(stateName);
         if (context.getCallbackQuery() != null && context.getCallbackQuery().getData().equals("Button \"One way\" has been pressed")) {
             context.getUserFlightData().setInboundPartialDate(null);
-            dataFilled=true;
+            dataFilled = true;
         } else {
-            if(datesValidator.isValid(context.getInput())){
-                String validDate= HandleInputService.formatDate(context.getInput());
+            if (datesValidator.isValid(context.getInput())) {
+                String validDate = HandleInputService.formatDate(context.getInput());
                 context.getUserFlightData().setInboundPartialDate(validDate);
-                dataFilled=true;
+                dataFilled = true;
             }
         }
     }

@@ -7,19 +7,19 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 import java.util.Locale;
 
-public class CurrencyState extends State{
+public class CurrencyState extends State {
 
     public CurrencyState(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=true;
+        this.textMessageRequest = false;
+        this.queryResponse = true;
         this.stateName = StateName.CURRENCY;
         localeMessageService.setLocale(Locale.forLanguageTag(context.getUserData().getLocale()));
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,localeMessageService.getMessage("state.currency",Emojis.MONEYBAG),null);
+        return ResponseMessage.sendMessage(context, localeMessageService.getMessage("state.currency", Emojis.MONEYBAG), null);
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Data transfer object for FlightPrices.
- *
  */
 
 public class BrowsePlacesDTO {
@@ -169,12 +168,6 @@ public class BrowsePlacesDTO {
     }
 
     public String toString() {
-//        return "BrowsePlacesDTO(placeId="
-//                + this.getPlaceId() + ", iataCode="
-//                + this.getIataCode() + ", name=" + this.getName() + ", type=" + this.getType() +
-//                ", skyscannerCode=" + this.getSkyscannerCode() + ", cityName=" + this.getCityName()
-//                + ", cityId=" + this.getCityId() + ", countryName=" + this.getCountryName() + ")";
-         return "\n"+ this.getName();
-
+        return "\n" + this.getName();
     }
 }

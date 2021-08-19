@@ -18,8 +18,6 @@ public interface IFlightPriceClient {
      * @return {@link FlightPricesDTO} object.
      */
 
-   // FlightPricesDTO browseQuotes(String country,String currency,String locale,String originPlace,String destinationPlace,String outboundPartialDate);
-
     /**
      * Browse quotes for current flight based on provided arguments. Round trip ticket.
      *

@@ -13,17 +13,14 @@ public class UserData implements Serializable {
 
     @Id
     private Long chatId;
-    private Integer stateID;
     private String id;
-
     private StateName stateName;
-
     private String country;
     private String currency;
     private String locale;
 
-    public UserData(Long chatId, String id){
+    public UserData(Long chatId, String id) {
         this.chatId = chatId;
-        this.id=id;
+        this.id = id;
     }
 }

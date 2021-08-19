@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Setter
 @PropertySource("classpath:application.properties")
 @Component
-public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
+public class FlightPriceTrackerTelegramBot extends TelegramWebhookBot {
 
     @Value("${telegrambot.webHookPath}")
     private String webHookPath;
@@ -25,10 +25,8 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     @Value("${telegrambot.botToken}")
     private String botToken;
 
-
     @Autowired
     private TelegramFacade telegramFacade;
-
 
     @Override
     public String getBotUsername() {
@@ -49,7 +47,7 @@ public class FlightPriceTrackerTelegramBot  extends TelegramWebhookBot {
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
 
         if (update.getMessage() != null || update.hasCallbackQuery()) {
-           return telegramFacade.handleUpdate(update);
+            return telegramFacade.handleUpdate(update);
         }
         return null;
     }

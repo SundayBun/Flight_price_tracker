@@ -5,18 +5,18 @@ import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 
-public class StartState extends State{
+public class StartState extends State {
 
-    public StartState(Context context){
+    public StartState(Context context) {
         super(context);
-        this.textMessageRequest=false;
-        this.queryResponse=true;
+        this.textMessageRequest = false;
+        this.queryResponse = true;
         this.stateName = StateName.START;
     }
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendMessage(context,  "Choose the language / Выберите язык",null);
+        return ResponseMessage.sendMessage(context, "Choose the language / Выберите язык", null);
     }
 
     @Override

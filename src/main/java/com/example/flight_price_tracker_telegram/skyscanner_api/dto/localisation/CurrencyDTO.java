@@ -159,13 +159,6 @@ public class CurrencyDTO {
     }
 
     public String toString() {
-//        return "CurrencyDTO(code=" + this.getCode() + ", symbol=" + this.getSymbol()
-//                + ", thousandsSeparator=" + this.getThousandsSeparator()
-//                + ", decimalSeparator=" + this.getDecimalSeparator() + ", symbolOnLeft=" + this.isSymbolOnLeft()
-//                + ", spaceBetweenAmountAndSymbol=" + this.isSpaceBetweenAmountAndSymbol()
-//                + ", roundingCoefficient=" + this.getRoundingCoefficient()
-//                + ", decimalDigits=" + this.getDecimalDigits() + ")";
-
-        return " " +this.getSymbol()+" ("+this.getCode()+")";
+        return " " + this.getSymbol() + " (" + this.getCode() + ")";
     }
 }

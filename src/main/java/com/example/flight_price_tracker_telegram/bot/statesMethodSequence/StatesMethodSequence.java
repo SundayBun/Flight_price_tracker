@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 @Data
 public abstract class StatesMethodSequence {
 
-   protected Context context;
+    protected Context context;
 
     public StatesMethodSequence(Context context) {
         this.context = context;

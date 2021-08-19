@@ -22,24 +22,17 @@ public class Context {
     private String input;
     private CallbackQuery callbackQuery;
 
-//    public Context(UserData userData, UserFlightData userFlightData, UserSubscription userSubscription, String input, CallbackQuery callbackQuery) {
-//        this.state = new StartState(this);
-//        this.userData = userData;
-//        this.userFlightData = userFlightData;
-//        this.userSubscription = userSubscription;
-//        this.input = input;
-//        this.callbackQuery = callbackQuery;
-//    }
     public Context(UserData userData, UserFlightData userFlightData, String input, CallbackQuery callbackQuery) {
         this.state = new StartState(this);
         this.userData = userData;
         this.userFlightData = userFlightData;
         this.input = input;
         this.callbackQuery = callbackQuery;
-        this.userSubscription=new UserSubscription();
+        this.userSubscription = new UserSubscription();
     }
 
-    public Context(){}
+    public Context() {
+    }
 
     @Override
     public String toString() {

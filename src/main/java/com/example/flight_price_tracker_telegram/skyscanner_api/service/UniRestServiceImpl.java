@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:x-rapidAPI-key.properties")
 public class UniRestServiceImpl implements IUniRestService {
 
     public static final String HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
@@ -37,8 +37,8 @@ public class UniRestServiceImpl implements IUniRestService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-//   @Value("${rapidAPI.key}")
-//    private String xRapidApiKey;
+    @Value("${rapidAPI.key}")
+    private String xRapidApiKey;
 
     @Override
     public HttpResponse<JsonNode> get(String path) {
@@ -46,12 +46,12 @@ public class UniRestServiceImpl implements IUniRestService {
         HttpResponse<JsonNode> response = null;
 
         try {
-            response = Unirest.get("https://"+HOST + path)
-                    .header("x-rapidapi-key", ""+"b37de29cabmshc625f87b4381cb6p1a3873jsndc36ffc88738")
+            response = Unirest.get("https://" + HOST + path)
+                    .header("x-rapidapi-key", "" + "b37de29cabmshc625f87b4381cb6p1a3873jsndc36ffc88738")
                     .header("x-rapidapi-host", "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com")
                     .asJson();
         } catch (UnirestException e) {
-            throw new FlightClientException(String.format("Request failed, path=%s","https://"+ HOST + path), e);
+            throw new FlightClientException(String.format("Request failed, path=%s", "https://" + HOST + path), e);
         }
 
         log.info("Response from Get request, on path={}, statusCode={}, response={}"
@@ -60,9 +60,9 @@ public class UniRestServiceImpl implements IUniRestService {
         return response;
     }
 
-    public static  <T> T readValue(String resultAsString, TypeReference<T> valueTypeRef) {
+    public static <T> T readValue(String resultAsString, TypeReference<T> valueTypeRef) {
         try {
-           return objectMapper.readValue(resultAsString, valueTypeRef);
+            return objectMapper.readValue(resultAsString, valueTypeRef);
         } catch (IOException e) {
             throw new FlightClientException("Object Mapping failure.", e);
         }

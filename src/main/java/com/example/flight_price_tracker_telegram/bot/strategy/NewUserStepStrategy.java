@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
 @Slf4j
 @EqualsAndHashCode
-public class NewUserStepStrategy implements IStepStrategy{
+public class NewUserStepStrategy implements IStepStrategy {
 
     private Context context;
     private StatesMethodSequence statesMethodSequence;
@@ -25,7 +25,7 @@ public class NewUserStepStrategy implements IStepStrategy{
 
     @Override
     public BotApiMethod<?> doStateLogic() {
-        statesMethodSequence=new JustEnterMethod(context);
+        statesMethodSequence = new JustEnterMethod(context);
 
         log.info("Just enter method (new User)");
 
