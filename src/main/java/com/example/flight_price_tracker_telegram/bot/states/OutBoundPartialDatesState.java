@@ -1,7 +1,7 @@
 package com.example.flight_price_tracker_telegram.bot.states;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
+import com.example.flight_price_tracker_telegram.bot.service.HandleInputService;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import com.example.flight_price_tracker_telegram.bot.validation.ValidatorDateImpl;
@@ -34,7 +34,7 @@ public class OutBoundPartialDatesState extends State{
         context.getUserData().setStateName(stateName);
 
         if (datesValidator.isValid(context.getInput())) {
-            String validDate= HandleInput.formatDate(context.getInput());
+            String validDate= HandleInputService.formatDate(context.getInput());
             context.getUserFlightData().setOutboundPartialDate(validDate);
             changeState = true;
         }

@@ -115,8 +115,13 @@ public class ResponseMessage {
     }
 
     public static AnswerCallbackQuery sendSubDeleting(Context context, String text) {
+        String id=context.getUserData().getId();
+
+        if (context.getCallbackQuery()!=null){
+            id=context.getCallbackQuery().getId();
+        }
         AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery();
-        answerCallbackQuery.setCallbackQueryId(context.getUserData().getId());
+        answerCallbackQuery.setCallbackQueryId(id);
         answerCallbackQuery.setShowAlert(true);
         answerCallbackQuery.setText(text);
         return answerCallbackQuery;

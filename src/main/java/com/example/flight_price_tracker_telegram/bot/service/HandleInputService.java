@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class HandleInput {
+public class HandleInputService {
 
     public static List<CountryDTO> country(Context context){
 

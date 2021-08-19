@@ -159,7 +159,7 @@ public class ButtonHandler {
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
 
             inlineKeyboardButton.setText(places.getPlaceName()+", "+places.getCountryName());
-            inlineKeyboardButton.setCallbackData(places.getPlaceId());
+            inlineKeyboardButton.setCallbackData(places.getCityId());
 
             keyboardButtonsRow.add(inlineKeyboardButton);
             keyboardButtonsRows.add(keyboardButtonsRow);

@@ -2,7 +2,7 @@ package com.example.flight_price_tracker_telegram.bot.states;
 
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
+import com.example.flight_price_tracker_telegram.bot.service.HandleInputService;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -29,7 +29,7 @@ public class CountryTextState extends State{
     @Override
     public void handleInput(Context context) {
         context.getUserData().setStateName(stateName);
-        if (HandleInput.country(context) != null) {
+        if (HandleInputService.country(context) != null) {
             changeState=true;
         }
 

@@ -1,7 +1,7 @@
 package com.example.flight_price_tracker_telegram.bot.states;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
+import com.example.flight_price_tracker_telegram.bot.service.HandleInputService;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import com.example.flight_price_tracker_telegram.bot.utils.Emojis;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -31,7 +31,7 @@ public class OriginPlaceText extends State {
         context.getUserFlightData().setChatId(context.getUserData().getChatId());
         context.getUserData().setStateName(stateName);
 
-        if (HandleInput.places(context) != null) {
+        if (HandleInputService.places(context) != null) {
             changeState = true;
         }
     }

@@ -1,7 +1,7 @@
 package com.example.flight_price_tracker_telegram.bot.states;
 
 import com.example.flight_price_tracker_telegram.bot.Context;
-import com.example.flight_price_tracker_telegram.bot.service.HandleInput;
+import com.example.flight_price_tracker_telegram.bot.service.HandleInputService;
 import com.example.flight_price_tracker_telegram.bot.service.ResponseMessage;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 
@@ -19,7 +19,7 @@ public class OriginPlaceButtons extends State{
 
     @Override
     public BotApiMethod<?> enter(Context context) {
-        return ResponseMessage.sendSearchPlaces(context, HandleInput.places(context)
+        return ResponseMessage.sendSearchPlaces(context, HandleInputService.places(context)
                 , localeMessageService.getMessage("state.originPlaceButtons"));
     }
 
