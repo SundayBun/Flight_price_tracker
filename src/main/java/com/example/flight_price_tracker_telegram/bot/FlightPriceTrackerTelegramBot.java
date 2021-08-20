@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Getter
 @Setter
-@PropertySource("classpath:application.yml")
+@PropertySource("classpath:application.properties")
 @Component
 public class FlightPriceTrackerTelegramBot extends TelegramWebhookBot {
 

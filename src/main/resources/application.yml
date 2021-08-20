@@ -1,9 +1,0 @@
-localeTag: ${ocaleTag}
-spring:
-    data:
-        mongodb:
-            uri: ${mongodb_uri}
-telegrambot:
-    botToken: ${botToken}
-    botuserName: ${botuserName}
-    webHookPath: ${webHookPath}

@@ -14,7 +14,7 @@ import java.util.Locale;
 @Setter
 @Service
 @EqualsAndHashCode
-@PropertySource("classpath:application.yml")
+@PropertySource("classpath:application.properties")
 public class LocaleMessageService {
     private Locale locale;
     private final MessageSource messageSource;
