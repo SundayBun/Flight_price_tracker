@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -13,6 +14,7 @@ import java.util.Locale;
 @Setter
 @Service
 @EqualsAndHashCode
+@PropertySource("classpath:application.yml")
 public class LocaleMessageService {
     private Locale locale;
     private final MessageSource messageSource;
