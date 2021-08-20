@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-@PropertySource("classpath:x-rapidAPI-key.properties")
+//@PropertySource("classpath:x-rapidAPI-key.properties")
 public class UniRestServiceImpl implements IUniRestService {
 
     public static final String HOST = "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com";
@@ -37,8 +37,8 @@ public class UniRestServiceImpl implements IUniRestService {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    @Value("${rapidAPI.key}")
-    private String xRapidApiKey;
+//    @Value("${rapidAPI.key}")
+//    private String xRapidApiKey;
 
     @Override
     public HttpResponse<JsonNode> get(String path) {
