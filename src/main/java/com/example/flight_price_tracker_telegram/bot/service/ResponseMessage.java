@@ -22,7 +22,13 @@ import java.util.Locale;
 @Service
 public class ResponseMessage {
 
-
+    /**
+     *
+     * @param context
+     * @param messageText
+     * @param buttonText
+     * @return
+     */
     public static SendMessage sendMessage(Context context, String messageText, String buttonText) {
 
         SendMessage message = new SendMessage();
